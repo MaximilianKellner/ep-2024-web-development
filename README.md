@@ -29,6 +29,6 @@ Link zur Fachseite:
 
 ## Teilnehmer
 
-- Maximilian Elias Kellner
-- Oliver Russmann
-- Yassin El Fraygui
+- [Maximilian Elias Kellner](https://github.com/MaximilianKellner)
+- [Oliver Russmann](https://github.com/orussmann)
+- [Yassin El Fraygui](https://github.com/Yasabi04)
