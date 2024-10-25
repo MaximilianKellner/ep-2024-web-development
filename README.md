@@ -2,8 +2,7 @@
 
 ## Einführung
 
-Im Rahmen des Entwicklungsprojekts soll eine Web Applikation erstellt werden, die einen Upload von zu großen Bilddateien erlaubt. Mithilfe eines Content-Management-Systems (kurz: CMS) werden die Bilddateien komprimiert und dem Nutzer zum Download angeboten. Der Upload von Dateien wird durch ein Punktesystem reguliert, sodass nich beliebig viele Dateien hochgeladen werden können.
-
+Im Rahmen des Entwicklungsprojekts soll eine Web Applikation erstellt werden, die einen Upload von zu großen Bilddateien erlaubt. Die Applikation ermöglicht es Nutzern, übergroße Bilddateien hochzuladen, die anschließend komprimiert und dem Kunden zum Download zur Verfügung gestellt werden. Ein Punktesystem reguliert den Upload, sodass nicht unbegrenzt viele Dateien hochgeladen werden können.
 ## Was kann unsere Applikation?
 - Unterstützte Formate:
 -
