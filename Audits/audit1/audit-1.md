@@ -8,4 +8,4 @@
 
 
 ## Wireframe zur Upload und Konvertierungsseite
-![Wireframe der Download page](images/EP2024-Concept-Map-V2jpg.jpg)
+![Wireframe der Download page](images/wireframe-download-page.png)
