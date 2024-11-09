@@ -15,3 +15,14 @@
 
 ## Concept Map mit Schwerpunkt Bildverarbeitung
 ![Iteration der Concept Map mit dem Schwerpunkt Bildverarbeitung](images/EP2024-Concept-Map-V2jpg.jpg)
+
+## Use Cases
+![Change credits](images/use-case-change-credits.png)
+![Request credits](images/use-case-request-credits.png)
+![Configure link](images/use-case-configure-link.png)
+![Optimise file](images/use-case-optimise-file.png)
+
+## User Flows
+![Service Nutzer](images/user-flow-endkunde-1.png)
+![Content Manager](images/user-flow-content-manager-1.png)
+![Service Nutzer System](images/user-flow-endkunde-system-1.png)
