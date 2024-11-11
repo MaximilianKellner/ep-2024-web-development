@@ -11,9 +11,6 @@
 6. [Use Cases](https://github.com/MaximilianKellner/ep-2024-web-development/blob/main/Audits/audit1/audit-1.md#use-cases)
 7. [User Flows](https://github.com/MaximilianKellner/ep-2024-web-development/blob/main/Audits/audit1/audit-1.md#user-flows)
 
-## Wireframe zur Upload und Konvertierungsseite
-![Wireframe der Download page](images/wireframe-download-page.png)
-
 ## Concept Map
 ![Komplette Concept Map](images/EP2024-Concept-Map.jpg)
 
@@ -30,3 +27,8 @@
 ![Service Nutzer](images/user-flow-endkunde-1.png)
 ![Content Manager](images/user-flow-content-manager-1.png)
 ![Service Nutzer System](images/user-flow-endkunde-system-1.png)
+
+
+## Wireframe zur Upload und Konvertierungsseite
+![Wireframe der Download page](images/wireframe-download-page.png)
+
