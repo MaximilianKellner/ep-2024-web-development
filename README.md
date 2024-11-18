@@ -1,4 +1,4 @@
-# Web-Applikation zum Komprimieren von Bilddateien (EP 2024, Noss)
+# OmniMize -- Web-Applikation zum Komprimieren von Bilddateien (EP 2024, Noss)
 
 ## Einführung
 
