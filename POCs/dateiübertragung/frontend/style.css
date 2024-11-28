@@ -1,0 +1,12 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    text-align: center;
+}
+form {
+    margin: 20px auto;
+}
+#message {
+    margin-top: 10px;
+    color: green;
+}
