@@ -21,24 +21,24 @@ resizeImage('./Ryanair2.png', 'Ryanair_resized2.png', 500, 500)
         console.log('Image resized successfully');
     })
     .catch((err) => {
-        console.error(err);
+        console.error('resize:' +err);
     });
 
 
 
 
-async function sw(){
+async function blackAndWhite(){
     try{
         await sharp("./Ryanair2.png")
-            .threshold(400)
+            .threshold(120)
             .png()
             .toFile("./Ryanair2-sw.png")
     } catch (error){
-        console.log('error')
+        console.log('SW:'+error)
     }
 }
 
-sw()
+blackAndWhite()
 
 
 
@@ -48,11 +48,11 @@ async function transformer(){
         await sharp('./Ryanair2.png').modulate({
             brightness: 0.5,
             /*Für SW Effekt auf saturation: 0 setzen*/
-            saturation: 1,	
+            saturation: 0,	
             hue: 120
         }).toFile('./Ryanair2-transformed.png')
     } catch (error){
-        console.log('error')
+        console.log('Transformer:'+error)   
     }
 }
 
