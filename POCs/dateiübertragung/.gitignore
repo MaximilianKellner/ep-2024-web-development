@@ -23,4 +23,3 @@ yarn-error.log
 /backend/yarn-error.log
 
 # Ignore specific directories
-backend/uploads/
