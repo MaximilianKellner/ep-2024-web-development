@@ -6,41 +6,41 @@
 | date     | 27-11-2024                                                 |
 | deciders | [Maximilian Kellner](https://github.com/MaximilianKellner) |
 
-## Context and Problem Statement
+## Kontext und Problemstellung
 
-We need a frontend-langage which is able to produce a modern, responsive and provides good performance.
+Wir benötigen eine Frontend-Sprache, die in der Lage ist, eine moderne, responsive und leistungsstarke Benutzeroberfläche zu erstellen.
 
-## Decision Drivers
+## Entscheidungsfaktoren
 
-- Does it provide reusable components?
-- How performant is it?
-- Does it provide accessibility options?
+- Bietet es wiederverwendbare Komponenten?
+- Wie leistungsfähig ist es?
+- Bietet es Optionen für Barrierefreiheit?
 
-## Considered Options
+## Berücksichtigte Optionen
 
 - HTML+CSS
 - React
 
-## Decision Outcome
+## Entscheidungsergebnis
 
-Chosen option: "HTML+CSS", it is possible to wirte a lightwheigt forntend which is responsive and compatible with a wide range of browsers, there are many resources available, and it is the industry standard.
+Gewählte Option: "HTML+CSS", es ist möglich, ein leichtes Frontend zu schreiben, das responsiv und mit einer Vielzahl von Browsern kompatibel ist. Es gibt viele verfügbare Ressourcen, und es ist der Industriestandard.
 
-## Pros and Cons of the Options
+## Vor- und Nachteile der Optionen
 
 ### HTML+CSS
 
-HTML is the foundational markup language used to structure content on the web, while CSS is used to style and layout that content, enabling the creation of visually appealing and responsive web pages.
+HTML ist dei standard Markup language, die verwendet wird, um Inhalte im Web zu strukturieren, während CSS verwendet wird, um diese Inhalte zu gestalten und anzuordnen, wodurch die Erstellung von schönen und responsiven Webseiten möglich ist.
 
-- Good, HTML+CSS is compatible with a wide range of browsers.
-- Good, HTML provides a readable structure even if the design doesnt load.
-- Neutral, the code could be optimized with a development pipeline.
-- Bad, HTML doesnt provide reusable Components
+- Gut, HTML+CSS ist mit einer Vielzahl von Browsern kompatibel.
+- Gut, HTML bietet eine lesbare Struktur, selbst wenn das Design nicht geladen wird.
+- Neutral, der Code könnte mit einer Entwicklungspipeline optimiert werden.
+- Schlecht, HTML bietet keine wiederverwendbaren Komponenten.
 
 ### React
 
-React is a JavaScript library for building user interfaces, allowing developers to create reusable UI components and manage the state of dynamic web applications efficiently.
+React ist eine JavaScript-Bibliothek zur Erstellung von Benutzeroberflächen, die es ermöglicht, wiederverwendbare UI-Komponenten zu erstellen und den Zustand dynamischer Webanwendungen effizient zu verwalten.
 
-- Good, React allows the creation of reusable components, promoting code modularity and maintainability.
-- Good, React has a large and active community, providing extensive libraries, tools, and documentation.
-- Neutral, React requires a build process (e.g., with Webpack or Vite), adding complexity to the development setup.
-- Bad, React's learning curve can be steep.
+- Gut, React ermöglicht die Erstellung wiederverwendbarer Komponenten, was die Modularität und Wartbarkeit des Codes fördert.
+- Gut, React hat eine große und aktive Community, die umfangreiche Bibliotheken, Tools und Dokumentationen bereitstellt.
+- Neutral, React erfordert einen Build-Prozess (z.B. mit Webpack oder Vite), was die Entwicklungseinrichtung komplexer macht.
+- Schlecht, die Lernkurve von React kann steil sein.
