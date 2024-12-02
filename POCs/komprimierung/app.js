@@ -34,7 +34,7 @@ async function blackAndWhite(){
             .png()
             .toFile("./Ryanair2-sw.png")
     } catch (error){
-        console.log('SW:'+error)
+        console.log('SW:' + error)
     }
 }
 
@@ -52,7 +52,7 @@ async function transformer(){
             hue: 120
         }).toFile('./Ryanair2-transformed.png')
     } catch (error){
-        console.log('Transformer:'+error)   
+        console.log('Transformer:'+ error)   
     }
 }
 
