@@ -18,19 +18,24 @@
 
 - 
 
+
 ## Entscheidungsergebnis
 
 
 ## Vor- und Nachteile der Optionen
 
-### JavaScript
+### Option 1
 
-JavaScript ist eine vielseitige, high-level Programmiersprache, die hauptsächlich für dynamische und interaktive Webanwendungen sowohl auf der Client- als auch auf der Serverseite verwendet wird.
+Option 1 beschreibung
 
-- 
+- Gut,
+- Neutral,
+- Schlecht,
 
-### TypeScript
+### Option 2
 
-TypeScript ist eine statisch typisierte Obermenge von JavaScript, die zu reinem JavaScript kompiliert und erweiterte Werkzeuge und Typsicherheit für groß angelegte Anwendungen bietet.
+Option 2 beschreibung
 
-- Gut, 
+- Gut,
+- Neutral,
+- Schlecht,

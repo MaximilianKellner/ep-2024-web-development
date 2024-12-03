@@ -10,7 +10,6 @@
 
 Um ein Frontend zu schreiben, das in der Lage ist, Daten-Eingaben, Uploads und Serveranfragen zu verarbeiten, ist eine gewisse Logik erforderlich.
 
-
 ## Entscheidungsfaktoren
 
 - Wie einfach ist die Integration?
