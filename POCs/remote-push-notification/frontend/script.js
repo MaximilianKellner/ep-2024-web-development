@@ -1,20 +1,15 @@
 const publicVapidKey = "BGQHJx76eQTAkKNu7pWY1A0CcoRsjgez3TNAq3bI44cffslhQueBW-syXaMwNvjHhHotLGff5JadVlovH_-jKKc"; // REPLACE_WITH_YOUR_KEY
 
-// Check for service worker
-if ("serviceWorker" in navigator) {
-    // send().catch((err) => console.error(err));
-}
-
 // Register SW, Register Push, Send Push
 async function send() {
 
     try {
         // Register Service Worker
         console.log("Registering service worker...");
-        /* const register = await navigator.serviceWorker.register("./sw.js", {
+        /* const register = await navigator.serviceWorker.register("./sw.js", { 
             scope: "/",
         }); */
-        const registerSuccess = await simulateMaxDelayForServiceWorkerRegistration(1000, 5000); // The use should be informed about browser incompatibility
+        const registerSuccess = await simulateMaxDelayForServiceWorkerRegistration(1000, 5000); // The user should be informed about browser incompatibility
 
         console.log("Service Worker Registered...");
 
