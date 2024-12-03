@@ -20,5 +20,6 @@ yarn-error.log
 /backend/yarn-debug.log
 /backend/yarn-error.log
 
-# Ignore specific directories
-backend/uploads/
+# Ignore contents of the uploads directory but keep the directory itself
+backend/uploads/*
+!backend/uploads/.gitkeep
