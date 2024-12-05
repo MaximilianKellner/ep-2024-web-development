@@ -12,7 +12,7 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
         return;
     }
 
-    //-------- Limitations --------
+    //-------- Upload Limitationen --------
 
     if(files.length > 10) {
         messageDiv.textContent = 'Maximal 10 Dateien auswählen.';
