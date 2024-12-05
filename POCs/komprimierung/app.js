@@ -1,13 +1,18 @@
 const sharp = require('sharp');
 
-/*
-sharp('./Ryanair2.png')
-    .resize(500, 500,{
-        fit: 'contain',
-        background: 'transparent'
-    })
-    .toFile('Ryanair_resized.png')
-*/
+async function base(){
+    try{
+        sharp('./Ryanair2.png')
+        .resize(500, 500,{
+            fit: 'contain',
+            background: 'transparent'
+        })
+        .toFile('Ryanair_resized.png')
+    }
+    catch{
+        console.log('Es ist ein Fehler aufgertreten!' + error)
+    }
+}
 
 async function resizeImage(inputPath, outputPath, width, height) {
     await sharp(inputPath)
@@ -38,7 +43,6 @@ async function blackAndWhite(){
     }
 }
 
-blackAndWhite()
 
 
 
@@ -56,4 +60,31 @@ async function transformer(){
     }
 }
 
+
+
+async function comprimize(){
+    try{
+        await sharp('./Ryanair2.png').webp({quality: 1}).toFile('./Ryanair2-comprimized.webp')
+    } catch (error){
+        console.log('Comprimize:' + error)
+    }
+}
+
+
+async function webpTosvg(){
+    try{
+        await sharp('./webp-for-wordpress.webp').toFile('./webptosvg-comprimized.svg')
+    } catch (error){
+        console.log('WebpToSvg:' + error)
+    }
+}
+
+
+base()
+//webpTosvg()
+
+/*
+blackAndWhite()
 transformer()
+comprimize() //Von PNG zu WebP
+*/
