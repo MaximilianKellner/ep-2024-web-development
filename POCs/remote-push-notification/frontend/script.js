@@ -6,39 +6,39 @@ if ("serviceWorker" in navigator) {
 }
 
 // Register SW, Register Push, Send Push
-async function send(datetimeInput) {
-    // Register Service Worker
-    console.log("Registering service worker...");
-    console.log(`Push notification setting for ${datetimeInput}`);          //TODO: Check if a service worker is already active
-    const register = await navigator.serviceWorker.register("./sw.js", {
-        scope: "/",
-    });
-    console.log("Service Worker Registered...");
+async function send() {
 
-    // Register Push
-    console.log("Registering Push...");
-    const subscription = await register.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
-    });
-    console.log("Push Registered...");
-    
-    // Datum der Subscription hinzufügen
-    const subscriptionWithDate = {
-        ...subscription,
-        dateTime: datetimeInput, // Datum in das Subscription-Objekt integrieren
-    };
+    try {
+        // Register Service Worker
+        console.log("Registering service worker...");
+        /* const register = await navigator.serviceWorker.register("./sw.js", {
+            scope: "/",
+        }); */
+        const registerSuccess = await simulateMaxDelayForServiceWorkerRegistration(1000, 5000); // The use should be informed about browser incompatibility
 
-    // Send Push Notification
-    console.log("Sending Push...");
-    await fetch("http://localhost:3000/subscribe", {
-        method: "POST",
-        body: JSON.stringify(subscription),
-        headers: {
-            "content-type": "application/json", 
-        },
-    });
-    console.log("Push Sent...");
+        console.log("Service Worker Registered...");
+
+        // Register Push
+        console.log("Registering Push...");
+        const subscription = await registerSuccess.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
+        });
+        console.log("Push Registered...");
+
+        // Send Push Notification
+        console.log("Sending Push...");
+        await fetch("http://localhost:3000/subscribe", {
+            method: "POST",
+            body: JSON.stringify(subscription),
+            headers: {
+                "content-type": "application/json",
+            },
+        });
+        console.log("Push Sent...");
+    } catch (err) {
+        alert(`Something went wrong: ${err}`);
+    }
 }
 
 function urlBase64ToUint8Array(base64String) {
@@ -57,13 +57,45 @@ function urlBase64ToUint8Array(base64String) {
 }
 
 document.getElementById('subscribeButton').addEventListener('click', () => {
-    const datetimeInput = document.getElementById('datetime').value;
-    if (datetimeInput) {
-        if ("serviceWorker" in navigator) {
-            send(datetimeInput).catch((err) => console.error(err));
-            alert(`You have subscribed for ${datetimeInput}`);
-        }
+
+    if (!("serviceWorker" in navigator)) {
+        alert("Make sure to set permissions and/ or contact the content manager.");
     } else {
-        alert('Please select a date and time.');
+        send();
     }
 });
+
+
+function registerServiceWorker(time) {
+    return new Promise((resolve, reject) => {
+        // Simulating an asynchronous operation
+        setTimeout(() => {
+            const data = navigator.serviceWorker.register("./sw.js", {
+                scope: "/",
+            });
+            resolve(data);
+        }, time);
+        // Resolves after 6 seconds
+    });
+}
+
+function withTimeout(promise, timeout) {
+    return Promise
+        .race([
+            promise,
+            new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Timeout: Could not register service worker.\nPlease try to use a different browser.\nPlease contact your service provider.')), timeout)
+            )
+        ]);
+}
+
+async function simulateMaxDelayForServiceWorkerRegistration(time, delay)  {
+    try {
+        const data = await withTimeout(registerServiceWorker(time), delay);
+        console.log(data);
+        return data;
+    } catch (err) {
+        console.error(err);
+        throw new Error(err);
+    }
+}
