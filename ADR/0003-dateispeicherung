@@ -8,7 +8,7 @@
 
 ## Kontext und Problemstellung
 
-Um die Dateien Komprimieren zu können müssen wir diese Zwischenspeichern, dieser ADR behandelt die Art der Speicherung.
+Um die Dateien komprimieren zu können, müssen wir diese zwischenspeichern. Dieser ADR behandelt die Art der Speicherung.
 
 ## Entscheidungsfaktoren
 
@@ -23,23 +23,17 @@ Um die Dateien Komprimieren zu können müssen wir diese Zwischenspeichern, dies
 - Speicherung in einer Datenbank
 
 ## Entscheidungsergebnis
-Ein Dateiverzeichnis pro Kunde, dort werden die Dateien anhand des Dateinamens erkannt
+
+Ein Dateiverzeichnis pro Kunde, dort werden die Dateien anhand des Dateinamens erkannt.
 
 ## Vor- und Nachteile der Optionen
 
 ### Option 1: Ein Dateiverzeichnis pro Kunde
 
-
 - Gut, einfache Implementierung und Verwaltung.
-- Gut, simple Anbindung an Sharp.js
+- Gut, simple Anbindung an Sharp.js.
 - Neutral, erfordert eine gute Strukturierung der Verzeichnisse.
 - Schlecht, kann bei einer großen Anzahl von Dateien unübersichtlich werden.
-
-Option 1 beschreibung
-
-- Gut,
-- Neutral,
-- Schlecht,
 
 ### Option 2: Speicherung in einer Datenbank
 
