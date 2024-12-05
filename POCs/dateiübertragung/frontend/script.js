@@ -5,12 +5,32 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
     const messageDiv = document.getElementById('message');
     const files = fileInput.files;
 
-    //redundant wg HTML Required
+    //redundant wegen --> HTML "Required" tag
     if (files.length === 0) {
         messageDiv.textContent = 'Bitte mindestens eine Datei auswählen.';
         messageDiv.style.color = 'red';
         return;
     }
+
+    //-------- Limitations --------
+
+    if(files.length > 10) {
+        messageDiv.textContent = 'Maximal 10 Dateien auswählen.';
+        messageDiv.style.color = 'red';
+        return;
+    }
+
+    const maxFileSize = 10 * 1024 * 1024; // 10 MB in Bytes
+
+    for (let i = 0; i < files.length; i++) {
+        if (files[i].size > maxFileSize) {
+            messageDiv.textContent = `Die Datei ${files[i].name} überschreitet die maximale Größe von 10 MB.`;
+            messageDiv.style.color = 'red';
+            return;
+        }
+    }
+
+    //-------- Anfrage und Antwort --------
 
     const formData = new FormData();
     for (let i = 0; i < files.length; i++) {
