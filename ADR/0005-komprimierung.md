@@ -1,6 +1,6 @@
 # Komprimierung
 ***
-## Kontext und Probleme
+## Kontext und Problemstellung
 ## Entscheidungsfaktoren
 ## Berücksichtigte Optionen
 ## Entschiedenes Ergebnis
