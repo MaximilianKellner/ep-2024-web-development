@@ -11,7 +11,7 @@
 Das Backend ist primär für die Optimierung der Multimedia-Dateien, die Persistierung und Verwaltung der Daten und die Benachrichtigung 
 der Nutzer zuständig.
 Es werden somit sehr unterschiedliche APIs und Bibliotheken benötigt.
-Diese müssen im Rahmen einer Software-Integration möglichst konfliktfrei fumktionieren und einfach zu implementieren sein.
+Diese müssen im Rahmen einer Software-Integration möglichst konfliktfrei funktionieren und einfach zu implementieren sein.
 
 ## Entscheidungsfaktoren
 
