@@ -36,6 +36,7 @@ ImageMagick ist eine Open-Source-Software-Suite für die Erstellung, Bearbeitung
 Sharp.js
 
 Sharp.js ist eine leistungsstarke Node.js-Bibliothek zur schnellen und effizienten Bildverarbeitung. Sie basiert auf der libvips-Bibliothek, die für ihre hohe Geschwindigkeit und geringe Speichernutzung bekannt ist. Sharp.js ist sowohl nützlich für serverseitige Anwendungen, bei denen Bildoptimierung oder Transformation erforderlich sind, als auch für Bildkomprimierungen.
+
     - Gut: Open Source
     - Gut: Basiert auf Node.js -> Große Community -> Viel Support -> Regelmäßige Updates
     - Gut: Plattformübergreifend
