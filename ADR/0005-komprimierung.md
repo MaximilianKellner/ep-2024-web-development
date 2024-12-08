@@ -1,4 +1,10 @@
 # Komprimierung
+
+|          |                                                            |
+| -------- | ---------------------------------------------------------- |
+| status   | in Progress                                                |
+| date     | 06-12-2024                                                 |
+| deciders | [Yassi El Fraygui](https://github.com/yaasabi04) |
 ## Kontext und Problemstellung
 Die Komprimierung der Multimedia-Dateien erfordert eine leistungsstarke und flexible Lösung, die verschiedene Bildformate unterstützt, effiziente Methoden zur Bearbeitung bereitstellt und sich einfach in bestehende Anwendungen integrieren lässt.
 ## Entscheidungsfaktoren
