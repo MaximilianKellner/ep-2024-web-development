@@ -11,6 +11,23 @@ Die Anwendung muss zukünftiges Wachstum und Veränderungen unterstützen, zum B
 ### Unabhängigkeit
 Die Anwendung sollte unabhängig von Drittanbietern sein, 
 ## Berücksichtigte Optionen
+### ImageMagick
+- Lokale Verarbeitung
+- Komplexe Integration in Webanwendungen
+- Basiert auf CLI (Comand Line Interface)
+- Skalierbarkeit ist auf Grund lokaler Infrastruktur begrenzt: Langsam bei hoher Auslastung.
+- Open Source
+### Sharp.js
+- Open Source
+- 
 
+### Cloudinary
+- Cloud basiert
+- Hoch skalierbar, ist aber von Internetgechwindigkeit abhängig
+- Bietet RESTful API, die leicht in jede Webanwendung integriert werden kann
+- Unterstützt PNG, JPEG, AVIF, ...
+- Caching Verfahren erlaubt Zugriff auf bereits abgerufene Daten
+- Kostenpflichtig
 ## Entschiedenes Ergebnis
+Da uns Geschwindigkeit, Kostenkontrolle und Unabhängigkeit wichtig sind, haben wir und für Sharp.js entschieden.
 ## Vor- und Nachteile der Optionen
