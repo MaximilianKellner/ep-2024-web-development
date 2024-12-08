@@ -1,6 +1,6 @@
 # Komprimierung
 ## Kontext und Problemstellung
-Die Komprimierung von Bildern spielt eine wesentliche Rolle in Anwendungen, die mit großen Bilddateien arbeiten. Diese Anwednungen sind besonders relevant für Webentwickler, Fotografen oder Unternehmen, die eine effiziente Verwaltung von Medienressourcen benötigen. In den meisten Fällen kommt es allerdings client-seitig zu einem Qualitätsverlust der eingereichten Bilder, weshalb komprimierte Dateien häufig shclehcter darstehen als ihre Originale.
+Die Komprimierung der Multimedia-Dateien erfordert eine leistungsstarke und flexible Lösung, die verschiedene Bildformate unterstützt, effiziente Methoden zur Bearbeitung bereitstellt und sich einfach in bestehende Anwendungen integrieren lässt.
 ## Entscheidungsfaktoren
 ### Leistung und Effizienz
 Große Bilddateien müssen schnell und zuverlässig bearbeitet werden, ohne Server Ressourcen zu überlasten.
