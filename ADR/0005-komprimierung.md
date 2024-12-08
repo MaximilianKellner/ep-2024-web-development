@@ -6,7 +6,7 @@
 | date     | 06-12-2024                                                 |
 | deciders | [Yassin El Fraygui](https://github.com/yasabi04) |
 ## Kontext und Problemstellung
-Die Komprimierung der Multimedia-Dateien erfordert eine leistungsstarke und flexible Lösung, die verschiedene Bildformate unterstützt, effiziente Methoden zur Bearbeitung bereitstellt und sich einfach in bestehende Anwendungen integrieren lässt.
+Die Komprimierung der Bilddateien erfordert eine leistungsstarke und flexible Lösung, die verschiedene Bildformate unterstützt, effiziente Methoden zur Bearbeitung bereitstellt und sich einfach in bestehende Anwendungen integrieren lässt.
 ## Entscheidungsfaktoren
 ### Leistung und Effizienz
 Große Bilddateien müssen schnell und zuverlässig bearbeitet werden, ohne Server Ressourcen zu überlasten.
