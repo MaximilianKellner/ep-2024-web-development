@@ -23,25 +23,32 @@ Die Anwendung sollte unabhängig von Drittanbietern sein,
 ## Entschiedenes Ergebnis
 Da uns Geschwindigkeit, Kostenkontrolle und Unabhängigkeit wichtig sind, haben wir und für Sharp.js entschieden.
 ## Vor- und Nachteile der Optionen
-### ImageMagick
-- Lokale Verarbeitung
-- Komplexe Integration in Webanwendungen
-- Basiert auf CLI (Comand Line Interface)
-- Skalierbarkeit ist auf Grund lokaler Infrastruktur begrenzt: Langsam bei hoher Auslastung.
-- Open Source
-### Sharp.js
-- Open Source
-- Basiert auf Node.js und verwendet libvips (Bildverarbeitungsbibliothek)
-    - libvips gilt als schneller und ressourcenschonender als ImageMagick
-- Funktionen: Bildkomprimierung, Formatänderungen, Bildskalierungen, ...
-- Unterstütung von Promises
-- Unterstützt PNG, WebP, JPEG, ...
-- Funktioniert plattformübergreifend
-- Da Open Source: Große Community und regelmäßige Updates
-### Cloudinary
-- Cloud basiert
-- Hoch skalierbar, ist aber von Internetgechwindigkeit abhängig
-- Bietet RESTful API, die leicht in jede Webanwendung integriert werden kann
-- Unterstützt PNG, JPEG, AVIF, ...
-- Caching Verfahren erlaubt Zugriff auf bereits abgerufene Daten
-- Kostenpflichtig
+ImageMagick
+
+ImageMagick ist eine Open-Source-Software-Suite für die Erstellung, Bearbeitung und Konvertierung von Rastergrafiken. Sie unterstützt eine Vielzahl von Bildformaten (z. B. PNG, JPEG, GIF, TIFF) und bietet eine breite Palette von Funktionen, darunter 
+    - Gut: Sehr hohe Anzahl an Tools und Bildbearbeitungsoptionen
+    - Gut: Open Source
+    - Gut: Unterstützung von über 200 Bildformaten
+    - Neutral: Lokale Bildverarbeitung
+    - Schlecht: Komplexe Befehlzeilennutzung
+    - Schlecht: Performanz kann bei großen Bildmengen nachlassen
+
+Sharp.js
+
+Sharp.js ist eine leistungsstarke Node.js-Bibliothek zur schnellen und effizienten Bildverarbeitung. Sie basiert auf der libvips-Bibliothek, die für ihre hohe Geschwindigkeit und geringe Speichernutzung bekannt ist. Sharp.js ist sowohl nützlich für serverseitige Anwendungen, bei denen Bildoptimierung oder Transformation erforderlich sind, als auch für Bildkomprimierungen.
+    - Gut: Open Source
+    - Gut: Basiert auf Node.js -> Große Community -> Viel Support -> Regelmäßige Updates
+    - Gut: Plattformübergreifend
+    - Schlecht: Basiert auf libvips -> Muss während Installation kompiliert werden
+    - Schlecht: Bietet wenger Tools, als Cloudinary oder ImageMagick
+
+Cloudinary
+
+Cloudinary ist eine umfassende Cloud-basierte Plattform für die Verwaltung, Optimierung und Bereitstellung von Medieninhalten wie Bildern und Videos. Sie bietet Entwicklern und Unternehmen leistungsstarke Tools, um visuelle Inhalte effizient zu speichern, zu transformieren und weltweit zu verteilen.
+    - Gut: Umfassende Cloud-basierte Bildverarbeitung
+    - Gut: Automatische Optimierung und Komprimierung
+    - Gut: Integriertes Caching-Verfahren
+    - Schlecht: Einfache Intgeration in bestehende Systeme
+    - Neutral: Cloud-basiert
+    - Schlecht: Kostenpflichtig
+    - Schlecht: Abhängig von Internetverbindung und dem daraus resultierenden Cloud-Service
