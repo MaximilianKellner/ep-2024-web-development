@@ -82,6 +82,9 @@ NestJS ist ein progressives Node.js Framework für den Bau von effizienten und s
 - Gut: Viele built-in Module mit potentiell geringen Kompatibilitäts- und Stabilitätsproblemen (HTTP-Server, Securiy, Middleware, ..) 
 - Gut: Gute Code-Struktur, Skalierbarkeit und Wartbarkeit, da NestJS der MVC-Architektur folgt
 - Gut: Static Typing dank TS
+- Gut: Ausführliche Dokumentation mit Tutorials
+- Gut: Database-agnostic Framework (SQL u. NoSQL)
+- Neutral: Viel Abstraktion und "Magie", die sich dahinter versteckt, macht den Code schwerer verständlich
 - Schlecht: Schwergewichtig, viel Overhead
 - Schlecht: Steile Lernkrurve
 
@@ -91,7 +94,10 @@ Spring Boot bietet die Möglichkeit eine Spring-Applikation nach dem Konvention-
 
 - Gut: Viele built-in Module mit potentiell geringen Kompatibilitäts- und Stabilitätsproblemen (HTTP-Server, Securiy, Middleware, ..) 
 - Gut: Gute Code-Struktur, Skalierbarkeit und Wartbarkeit, da Spring der MVC-Architektur folgt
-- Static Typing dank Java u. Kotlin
+- Gut: Static Typing dank Java u. Kotlin
+- Gut: Ausführliche Dokumentation mit Tutorials
+- Gut: Database-agnostic Framework (SQL u. NoSQL)
+- Neutral: Viel Abstraktion und "Magie" (durch Annotaionen), die sich dahinter versteckt, macht den Code schwerer verständlich
 - Schlecht: Schwergewichtig, viel Overhead
 - Schlecht: Steile Lernkrurve
 - Schlecht: Keine Unterstützung von Sharp (als unserer primären Wahl für Bildkonvertierung)
