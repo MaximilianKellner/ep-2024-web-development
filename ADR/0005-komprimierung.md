@@ -17,6 +17,10 @@ Die Anwendung muss zukünftiges Wachstum und Veränderungen unterstützen, zum B
 ### Unabhängigkeit
 Die Anwendung sollte unabhängig von Drittanbietern sein, 
 ## Berücksichtigte Optionen
+
+## Entschiedenes Ergebnis
+Da uns Geschwindigkeit, Kostenkontrolle und Unabhängigkeit wichtig sind, haben wir und für Sharp.js entschieden.
+## Vor- und Nachteile der Optionen
 ### ImageMagick
 - Lokale Verarbeitung
 - Komplexe Integration in Webanwendungen
@@ -34,6 +38,3 @@ Die Anwendung sollte unabhängig von Drittanbietern sein,
 - Unterstützt PNG, JPEG, AVIF, ...
 - Caching Verfahren erlaubt Zugriff auf bereits abgerufene Daten
 - Kostenpflichtig
-## Entschiedenes Ergebnis
-Da uns Geschwindigkeit, Kostenkontrolle und Unabhängigkeit wichtig sind, haben wir und für Sharp.js entschieden.
-## Vor- und Nachteile der Optionen
