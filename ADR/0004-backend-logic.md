@@ -59,7 +59,7 @@ Deno ist eine Laufzeitumgebung für JavaScript und TypeScript, die auf der V8-Ja
 - Gut: Unterstützung aller Web-APIs
 - Gut: Native Deployment Umgebung (Deno Deploy)
 - Neutral: Kein built-in Data Storage
-- Schlecht: Kleine Community und weniger Codebeospiele
+- Schlecht: Kleine Community und weniger Codebeispiele
 - Schlecht: Nicht so stabil wie Node.js
 
 ### Bun + Express
@@ -71,7 +71,7 @@ Bun ist eine All-in-One-JavaScript-Laufzeit und ein Toolkit, das auf Geschwindig
 - Gut: Unterstützung aller Web-APIs
 - Gut: Built-in Data Storage (SQLite)
 - Neutral: Schnellere Installation von NPM-Packages
-- Schlecht: Kleine Community und weniger Codebeospiele
+- Schlecht: Kleine Community und weniger Codebeispiele
 - Schlecht: Nicht so stabil wie Node.js und Deno
 - Schlecht: Unterstützt bei weitem nicht alle NPM-Packages
 
