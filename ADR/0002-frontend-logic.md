@@ -6,45 +6,45 @@
 | date     | 26-11-2024                                                 |
 | deciders | [Maximilian Kellner](https://github.com/MaximilianKellner) |
 
-## Context and Problem Statement
+## Kontext und Problemstellung
 
-In order to write a frontend which is able to handle data Inputs, uploads and server requests some logic is required.
+Um ein Frontend zu schreiben, das in der Lage ist, Daten-Eingaben, Uploads und Serveranfragen zu verarbeiten, ist eine gewisse Logik erforderlich.
 
-## Decision Drivers
+## Entscheidungsfaktoren
 
-- How easy is it to integrate?
-- How hard is it to learn?
-- How performant is it?
-- Is it possible to handle files?
+- Wie einfach ist die Integration?
+- Wie schwer ist es zu lernen?
+- Wie performant ist es?
+- Ist es möglich, Dateien zu verarbeiten?
 
-## Considered Options
+## Berücksichtigte Optionen
 
 - JavaScript
 - TypeScript
 
-## Decision Outcome
+## Entscheidungsergebnis
 
-Chosen option: "JavaScript", because we are already familiar with it, there are many resources available, and it is the industry standard.
+Gewählte Option: "JavaScript", weil wir damit bereits vertraut sind, viele Ressourcen verfügbar sind und es der Industriestandard ist.
 
-## Pros and Cons of the Options
+## Vor- und Nachteile der Optionen
 
 ### JavaScript
 
-JavaScript is a versatile, high-level programming language primarily used for dynamic and interactive web applications, both on the client and server side.
+JavaScript ist eine vielseitige, high-level Programmiersprache, die hauptsächlich für dynamische und interaktive Webanwendungen sowohl auf der Client- als auch auf der Serverseite verwendet wird.
 
-- Good, JavaScript is widely supported by all modern browsers.
-- Good, JavaScript basics are easy to learn, and we have already acquired a solid foundation in it.
-- Good, JavaScript can be used across the full stack.
-- Bad, JavaScript's dynamic typing can lead to unexpected runtime errors and make debugging more difficult in complex applications.
-- Bad, JavaScript's single-threaded nature can lead to performance bottlenecks for CPU-intensive tasks.
-- Bad, Security vulnerabilities, such as cross-site scripting (XSS), are common issues when JavaScript is not implemented securely.
+- Gut, JavaScript wird von allen modernen Browsern weitgehend unterstützt.
+- Gut, JavaScript-Grundlagen sind leicht zu erlernen, und wir haben bereits eine solide Grundlage.
+- Gut, JavaScript kann über den gesamten Stack hinweg verwendet werden.
+- Schlecht, die dynamische Typisierung von JavaScript kann zu unerwarteten Laufzeitfehlern führen und das Debuggen erschweren.
+- Schlecht, die Single-Threaded-Natur von JavaScript kann zu Leistungsengpässen bei CPU-intensiven Aufgaben führen.
+- Schlecht, Sicherheitslücken wie Cross-Site Scripting (XSS) sind häufige Probleme, wenn JavaScript nicht sicher implementiert wird.
 
 ### TypeScript
 
-TypeScript is a statically-typed superset of JavaScript that compiles to plain JavaScript, offering enhanced tooling and type safety for large-scale applications.
+TypeScript ist eine statisch typisierte Obermenge von JavaScript, die zu reinem JavaScript kompiliert und erweiterte Werkzeuge und Typsicherheit für groß angelegte Anwendungen bietet.
 
-- Good, TypeScript's static typing helps catch errors at compile time, reducing the likelihood of runtime errors.
-- Good, TypeScript improves code maintainability and readability, especially in large codebases, by providing clear types and interfaces.
-- Neutral, TypeScript requires a compilation step, which adds complexity to the build process and can slow down development but may improve runtime performance.
-- Bad, Developers need to learn and adopt type annotations and TypeScript-specific features, which can have a steeper learning curve compared to JavaScript.
-- Bad, TypeScript's type system can sometimes be overkill for smaller projects or simple scripts, leading to unnecessary complexity.
+- Gut, die statische Typisierung von TypeScript hilft, Fehler zur Kompilierzeit zu erkennen und verringert die Wahrscheinlichkeit von Laufzeitfehlern.
+- Gut, TypeScript verbessert die Wartbarkeit und Lesbarkeit des Codes, insbesondere in großen Codebasen, durch klare Typen und Schnittstellen.
+- Neutral, TypeScript erfordert einen Kompilierungsschritt, der den Build-Prozess verkomplizieren und die Entwicklung verlangsamen kann, aber möglicherweise die Laufzeitleistung verbessert.
+- Schlecht, Entwickler müssen Typannotationen und TypeScript-spezifische Funktionen erlernen und übernehmen, was eine steilere Lernkurve im Vergleich zu JavaScript haben kann.
+- Schlecht, das Typsystem von TypeScript kann für kleinere Projekte oder einfache Skripte manchmal übertrieben sein und zu unnötiger Komplexität führen.
