@@ -1,33 +1,39 @@
 const sharp = require('sharp');
+const fs = require('fs');
+
 
 async function base(){
     try{
-        sharp('./Ryanair2.png')
-        .resize(500, 500,{
-            fit: 'contain',
-            background: 'transparent'
-        })
-        .toFile('Ryanair_resized.png')
+        await sharp('./Ryanair2.png')
+            //Definieren von Eigenschaften
+            .resize(500, 500)
+            .toFormat('png')
+            .toFile('./Ryanair2-base.png')
     }
-    catch{
-        console.log('Es ist ein Fehler aufgertreten!' + error)
+    catch(error){
+        console.log('Base:' + error)
     }
 }
 
-async function resizeImage(inputPath, outputPath, width, height) {
-    await sharp(inputPath)
-        .resize(width, height)
-        .toFile(outputPath)
-}
 
-/*Es können Ursparungsbild und der outputPath angegeben werden sowie gewünschte Größe. Nützlich für das Frontend*/
-resizeImage('./Ryanair2.png', 'Ryanair_resized2.png', 500, 500)
-    .then(() => {
-        console.log('Image resized successfully');
-    })
-    .catch((err) => {
-        console.error('resize:' +err);
-    });
+// async function resizeImage(inputPath, outputPath, width, height) {
+//     // Originalgröße
+//     const ursprung = fs.statSync(inputPath).size / (1024 * 1024);
+//     console.log(`Ursprüngliche Größe: ${ursprung.toFixed(2)} MB`);
+
+//     await sharp(inputPath)
+//         .resize(width, height)
+//         .toFile(outputPath);
+
+//     // Komprimierte Größe in MB
+//     const komprimiert = fs.statSync(outputPath).size / (1024 * 1024);
+//     console.log(`Komprimierte Größe in MB: ${komprimiert.toFixed(2)} MB`);
+// }
+
+// resizeImage('./Ryanair.jpg', 'Ryanair_resized.png', 500, 500)
+//     .then(() => console.log('Bild erfolgreich komprimiert'))
+//     .catch(err => console.error('Error:', err));
+
 
 
 
@@ -80,11 +86,11 @@ async function webpTosvg(){
 }
 
 
-base()
+//base()
 //webpTosvg()
 
 /*
 blackAndWhite()
 transformer()
-comprimize() //Von PNG zu WebP
+comprimize()
 */
