@@ -41,7 +41,7 @@ Sharp.js ist eine leistungsstarke Node.js-Bibliothek zur schnellen und effizient
 - Gut: Open Source
 - Gut: Basiert auf Node.js -> Große Community -> Viel Support -> Regelmäßige Updates
 - Gut: Plattformübergreifend
-- Schlecht: Basiert auf libvips -> Muss während Installation kompiliert werden
+- Neutral: Basiert auf libvips -> Muss während Installation kompiliert werden
 - Schlecht: Bietet wenger Tools, als Cloudinary oder ImageMagick
 
 Cloudinary
