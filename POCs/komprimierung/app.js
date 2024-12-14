@@ -1,6 +1,6 @@
 const sharp = require('sharp');
+const potrace = require('potrace')
 const fs = require('fs');
-
 
 async function base(){
     try{
@@ -79,15 +79,30 @@ async function comprimize(){
 
 async function webpTosvg(){
     try{
-        await sharp('./webp-for-wordpress.webp').toFile('./webptosvg-comprimized.svg')
+        await sharp('./webp-for-wordpress.webp')
+            .png()
+            .toFile('./temp.png')
+
+        return new Promise((resolve, reject) => {
+            potrace.trace('./temp.png', {
+                threshold: 120,
+                color: '#000000'
+            }, (err, svg) => {
+                if(err) reject(err);
+                fs.writeFileSync('./output.xml', svg)
+                fs.unlinkSync('./temp.png')
+                resolve('Zu SVG komprimiert. Output: output.xml')
+            })
+        });
     } catch (error){
         console.log('WebpToSvg:' + error)
+        throw error
     }
 }
 
 
 //base()
-//webpTosvg()
+webpTosvg()
 
 /*
 blackAndWhite()
