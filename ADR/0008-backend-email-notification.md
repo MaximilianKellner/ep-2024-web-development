@@ -68,6 +68,7 @@ Ein RESTful API-Service, um E-Mails zu verschicken.
 
 - Gut: Templates (Einbettung von Bildern möglich)
 - Gut: Bulk Delivery
+- Gut: Sicherere Versand mittels TLS/STARTTLS
 - Gut: Viele Testing-Module (eigene API-Docs)
 - Gut: Sehr viele Video-Tutorials
 - Neutral: Vergleichsweise kleine Dokumentation
