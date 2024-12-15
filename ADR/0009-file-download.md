@@ -36,7 +36,7 @@ Ein Node.js Modul aus der Standard-Bibliothek, das das Lesen und Schreiben (und 
 - Gut: Native Lösung mit bester Kompatibilität
 - Gut: Native Komprimierung (Zlib)
 - Gut: Chunking/ Buffering (Spart RAM)
-- Gut: Große Kontrolle über das Verarbeite und Verschicken von Dateien
+- Gut: Große Kontrolle über das Verarbeiten und Verschicken von Dateien
 - Gut: Piping (erlaubt das nahtlose Übertragen von Dateien aus dem Filesystem zum Client)
 - Gut: Ereignisse wie error, data, end bieten die Möglichkeit, den Download-Fortschritt zu überwachen
 - Neutral: Range, als optionale Steuerung des Downloads mittels Ranged Requests (z.B. clientseitiges Pausieren)
