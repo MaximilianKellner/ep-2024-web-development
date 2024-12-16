@@ -20,13 +20,16 @@ Da wir aber unsere Dateien nicht auslagern wollen (z.B. S3 Buckets), müssen die
 - Dateien liegen lokal auf der Festplatte
 - Error Feedback & Error Handling (bei Download-Abbrüchen, schlechter Konnektivität, Server-Auslastung)
 - Ressourcenschonend
+- Gute, ausführliche Dokumentation
+- Viele Tutorials & Code-Beispiele
 
 ## Berücksichtigte Optionen
 - Node.js Stream-API (createReadStream())
-- Express Filetransfer-Methoden (download(), sendFile())
+- Express Filetransfer-Funktione (download(), sendFile())
 
 ## Entscheidungsergebnis
-Wir haben uns für die Node.js Stream-API entschieden, da diese mehr Funktionalitäten bietet. Besonders wichtig hierbei ist das Chunking und das Buffering, da unsere Anwendung mit großen Datei-Mengen umgehen muss und wir begrenztes RAM haben. Zusätzlich verfügt die Stream-API über besseres (Error-)Feedback in Form von Events.
+Wir haben uns für die Node.js Stream-API entschieden, da diese mehr Funktionalitäten bietet. Obgleich die Express-Funktionen selbst die Node.js APIs nutzen, wird hier viel an Kontrolle zugunsten einer vereinfachten Bedienung abgegeben. Da File Download eine der Kernfunktionalitäten ist, möchten wir hier möglichst viel Kontrolle haben, u.a. um Statistiken zu erstellen (für den Content Manager).<br>
+Zusätzlich verfügt die Stream-API über besseres (Error-)Feedback in Form von Events.
 
 ## Vor- und Nachteile der Optionen
 
@@ -39,16 +42,19 @@ Ein Node.js Modul aus der Standard-Bibliothek, das das Lesen und Schreiben (und 
 - Gut: Große Kontrolle über das Verarbeiten und Verschicken von Dateien
 - Gut: Piping (erlaubt das nahtlose Übertragen von Dateien aus dem Filesystem zum Client)
 - Gut: Ereignisse wie error, data, end bieten die Möglichkeit, den Download-Fortschritt zu überwachen
+- Gut: Sehr ausfürliche Doku
+- Gut: Viele Code-Beispiele
 - Neutral: Range, als optionale Steuerung des Downloads mittels Ranged Requests (z.B. clientseitiges Pausieren)
 - Schlecht: Erhöhte Komplexität
 - Schlecht: Erhöhes Fehlerpotenzial (seitens Programmierer)
 
-### Express Filetransfer-Methoden
-Methoden der Express Standardbibliothek zum Übertragen von Dateien (download(), sendFile()). 
+### Express Filetransfer-Funktionen
+Funktionen der Express Standardbibliothek zum Übertragen von Dateien (download(), sendFile()). Als Node.js-Framework nutzt Express die Node.js API.
 
 - Gut: Leichtere Nutzung, da mehr Abstraktion (Setzen der richtigen HTTP-Header)
 - Gut: Wir nutzen bereits Express für das Handling der HTTP-Anfragen
 - Neutral: Benötigt zusätzliche Kompression-Middleware (deflate, gzip)
 - Neutral: Range, als optionale Steuerung des Downloads mittels Ranged Requests (z.B. clientseitiges Pausieren)
-- Neutral: Nutzt "unter der Haube" die Stream-Api 
+- Neutral: Nutzt "unter der Haube" die Stream-Api
+- Neutral: Übersichtliche, vergleichsweise knappe Doku
 - Schlecht: Keine Events für die Fortschrittsüberwachung
