@@ -18,7 +18,7 @@ Da wir aber unsere Dateien nicht auslagern wollen (z.B. S3 Buckets), müssen die
 - Bulk Download
 - Verarbeitung diverser Multimedia-Formate
 - Dateien liegen lokal auf der Festplatte
-- Error Feedback & Error Handling (bei Download-Abbrüchen, schlechter Konnektivität, Server-Auslastung)
+- Error-Feedback & Error-Handling (bei Download-Abbrüchen, schlechter Konnektivität, Server-Auslastung)
 - Ressourcenschonend
 - Gute, ausführliche Dokumentation
 - Viele Tutorials & Code-Beispiele
@@ -57,4 +57,4 @@ Funktionen der Express Standardbibliothek zum Übertragen von Dateien (download(
 - Neutral: Range, als optionale Steuerung des Downloads mittels Ranged Requests (z.B. clientseitiges Pausieren)
 - Neutral: Nutzt "unter der Haube" die Stream-Api
 - Neutral: Übersichtliche, vergleichsweise knappe Doku
-- Schlecht: Keine Events für die Fortschrittsüberwachung
+- Schlecht: Mehr Abstraktion, dadurch z.B. keine Events (da automatisches Error-Handling)
