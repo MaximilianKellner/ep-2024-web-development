@@ -53,8 +53,8 @@ Funktionen der Express Standardbibliothek zum Übertragen von Dateien (download(
 
 - Gut: Leichtere Nutzung, da mehr Abstraktion (z.B. Setzen der richtigen HTTP-Header)
 - Gut: Wir nutzen bereits Express für das Handling der HTTP-Anfragen
+- Gut: Bietet zusätzliche Kompression-Middleware (deflate, gzip)
 - Neutral: Nutzt "unter der Haube" die Stream-API
-- Neutral: Benötigt zusätzliche Kompression-Middleware (deflate, gzip)
 - Neutral: Range, als optionale Steuerung des Downloads mittels Ranged Requests (z.B. clientseitiges Pausieren)
 - Neutral: Übersichtliche, vergleichsweise knappe Doku
 - Schlecht: Mehr Abstraktion, dadurch z.B. keine Events (da automatisches Error-Handling)
