@@ -51,7 +51,7 @@ Ein Node.js Modul aus der Standard-Bibliothek, das das Lesen und Schreiben (und 
 ### Express Filetransfer-Funktionen
 Funktionen der Express Standardbibliothek zum Übertragen von Dateien (download(), sendFile()). Als Node.js-Framework nutzt Express die Node.js API.
 
-- Gut: Leichtere Nutzung, da mehr Abstraktion (Setzen der richtigen HTTP-Header)
+- Gut: Leichtere Nutzung, da mehr Abstraktion (z.B. Setzen der richtigen HTTP-Header)
 - Gut: Wir nutzen bereits Express für das Handling der HTTP-Anfragen
 - Neutral: Nutzt "unter der Haube" die Stream-API
 - Neutral: Benötigt zusätzliche Kompression-Middleware (deflate, gzip)
