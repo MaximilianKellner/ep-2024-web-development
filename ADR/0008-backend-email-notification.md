@@ -44,7 +44,7 @@ Ein Node.js Modul für den Versand von E-Mails.
 - Gut: Sichere Übertragung mittels DKIM
 - Gut: Viele Anpassungsoptionen (Versandzeitpunkt, Datenlimitierung, ...)
 - Gut: Ausführliche Dokumentation und viele Codebeispiele
-- Gut: Große, aktive Entwickle- Neutral: Anhängercommunity
+- Gut: Große, aktive Entwickler-Community
 - Neutral: Anhänge versenden
 - Neutral: Unterstützung von Unicode
 - Neutral: Erweiterung durch Module wie mailauth (erweiterte Sicherheit)
