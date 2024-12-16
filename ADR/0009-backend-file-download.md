@@ -25,7 +25,7 @@ Da wir aber unsere Dateien nicht auslagern wollen (z.B. S3 Buckets), müssen die
 
 ## Berücksichtigte Optionen
 - Node.js Stream-API (createReadStream())
-- Express Filetransfer-Funktione (download(), sendFile())
+- Express Filetransfer-Funktionen (download(), sendFile())
 
 ## Entscheidungsergebnis
 Wir haben uns für die Node.js Stream-API entschieden, da diese mehr Funktionalitäten bietet. Obgleich die Express-Funktionen selbst die Node.js APIs nutzen, wird hier viel an Kontrolle zugunsten einer vereinfachten Bedienung abgegeben. Da File Download eine der Kernfunktionalitäten ist, möchten wir hier möglichst viel Kontrolle haben, u.a. um Statistiken zu erstellen (für den Content Manager).<br>
