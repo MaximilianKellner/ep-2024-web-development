@@ -33,12 +33,15 @@ Als Entwickler benötigen wir eine Lösung, die mit möglichst ohne große Laten
 ## Vor- und Nachteile der Optionen
 
 ### XMLHttpRequest API
-Eine 
+Eine Web-Api für die synchrone und asynchrone Verarbeitung von HTTP-Requests.
+Eine solche Anfrage kommt ohne Reload des Brwoser-Fensters aus und es können diverse Datei-Formate zwischen Client und Server ausgetauscht werden (u.a. JSON, HTML, Text, Blob).
 
-- Gut: 
-- Gut:  
-- Neutral,
-- Schlecht,
+- Gut: Native Lösung (Browser API-Library)
+- Gut: Hohe Kompatibilität mit älteren Browserversionen
+- Gut: Extensive Dokumentation 
+- Neutral: Unterstützt simulate Requests, diese müssen aber manuell verwaltet werden
+- Neutral: Mehr Boilerplate-Code
+- Schlecht: Callbacks, statt Promises
 
 ### Fetch API
 Die Fetch API hat XMLHttpRequest abgelöst.
@@ -47,18 +50,19 @@ Die Fetch API hat XMLHttpRequest abgelöst.
 - Gut: Nutzt Promises
 - Gut: Einfache Syntax mit async & await
 - Gut: Unterstützt simulate Requests
-- Neutral: Weniger Kontrolle -> Request-Abbruch nur durch Einbinden eines Abort-Controllers möglich 
-- Schlecht: Promise gibt immer etwas zurück, auch wenn der Request nicht erfolgreich war
-- Schlecht: Package für out-of-the-box Upload-Progress ist relative neu, benötigt Workaround-Lösungen
+- Neutral: Weniger Kontrolle -> Request-Abbruch nur durch Einbinden eines Abort-Controllers möglich
+- Neutral: Package für Upload-Progress ist relative neu, benötigt Workaround-Lösungen (Streams) 
+- Schlecht: Mangelhaftes Error-Handling (z.B. Promise erfolgreich, trotz 404 Response)
 
 ### Axios
-Eine Third-Party-Library, die Promise-basierte Client-Server-Kommunikation realisiert.<hr>Dabei nutzt Axios XMLHttpRequests.
+Eine Third-Party-Library, die Promise-basierte Client-Server-Kommunikation realisiert. Dabei nutzt Axios XMLHttpRequests.
 
 - Gut: Nutzbar für Front- und Backend
 - Gut: Nutzt Promises
 - Gut: Unterstützt simulate Requests
 - Gut: Abtraktion der Komplexität -> Weniger Code, niedrigeres Fehlerpotenzial
 - Gut: Umfassendes Error-Handling
-- Neutral: Out-of-the-box Interceptors, Timeout, Cancelation,..
+- Gut: Unterstützt simulate Requests
+- Neutral: Out-of-the-box Interceptors, Timeout, Abbrechen von Requests,..
 - Schlecht: Mehr Overhead für den Client
 - Schlecht: Unklarheit über Browser-Support (vor allem für ältere Versionen)
