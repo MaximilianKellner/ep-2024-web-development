@@ -1,4 +1,4 @@
-# TITEL
+# Progress Indication
 
 |          |                                                            |
 | -------- | ---------------------------------------------------------- |
@@ -33,7 +33,7 @@ Als Entwickler benötigen wir eine Lösung, die mit möglichst ohne große Laten
 ## Vor- und Nachteile der Optionen
 
 ### XMLHttpRequest API
-Eine Web-Api für die synchrone und asynchrone Verarbeitung von HTTP-Requests.
+Eine Web-API für die synchrone und asynchrone Verarbeitung von HTTP-Requests.
 Eine solche Anfrage kommt ohne Reload des Brwoser-Fensters aus und es können diverse Datei-Formate zwischen Client und Server ausgetauscht werden (u.a. JSON, HTML, Text, Blob).
 
 - Gut: Native Lösung (Browser API-Library)
