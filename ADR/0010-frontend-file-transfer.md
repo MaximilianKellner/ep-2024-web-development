@@ -61,7 +61,6 @@ Eine Third-Party-Library, die Promise-basierte Client-Server-Kommunikation reali
 - Gut: Unterstützt simulate Requests
 - Gut: Abtraktion der Komplexität -> Weniger Code, niedrigeres Fehlerpotenzial
 - Gut: Umfassendes Error-Handling
-- Gut: Unterstützt simulate Requests
 - Neutral: Out-of-the-box Interceptors, Timeout, Abbrechen von Requests,..
 - Schlecht: Mehr Overhead für den Client
 - Schlecht: Unklarheit über Browser-Support (vor allem für ältere Versionen)
