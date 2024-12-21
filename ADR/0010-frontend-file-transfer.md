@@ -16,7 +16,6 @@ Als Entwickler benötigen wir eine Lösung, die mit möglichst ohne große Laten
 ## Entscheidungsfaktoren
 - Geringe Latenz
 - Geringe Fehleranfälligkeit
-- Einfache Handhabung (wir benötigen keine komplexen UI-Elemente)
 - Leichtgewichtig (wenig Overhead im Client)
 - Hohe Kompatibilität (Browser)
 - Viele Code-Beispiele & gute Doku
