@@ -1,4 +1,4 @@
-# File Transfer (Frontend)
+# File Transfer Indication (Frontend)
 
 |          |                                                            |
 | -------- | ---------------------------------------------------------- |
