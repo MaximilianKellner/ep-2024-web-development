@@ -27,7 +27,7 @@ Als Entwickler benötigen wir eine Lösung, möglichst ohne große Latenz mit de
 
 
 ## Entscheidungsergebnis
-
+Wir haben uns für Axios entschieden, weil es weniger Boilerplate-Code bedarf und eine einfachere Verwendung bietet, als XMLHttpRequests (viel Abstraktion, Promises, besseres Error-Handling). Obwohl es eine weitere Abhängigkeit für unser Projekt ist, ist zu erwarten, dass Axios noch lange weiterentwickelt wird. Die <a href="https://npmtrends.com/axios-vs-fetch">Popularität</a> dieser JavaScript-Bibliothek ist weiterhin steigend.<br> Die Fetch API bietet keine Möglichkeit, den Upload-Progress zu überwachen und ist deshalb nicht in die engere Auswahl gekommen.   
 
 ## Vor- und Nachteile der Optionen
 
