@@ -53,10 +53,10 @@ Ein Node.js Modul für den Versand von E-Mails.
 ### Mailersend
 Ein RESTful API-Service, um E-Mails zu verschicken.<br>
 Pläne: <br>
--> Hobby: Free für 1.000 Requests (pro Tag)
--> Starter: 28$ (monatl.) für 100.000 Requests (pro Tag)
--> Professional: 88$ (monatl.) für 500.000 Requests (pro Tag)
--> Enterprise: Preis auf Anfrage
+-> Hobby: Free für 1.000 Requests (pro Tag) oder 3.000 E-Mails (pro Monat)<br>
+-> Starter: 28$ (monatl.) für 100.000 Requests (pro Tag) oder 50.000 E-Mails und 100 SMS (pro Monat)<br>
+-> Professional: 88$ (monatl.) für 500.000 Requests (pro Tag) oder 50.000 Emails und 150 SMS (pro Monat)<br>
+-> Enterprise: Preis auf Anfrage<br>
 
 - Gut: Integration mit anderen Web Diensten (z.B. Firebase)
 - Gut: Bulk Delivery
@@ -75,10 +75,11 @@ Pläne: <br>
 ### Mailtrap
 Ein RESTful API-Service, um E-Mails zu verschicken.
 Pläne: <br>
--> Free: 200 Mails (pro Monat)
--> Basic: 15$ (monatl.) für 10.000 Mails (pro Monat)
--> Business: 85$ (monatl.) für 100.000 Mails (pro Monat)
--> Enterprise: 750$ (monatl.) für 1.500.000 Mails (pro Monat)
+-> Free: 1.000 Mails (pro Monat)<br>
+-> Basic: 15$ (monatl.) für 10.000 E-Mails (pro Monat)<br>
+-> Business: 85$ (monatl.) für 100.000 E-Mails (pro Monat)<br>
+-> Enterprise: 750$ (monatl.) für 1.500.000 E-Mails (pro Monat)<br>
+-> weitere Anpassungen möglich
 
 - Gut: Templates (Einbettung von Bildern möglich)
 - Gut: Bulk Delivery
