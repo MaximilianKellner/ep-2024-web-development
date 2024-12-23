@@ -51,7 +51,12 @@ Ein Node.js Modul für den Versand von E-Mails.
 - Neutral: Kann verschiedene SMTP-Server Provider nutzen, wie z.B. Mailtrap
 
 ### Mailersend
-Ein RESTful API-Service, um E-Mails zu verschicken.  
+Ein RESTful API-Service, um E-Mails zu verschicken.<br>
+Pläne: <br>
+-> Hobby: Free für 1.000 Requests (pro Tag)
+-> Starter: 28$ (monatl.) für 100.000 Requests (pro Tag)
+-> Professional: 88$ (monatl.) für 500.000 Requests (pro Tag)
+-> Enterprise: Preis auf Anfrage
 
 - Gut: Integration mit anderen Web Diensten (z.B. Firebase)
 - Gut: Bulk Delivery
@@ -61,15 +66,28 @@ Ein RESTful API-Service, um E-Mails zu verschicken.
 - Gut: Sichere Übertragung mittels DKIM
 - Gut: Viele Anpassungsoptionen (Versandzeitpunkt, Datenlimitierung, ...)
 - Gut: Ausführliche Dokumentation und viele Codebeispiele
+- Gut: Günstiges Preisgestaltung
+- Gut: Webhooks
+- Gut: 2FA
 - Neutral: Anhänge versenden
+- Neutral: Zusätzlicher SMS-Service im Paket inbegriffen
 
 ### Mailtrap
 Ein RESTful API-Service, um E-Mails zu verschicken.
+Pläne: <br>
+-> Free: 200 Mails (pro Monat)
+-> Basic: 15$ (monatl.) für 10.000 Mails (pro Monat)
+-> Business: 85$ (monatl.) für 100.000 Mails (pro Monat)
+-> Enterprise: 750$ (monatl.) für 1.500.000 Mails (pro Monat)
 
 - Gut: Templates (Einbettung von Bildern möglich)
 - Gut: Bulk Delivery
 - Gut: Sicherere Versand mittels TLS/STARTTLS
 - Gut: Viele Testing-Module (eigene API-Docs)
+- Gut: Vorlagen
+- Gut: Webhooks
 - Gut: Sehr viele Video-Tutorials
+- Gut: API- oder SMTP-Intergration
+- Gut: 2FA
 - Neutral: Vergleichsweise kleine Dokumentation
 - Neutral: Anhänge versenden
