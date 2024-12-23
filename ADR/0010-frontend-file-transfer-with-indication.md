@@ -9,8 +9,8 @@
 ## Kontext und Problemstellung
 Upload, Download und Komprimierung von größeren Dateimengen kann, je nach Server- und Netz-Auslastung, eine längere Zeit dauern. Als Service-Nutzer möchte man zu jedem Zeitpunkt darüber in Kenntnis gesetzt werden,
 in welchem Zustand der Service sich gerade befindet (wartend, Download, Upload, ..), wie lange sich der Service noch in diesem Zustand befinden wird und welche Probleme es gibt (z.B. clientseitige Verbindungsprobleme).
-Auch erwartet der Service Nutzer eine entsprechende Repräsentation, z.B. in Form eines Upload-Balkens.<br>
-Als Entwickler benötigen wir eine Lösung, möglichst ohne große Latenz mit dem Backend kommuniziert und Backend-seitige Events möglichst zeitnah verarbeiten kann, um sie in der UI anzeigen zu können.
+Auch erwartet der Service-Nutzer eine entsprechende Repräsentation, z.B. in Form eines Upload-Balkens.<br>
+Als Entwickler benötigen wir eine Lösung, die möglichst ohne große Latenz mit dem Backend kommuniziert und backendseitige Events möglichst zeitnah verarbeiten kann, um sie in der UI anzeigen zu können.
 
 
 ## Entscheidungsfaktoren
