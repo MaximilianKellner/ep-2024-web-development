@@ -1,49 +1,60 @@
 <!DOCTYPE html>
 <html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>OmniMize - Uplaoad</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
 
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/main.css" />
 
     <script defer src="scripts/drag-drop.js"></script>
     <script defer src="scripts/upload.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <header>
-    <h1>OmniMize</h1>
-    <h2>Dateien hochladen</h2>
-    <div id="drop-area">
-        <h3 class="credits">9999 credits</h3>
-
-        <img src="./img/upload.svg" alt="Upload Icon" id="dropIcon">
-        <form id="uploadForm">
-            <div class="file-upload-container">
-                <p>Dateien hierher ziehen oder</p>
-                <label for="fileInput" class="select-btn">Dateien auswählen</label>
-            </div>
-            <input type="file" id="fileInput" name="files" multiple required>
-            
-            <button type="submit">Hochladen</button>
-
-        </form>
-        <div id="file-list">
-            <div class="file-item">debug.png (0.0 KB)</div>
-        </div>
-    </div>
-    <div id="message"></div>
+      <h1>OmniMize</h1>
     </header>
 
     <main>
-        <h2>Übertragene Dateien</h2>
-        <p>Hier findest du deine Hochgeladenen Dateien, welche bereits optimiert wurden. Diese Dateien stehen hier 24h nach dem Upload zur Verfügung und werden dann gelöscht.</p>
-        <ul id="uploadedFiles"></ul>
+      <h2>Dateien hochladen</h2>
+      <div id="drop-area">
+        <h3 class="credits">9999 credits</h3>
+
+        <form id="uploadForm">
+          <div class="upload-center">
+            <img src="./img/upload.svg" alt="Upload Icon" id="dropIcon" />
+            <div class="file-upload-container">
+              <p>Dateien hierher ziehen oder</p>
+              <label for="fileInput" class="select-btn"
+                >Dateien auswählen</label>
+            </div>
+          </div>
+
+          <input type="file" id="fileInput" name="files" multiple required />
+
+          <button type="submit">Hochladen</button>
+        </form>
+        <div id="file-list">
+          <div class="file-item">debug.png (0.0 KB)</div>
+        </div>
+      </div>
+      <div id="message"></div>
+
+      <h2>Übertragene Dateien</h2>
+      <p>
+        Hier findest du deine Hochgeladenen Dateien, welche bereits optimiert
+        wurden. Diese Dateien stehen hier 24h nach dem Upload zur Verfügung und
+        werden dann gelöscht.
+      </p>
+      <ul id="uploadedFiles"></ul>
     </main>
     <footer></footer>
-</body>
+  </body>
 </html>
