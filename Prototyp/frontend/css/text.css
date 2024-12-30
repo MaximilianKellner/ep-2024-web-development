@@ -1,0 +1,42 @@
+/*
+    Renard Serie
+    10,12,16,20,25,31.5,40,50,63,100
+    Basis: 16
+*/
+
+h1{
+    font-family: Jost;
+    font-size: 40px;
+    margin: 20px 0px;
+    font-style: italic;
+    font-weight: 600;
+}
+
+h2{
+    color: #FFF;
+    font-family: Jost;
+    font-size: 25px;
+    font-style: italic;
+    font-weight: 600;
+    line-height: normal;
+}
+
+h3{
+    color: #FFF;
+    font-family: Jost;
+    font-size: 16px;
+    font-style: italic;
+    font-weight: 600;
+    line-height: normal;
+
+    &.dark{
+        color: var(--c-base);
+    }
+}
+
+p{
+    font-family: Jost;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: normal;
+}

@@ -1,0 +1,35 @@
+*{
+    margin: 0;
+    padding: 0;
+    color: white;
+    font-family: 'Jost', sans-serif;
+}
+
+body {
+    /*background-color: #020020;*/
+    background-color: var(--c-base);
+}
+
+.icon {
+    color: var(--c-lighter);
+    width: 20px;
+    height: 20px;
+}
+
+form {
+    margin: 20px auto;
+}
+
+button{
+    border: none;
+    font-size: medium;
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--c-base);
+    border-radius: calc(var(--border-radius-base) * 0.75);
+    cursor: pointer;
+}
+
+header {
+    position: relative;
+}
