@@ -11,7 +11,8 @@
 
     <link rel="stylesheet" href="css/main.css">
 
-    <script defer src="script.js"></script>
+    <script defer src="scripts/drag-drop.js"></script>
+    <script defer src="scripts/upload.js"></script>
 </head>
 <body>
     <header>
@@ -22,10 +23,12 @@
 
         <img src="./img/upload.svg" alt="Upload Icon" id="dropIcon">
         <form id="uploadForm">
-            <p>Dateien hierher ziehen oder</p>
+            <div class="file-upload-container">
+                <p>Dateien hierher ziehen oder</p>
+                <label for="fileInput" class="select-btn">Dateien auswählen</label>
+            </div>
             <input type="file" id="fileInput" name="files" multiple required>
-            <label for="fileInput" class="select-btn">Dateien auswählen</label>
-
+            
             <button type="submit">Hochladen</button>
 
         </form>

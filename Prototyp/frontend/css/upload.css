@@ -12,22 +12,27 @@
 }
 
 #drop-area {
-    width: 100%;
+    max-width: 90%;
     background: linear-gradient(91deg, var(--c-fade-1) 0%, var(--c-fade-2) 100%);
     border-radius: var(--border-radius-base);
     padding: var(--s);
+
+}
+
+.file-upload-container {
+    display: flex;
+    align-items: center;
+
+    .select-btn{
+        display: inline-block;
+        margin-left: 5px;
+        text-decoration: underline;
+        cursor: pointer;
+    }  
 }
 
 #fileInput {
     display: none;
-}
-
-.select-btn{
-    display: inline-block;
-    text-decoration: underline;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
 }
 
 #file-list {
