@@ -33,7 +33,8 @@
             <div class="file-upload-container">
               <p>Dateien hierher ziehen oder</p>
               <label for="fileInput" class="select-btn"
-                >Dateien auswählen</label>
+                >Dateien auswählen</label
+              >
             </div>
           </div>
 
@@ -54,6 +55,38 @@
         werden dann gelöscht.
       </p>
       <ul id="uploadedFiles"></ul>
+
+      <!--tabelle mit selector box,vorschau bild, name, größe, Datum, download button-->
+
+      <table>
+          <thead>
+              <tr>
+                  <th><input type="checkbox" name="selector" id="selector"></th>
+                  <th>Vorschau</th>
+                  <th>Name</th>
+                  <th>Größe</th>
+                  <th>Datum</th>
+                  <th>Download</th>
+              </tr>
+        <tbody>
+          <tr>
+              <td><input type="checkbox" name="selector" id="selector"></td>
+              <td><img class="preview-mid" src="img/debug2.jpg" alt="debug.jpg"></td>
+              <td>debug.png</td>
+              <td>0.0 KB</td>
+              <td>01.01.2021</td>
+              <td><button>Download</button></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" name="selector" id="selector"></td>
+            <td><img class="preview-mid" src="img/debug.jpg" alt="debug.jpg"></td>
+            <td>debug.png</td>
+            <td>0.0 KB</td>
+            <td>01.01.2021</td>
+            <td><button>Download</button></td>
+        </tr>
+
+      </table>
     </main>
     <footer></footer>
   </body>

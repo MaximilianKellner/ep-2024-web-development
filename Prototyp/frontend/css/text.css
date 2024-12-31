@@ -19,6 +19,8 @@ h2{
     font-style: italic;
     font-weight: 600;
     line-height: normal;
+    padding-top: var(--xxl);
+    padding-bottom: var(--xs);
 }
 
 h3{
