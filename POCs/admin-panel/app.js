@@ -26,7 +26,7 @@ button.addEventListener('click', (event) => {
     event.preventDefault()
     console.log(imageData)
     // uuid wird hier generiert
-    const url = `http://127.0.0.1:5500/POCs/admin-panel/customerSite.html?id=${generateUUID()}&width=${imageData.width}&height=${imageData.height}&sw=${imageData.sw}`
+    const url = `./customerSite.html?id=${generateUUID()}&width=${imageData.width}&height=${imageData.height}&sw=${imageData.sw}`
     linkElement = document.getElementById('copyURL')
     linkElement.href = url
     result.innerText = url
