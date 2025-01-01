@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- Form Upload-->
+    <form id="form-ul">
+        <input type="file" accept=".png, .jpg" id="file-ul">
+        <button type="submit">Upload file!</button>
+    </form>
+
+    <!-- Progress bar Upload-->
+    <div>
+        <label for="progress-bar-ul">0%</label>
+        <progress id="progress-bar-ul" value="0" max="100"></progress>
+    </div>
+
+    <!-- Upload Details -->
+    <div id="upload-details">
+        <p>Loaded: <span id="upload-loaded">0</span> bytes</p>
+        <p>Total: <span id="upload-total">0</span> bytes</p>
+        <p>Progress: <span id="upload-progress">0%</span></p>
+        <p>Bytes (delta): <span id="upload-bytes">0</span> bytes</p>
+        <p>Estimated time: <span id="upload-estimated">0</span> seconds</p>
+        <p>Rate: <span id="upload-rate">0</span> bytes/sec</p>
+    </div>
+
+     <!-- Download-->
+     <button type="button" id="file-dl">Download file!</button>
+
+    <!-- Progress bar Download-->
+    <div>
+        <label for="progress-bar-dl">0%</label>
+        <progress id="progress-bar-dl" value="0" max="100"></progress>
+    </div>
+
+     <!-- Download Details -->
+     <div id="download-details">
+        <p>Loaded: <span id="download-loaded">0</span> bytes</p>
+        <p>Total: <span id="download-total">0</span> bytes</p>
+        <p>Progress: <span id="download-progress">0%</span></p>
+        <p>Bytes (delta): <span id="download-bytes">0</span> bytes</p>
+        <p>Estimated time: <span id="download-estimated">0</span> seconds</p>
+        <p>Rate: <span id="download-rate">0</span> bytes/sec</p>
+    </div>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
