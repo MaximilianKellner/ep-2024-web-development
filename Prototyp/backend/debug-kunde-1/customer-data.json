@@ -1,0 +1,20 @@
+{
+    "customerData": {
+        "id": 1,
+        "name": "Max Mustermann",
+        "email": "max.mustermann@example.com",
+        "phone": "+49 123 456789",
+        "address": {
+            "street": "Musterstraße 1",
+            "city": "Musterstadt",
+            "postalCode": "12345",
+            "country": "Deutschland"
+        }
+    },
+    "configSettings": {
+        "credits": "9999",
+        "max-file-size-kb": "4000",
+        "max-file-width-px": "500",
+        "bw-filter": true
+    }
+}
