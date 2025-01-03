@@ -25,7 +25,7 @@
     <main>
       <h2>Dateien hochladen</h2>
       <div id="drop-area">
-        <h3 class="credits">9999 credits</h3>
+        <h3 class="credits-banner">9999 credits</h3>
 
         <form id="uploadForm">
           <div class="upload-center">
@@ -38,13 +38,24 @@
             </div>
           </div>
 
-          <input type="file" id="fileInput" name="files" multiple required />
+          <!-- TODO: Add allowed inputs.-->
+          <input type="file" id="fileInput" name="files" accept=".jpg, .jpeg, .png" multiple />
 
-          <button type="submit">Hochladen</button>
+
+
+          <div id="file-list">
+            <div class="file-item">debug.png (0.0 KB)</div>
+
+            <div class="card">
+              <h3 class="credits">- 6 cp</h3>
+              <div class="actions">
+                <button class="action reject">✕</button>
+                <button class="action accept" type="submit">✔</button>
+              </div>
+            </div>
+
+          </div>
         </form>
-        <div id="file-list">
-          <div class="file-item">debug.png (0.0 KB)</div>
-        </div>
       </div>
       <div id="message"></div>
 
