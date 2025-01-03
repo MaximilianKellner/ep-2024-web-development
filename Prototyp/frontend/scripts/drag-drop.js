@@ -42,7 +42,6 @@ fileInput.addEventListener('change', function(e) {
 });
 
 function handleFiles(files) {
-    fileList.innerHTML = '';
     const messageDiv = document.getElementById('message');
     
     if (files.length > 10) {

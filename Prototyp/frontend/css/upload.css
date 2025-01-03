@@ -21,6 +21,19 @@
     position: relative;
 }
 
+#drop-area.highlight {
+    animation: highlight-animation 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes highlight-animation {
+    from {
+        box-shadow: 0 0 10px var(--c-fade-1);
+    }
+    to {
+        box-shadow: 0 0 50px var(--c-fade-2);
+    }
+}
+
 .upload-center {
     padding: 150px 0;
     display: flex;
