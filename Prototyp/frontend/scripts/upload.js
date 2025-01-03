@@ -5,8 +5,7 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
     const messageDiv = document.getElementById('message');
     const files = fileInput.files;
 
-    //redundant wegen --> HTML "Required" tag
-    if (files.length === 0) {
+    if (files.length <= 0) {
         messageDiv.textContent = 'Bitte mindestens eine Datei auswählen.';
         messageDiv.style.color = 'red';
         return;
