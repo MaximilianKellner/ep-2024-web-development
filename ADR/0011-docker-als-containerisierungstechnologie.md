@@ -14,12 +14,11 @@ Um zu entscheiden, ob sich Docker für uns als Containerisierungstechnologie loh
 
 - Wie einfach ist die Integration?
 - Merhwert für das Projekt?
-- Hilft es überhaupt?
 
 ## Berücksichtigte Optionen
 
 - Docker für Containerisierung
-- Kein Docker und Beibehalten des bisherigen/typischen Einsatz von Methoden
+- Kein Docker und somit keine Containerisierung
 
 ## Entscheidungsergebnis
 
