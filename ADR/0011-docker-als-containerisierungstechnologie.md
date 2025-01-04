@@ -2,7 +2,7 @@
 
 |          |                                                            |
 | -------- | ---------------------------------------------------------- |
-| status   | in Progress                                                |
+| status   | coompleted                                                |
 | date     | 04-01-2025                                                 |
 | deciders | [Yassin El Fraygui](https://github.com/Yasabi04) |
 
