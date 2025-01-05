@@ -72,8 +72,8 @@
 
 .file-item {
     position: relative;
-    width: var(--xxxxxxl);
-    height: var(--xxxxxxl);
+    width: var(--xxxxxl);
+    height: var(--xxxxxl);
     background-color: var(--c-base);
     border-radius: calc(var(--border-radius-base) * 0.75);
     color: #ffffff;
@@ -88,25 +88,24 @@
         object-fit: cover;
     }
     
-    .remove-file {
+    .remove-button {
         position: absolute;
-        top: -8px;
-        right: -8px;
-        width: 24px;
-        height: 24px;
+        top: -6px;
+        right: -6px;
+        width: 18px;
+        height: 18px;
         padding: 0;
+        font-size: var(--xs);
         border: none;
         border-radius: 50%;
-        background-color: rgb(23, 23, 23);
+        background-color: var(--c-base);
         color: white;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
         transition: background-color 0.2s ease;
-        /* Add z-index to ensure button stays on top */
         z-index: 10;
-        /* Optional: Add subtle shadow to button */
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 }

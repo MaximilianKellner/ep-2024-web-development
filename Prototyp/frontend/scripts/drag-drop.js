@@ -68,13 +68,11 @@ function handleFiles(files) {
         const reader = new FileReader();
         reader.onload = function(e) {
             fileItem.innerHTML = `
-                <button class="remove-file" onclick="removeFile(this)">✕</button>
-                <img src="${e.target.result}" alt="File preview" class="file-preview" />
-                ${file.name} (${(file.size / 1024).toFixed(2)} KB)
-            `;
+            <button class="remove-button" onclick="removeFile(this)">✕</button>
+            <img src="${e.target.result}" alt="File preview" class="file-preview" title="${file.name} (${(file.size / (1024 * 1024)).toFixed(2)} MB)" />
+        `;
         };
         reader.readAsDataURL(file);
-        
         
         if (file.size > maxFileSize) {
             fileItem.style.color = 'red';
@@ -83,7 +81,6 @@ function handleFiles(files) {
         
         fileList.insertBefore(fileItem, fileList.firstChild); // Anhängen an den Anfang der Liste
     }
-    fileInput.files = files;
 }
 
     //-------- check file type (.jpg, jpeg, png) and remove unallowed file--------
