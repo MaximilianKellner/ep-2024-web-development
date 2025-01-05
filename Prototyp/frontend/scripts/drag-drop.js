@@ -2,6 +2,10 @@
 const dropArea = document.getElementById('drop-area');
 const fileInput = document.getElementById('fileInput');
 const fileList = document.getElementById('file-list');
+const messageDiv = document.getElementById('message');
+
+
+//-------- Highlight  --------
 
 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
     dropArea.addEventListener(eventName, preventDefaults, false);
@@ -28,23 +32,28 @@ function unhighlight() {
     dropArea.classList.remove('highlight');
 }
 
+// -------- add files  --------
+
 dropArea.addEventListener('drop', handleDrop, false);
 
 function handleDrop(e) {
     const dt = e.dataTransfer;
     const files = dt.files;
+    console.log("drop event");
     
-    handleFiles(files);
+    const validFiles = checkFileType(files);
+
+    handleFiles(validFiles);
 }
 
 fileInput.addEventListener('change', function(e) {
-    handleFiles(this.files);
+    console.log("file selector event");
+    const validFiles = checkFileType(this.files);
+    handleFiles(validFiles);
 });
 
 function handleFiles(files) {
-    fileList.innerHTML = '';
-    const messageDiv = document.getElementById('message');
-    
+
     if (files.length > 10) {
         messageDiv.textContent = 'Maximal 10 Dateien auswählen.';
         messageDiv.style.color = 'red';
@@ -59,11 +68,28 @@ function handleFiles(files) {
         
         if (file.size > maxFileSize) {
             fileItem.style.color = 'red';
-            fileItem.textContent += ' - Datei zu groß';
+            fileItem.textContent += ' - Datei zu groß (max. 10 MB)';
         }
         
         fileList.appendChild(fileItem);
     }
-    
     fileInput.files = files;
 }
+
+    //-------- check file type (.jpg, jpeg, png) and remove unallowed file--------
+
+    function checkFileType(files) {
+        const allowedFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+        const validFiles = [];
+    
+        for (let i = 0; i < files.length; i++) {
+            if (allowedFileTypes.includes(files[i].type)) {
+                validFiles.push(files[i]);
+            } else {
+                messageDiv.textContent = `Mindestens  Datei hat ein unerlaubtes Format und wurde entfernt. Bitte nur .jpg, .jpeg oder .png Dateien hochladen.`;
+                messageDiv.style.color = 'red';
+                console.log(files[i]);
+            }
+        }
+        return validFiles;
+    }

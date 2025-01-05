@@ -1,4 +1,4 @@
-.credits {
+.credits-banner {
     color: var(--c-base);
     border-radius: var(--border-radius-small);
     background: #C0D8FF;
@@ -19,6 +19,19 @@
     min-height: fit-content;
     text-align: center;
     position: relative;
+}
+
+#drop-area.highlight {
+    animation: highlight-animation 1s ease-in-out infinite alternate;
+}
+
+@keyframes highlight-animation {
+    from {
+        box-shadow: 0 0 10px var(--c-fade-1);
+    }
+    to {
+        box-shadow: 0 0 50px var(--c-fade-2);
+    }
 }
 
 .upload-center {
@@ -47,17 +60,13 @@
 }
 
 #file-list {
-    position: absolute;
     width: 100%;
-    bottom: 12px;
-    right: 12px;
     display: flex;
     justify-content: end;
 
     margin-top: 15px;
     text-align: left;
-    max-height: 200px;
-    overflow-y: auto;
+    max-height: 200px;    
 }
 
 .file-item {
@@ -74,6 +83,57 @@
     color: green;
 }
 
-.highlight {
-    background-color: yellow;
+.card {
+    background-color: var(--c-base);
+    border-radius: var(--border-radius-small);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: var(--xs);
+
+    .credits {
+        height: 32px;
+        font-size: 16px;
+        font-style: italic;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+    }
+  
+    .actions {
+      display: flex;
+      width: 100%;
+    }
+    
+    .action {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 32px;
+        font-size: 20px;
+        font-weight: bold;
+        border-radius: 0;
+
+    
+        &.reject {
+        background-color: var(--c-base);
+        border-bottom-left-radius: var(--border-radius-small);
+        }
+        
+        &.accept {
+        background-color: var(--c-lighter);
+        color: var(--c-base);
+        border-bottom-right-radius: var(--border-radius-small);
+        }
+
+        &.accept:hover {
+        background-color: var(--c-green);
+        }
+
+        &.reject:hover {
+        background-color: var(--c-red);
+        }
+    }   
 }
