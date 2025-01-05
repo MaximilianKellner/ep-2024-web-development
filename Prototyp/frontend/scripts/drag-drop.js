@@ -79,8 +79,8 @@ function handleFiles(files) {
             fileItem.textContent += ' - Datei zu groß (max. 10 MB)';
         }
         
-        //fileList.insertBefore(fileItem, fileList.firstChild); // Anhängen an den Anfang der Liste
-        fileList.appendChild(fileItem); // Anhängen an das Ende der Liste
+        fileList.insertBefore(fileItem, fileList.firstChild); // Anhängen an den Anfang der Liste
+        //fileList.appendChild(fileItem); // Anhängen an das Ende der Liste
     }
 }
 
