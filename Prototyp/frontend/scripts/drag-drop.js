@@ -36,25 +36,25 @@ function unhighlight() {
 
 dropArea.addEventListener('drop', handleDrop, false);
 
+//Drag and Drop Event
 function handleDrop(e) {
     const dt = e.dataTransfer;
     const files = dt.files;
-    console.log("drop event");
     
     const validFiles = checkFileType(files);
     handleFiles(validFiles);
 }
 
+//File selection Event
 fileInput.addEventListener('change', function(e) {
-    console.log("file selector event");
     const validFiles = checkFileType(this.files);
     handleFiles(validFiles);
 });
 
 function handleFiles(files) {
 
-    if (files.length > 10) {
-        messageDiv.textContent = 'Maximal 10 Dateien auswählen.';
+    if (files.length > MAX_FILE_COUNT) {
+        messageDiv.textContent = `Maximal ${MAX_FILE_COUNT} Dateien auswählen.`;
         messageDiv.style.color = 'red';
         return;
     }
@@ -96,7 +96,7 @@ function checkFileType(files) {
         if (allowedFileTypes.includes(files[i].type)) {
             validFiles.push(files[i]);
         } else {
-            messageDiv.textContent = `Mindestens  Datei hat ein unerlaubtes Format und wurde entfernt. Bitte nur .jpg, .jpeg oder .png Dateien hochladen.`;
+            messageDiv.textContent = `Mindestens eine Datei hat ein unerlaubtes Format und wurde entfernt. Bitte nur .jpg, .jpeg oder .png Dateien hochladen.`;
             messageDiv.style.color = 'red';
             console.log(files[i]);
         }
@@ -120,7 +120,7 @@ function resetFiles() {
     allFiles = []; // Clear allFiles array
     fileInput.value = '';
     messageDiv.textContent = '';
-
+    
     calculateCredits()
 }
 
