@@ -25,11 +25,11 @@
     <main>
       <h2>Dateien hochladen</h2>
       <div id="drop-area">
-        <h3 class="credits">9999 credits</h3>
+        <h3 class="credits-banner">9999 credits</h3>
 
         <form id="uploadForm">
           <div class="upload-center">
-            <img src="./img/upload.svg" alt="Upload Icon" id="dropIcon" />
+            <img src="./img/icon/upload.svg" alt="Upload Icon" id="dropIcon" />
             <div class="file-upload-container">
               <p>Dateien hierher ziehen oder</p>
               <label for="fileInput" class="select-btn"
@@ -38,25 +38,32 @@
             </div>
           </div>
 
-          <input type="file" id="fileInput" name="files" multiple required />
+          <!-- TODO: Add allowed inputs.-->
+          <input type="file" id="fileInput" name="files" accept=".jpg, .jpeg, .png" multiple />
 
-          <button type="submit">Hochladen</button>
+
+
+          <div id="file-list">
+            <div class="file-item">debug.png (0.0 KB)</div>
+
+            <div class="card">
+              <h3 class="credits">- 6 cp</h3>
+              <div class="actions">
+                <button class="action reject">✕</button>
+                <button class="action accept" type="submit">✔</button>
+              </div>
+            </div>
+
+          </div>
         </form>
-        <div id="file-list">
-          <div class="file-item">debug.png (0.0 KB)</div>
-        </div>
       </div>
       <div id="message"></div>
 
       <h2>Übertragene Dateien</h2>
       <p>
-        Hier findest du deine Hochgeladenen Dateien, welche bereits optimiert
-        wurden. Diese Dateien stehen hier 24h nach dem Upload zur Verfügung und
-        werden dann gelöscht.
+        Hier findest du deine hochgeladenen Dateien, die bereits optimiert wurden. Sie sind ab dem Zeitpunkt des Uploads 24 Stunden lang verfügbar und werden danach automatisch gelöscht.
       </p>
       <ul id="uploadedFiles"></ul>
-
-      <!--tabelle mit selector box,vorschau bild, name, größe, Datum, download button-->
 
       <table>
           <thead>
@@ -65,7 +72,8 @@
                   <th>Vorschau</th>
                   <th>Name</th>
                   <th>Größe</th>
-                  <th>Datum</th>
+                  <th>Upload</th>
+                  <th>verbleibende Zeit</th>
                   <th>Download</th>
               </tr>
         <tbody>
@@ -75,6 +83,7 @@
               <td>debug.png</td>
               <td>0.0 KB</td>
               <td>01.01.2021</td>
+              <td>20h</td>
               <td><button>Download</button></td>
           </tr>
           <tr>
@@ -83,6 +92,7 @@
             <td>debug.png</td>
             <td>0.0 KB</td>
             <td>01.01.2021</td>
+            <td>4h</td>
             <td><button>Download</button></td>
         </tr>
 
