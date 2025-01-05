@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
     color: white;
-    font-family: 'Jost', Arial, Helvetica, sans-serif;
+    font-family: 'Jost', Helvetica, Arial, sans-serif;
 }
 
 body {
@@ -18,7 +18,13 @@ header {
 main {
     width: 80%;
     margin: 0 auto;
-    
+}
+
+@media (max-width: 768px) {
+    main {
+        width: 90%;
+        margin: 0 5%;
+    }
 }
 
 .icon {
@@ -35,7 +41,7 @@ button{
     background-color: var(--c-base);
     border-radius: var(--border-radius-small);
     cursor: pointer;
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow);
 }
 
 header {

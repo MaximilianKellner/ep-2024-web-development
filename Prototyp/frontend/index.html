@@ -12,10 +12,14 @@
       rel="stylesheet"
     />
 
+    <link rel="icon" href="img/icon/upload-cloud.svg"/>
+
     <link rel="stylesheet" href="css/main.css" />
 
     <script defer src="scripts/drag-drop.js"></script>
     <script defer src="scripts/upload.js"></script>
+    <script defer src="scripts/1-config.js"></script>
+
   </head>
   <body>
     <header>
@@ -29,12 +33,11 @@
 
         <form id="uploadForm">
           <div class="upload-center">
-            <img src="./img/icon/upload.svg" alt="Upload Icon" id="dropIcon" />
+            <img src="./img/icon/upload-cloud.svg" alt="Upload Icon" id="dropIcon" />
             <div class="file-upload-container">
               <p>Dateien hierher ziehen oder</p>
               <label for="fileInput" class="select-btn"
-                >Dateien auswählen</label
-              >
+                >Dateien auswählen</label>
             </div>
           </div>
 
@@ -42,14 +45,25 @@
           <input type="file" id="fileInput" name="files" accept=".jpg, .jpeg, .png" multiple />
 
 
+          <div class="file-row">
+            <div id="file-list">
 
-          <div id="file-list">
-            <div class="file-item">debug.png (0.0 KB)</div>
+              <div class="file-item">
+                <button class="remove-button" onclick="removeFile(this)">✕</button>
+                <img src="img/debug.jpg" alt="File preview" class="file-preview" title="test (1MB)" />
+              </div>
+
+              <div class="file-item">
+                <button class="remove-button" onclick="removeFile(this)">✕</button>
+                <img src="img/debug2.jpg" alt="File preview" class="file-preview" title="test (1MB)" />
+              </div>
+
+            </div>
 
             <div class="card">
-              <h3 class="credits">- 6 cp</h3>
+              <h3 class="credits">- 0 cp</h3>
               <div class="actions">
-                <button class="action reject">✕</button>
+                <button class="action reject" onclick="resetFiles()">✕</button>
                 <button class="action accept" type="submit">✔</button>
               </div>
             </div>

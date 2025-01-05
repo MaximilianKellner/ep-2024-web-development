@@ -12,17 +12,15 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
     }
 
     //-------- Upload Limitationen --------
-    if(files.length > 10) {
-        messageDiv.textContent = 'Maximal 10 Dateien auswählen.';
+    if(files.length > MAX_FILE_COUNT) {
+        messageDiv.textContent = `Maximal ${MAX_FILE_COUNT} Dateien auswählen.`;
         messageDiv.style.color = 'red';
         return;
     }
 
-    const maxFileSize = 10 * 1024 * 1024; // 10 MB in Bytes
-
     for (let i = 0; i < files.length; i++) {
-        if (files[i].size > maxFileSize) {
-            messageDiv.textContent = `Die Datei ${files[i].name} überschreitet die maximale Größe von 10 MB.`;
+        if (files[i].size > MAX_FILE_SIZE) {
+            messageDiv.textContent = `Die Datei ${files[i].name} überschreitet die maximale Größe von ${MAX_FILE_SIZE / 1024/1024} MB.`;
             messageDiv.style.color = 'red';
             return;
         }
