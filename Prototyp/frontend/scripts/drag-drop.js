@@ -42,7 +42,6 @@ function handleDrop(e) {
     console.log("drop event");
     
     const validFiles = checkFileType(files);
-
     handleFiles(validFiles);
 }
 
@@ -60,7 +59,7 @@ function handleFiles(files) {
         return;
     }
     
-    const maxFileSize = 10 * 1024 * 1024; // 10 MB
+    const maxFileSize = 1 * 1024 * 1024; // 10 MB
     for (let file of files) {
         const fileItem = document.createElement('div');
         fileItem.classList.add('file-item');
@@ -73,15 +72,24 @@ function handleFiles(files) {
         `;
         };
         reader.readAsDataURL(file);
-        
+        const imgElement = fileItem.children[1];
+
         if (file.size > maxFileSize) {
-            fileItem.style.color = 'red';
-            fileItem.textContent += ' - Datei zu groß (max. 10 MB)';
+            fileItem.style.color = 'white';
+
+            fileItem.style.border = '3px solid red';
+
+            imgElement.title += ' - Datei zu groß (max. 10 MB)';
+
+            const imgElement = fileItem.children[1];
+            imgElement.title += ' - Datei zu groß (max. 10 MB)';
+
+
         }
         
         fileList.insertBefore(fileItem, fileList.firstChild); // Anhängen an den Anfang der Liste
-        //fileList.appendChild(fileItem); // Anhängen an das Ende der Liste
     }
+    calculateCredits()
 }
 
     //-------- check file type (.jpg, jpeg, png) and remove unallowed file--------
@@ -100,4 +108,30 @@ function handleFiles(files) {
             }
         }
         return validFiles;
+    }
+
+    //-------- remove file  --------
+    function removeFile(button) {
+        var fileItem = button.parentElement;
+        fileItem.remove();
+        calculateCredits()
+    }
+
+    //-------- reset files  --------
+    function resetFiles() {
+        fileList.innerHTML = '';
+        
+        fileInput.value = '';
+        messageDiv.textContent = '';
+
+        calculateCredits()
+    }
+
+    //-------- calculate credits --------
+    //1 file = 1 credit --> display on card -> credits
+
+    function calculateCredits() {
+        let costCounter = document.querySelector('.credits');
+        const credits = fileList.children.length;
+        costCounter.textContent = `-${credits} cp`;
     }

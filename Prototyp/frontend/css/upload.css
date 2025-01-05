@@ -72,7 +72,6 @@
     align-items: end;
 
 #file-list {
-    
     width: 100%;
     display: flex;
     overflow-x: auto;
