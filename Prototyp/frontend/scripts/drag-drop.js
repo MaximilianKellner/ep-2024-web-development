@@ -3,7 +3,7 @@ const dropArea = document.getElementById('drop-area');
 const fileInput = document.getElementById('fileInput');
 const fileList = document.getElementById('file-list');
 const messageDiv = document.getElementById('message');
-
+let allFiles = []; // Array to store all files
 
 //-------- Highlight  --------
 
@@ -59,7 +59,6 @@ function handleFiles(files) {
         return;
     }
     
-    const maxFileSize = 1 * 1024 * 1024; // 10 MB
     for (let file of files) {
         const fileItem = document.createElement('div');
         fileItem.classList.add('file-item');
@@ -72,66 +71,71 @@ function handleFiles(files) {
         `;
         };
         reader.readAsDataURL(file);
-        const imgElement = fileItem.children[1];
 
-        if (file.size > maxFileSize) {
-            fileItem.style.color = 'white';
-
-            fileItem.style.border = '3px solid red';
-
-            imgElement.title += ' - Datei zu groß (max. 10 MB)';
-
-            const imgElement = fileItem.children[1];
-            imgElement.title += ' - Datei zu groß (max. 10 MB)';
-
+        if (file.size > MAX_FILE_SIZE) {
+            fileItem.style.border = '3px solid var(--c-red)';
+            messageDiv.textContent = `Die farblich markierten Dateien überschreitet die maximale Größe von ${MAX_FILE_SIZE / 1024/1024} MB.`;
+            messageDiv.style.color = 'red';
 
         }
         
-        fileList.insertBefore(fileItem, fileList.firstChild); // Anhängen an den Anfang der Liste
+        fileList.insertBefore(fileItem, fileList.firstChild); // Anhängen an den ANFANG der Liste
+        allFiles.push(file); // Add file to allFiles array
     }
+    updateFileInput(); // Update fileInput with allFiles array
     calculateCredits()
 }
 
-    //-------- check file type (.jpg, jpeg, png) and remove unallowed file--------
+//-------- check file type (.jpg, jpeg, png) and remove unallowed file--------
 
-    function checkFileType(files) {
-        const allowedFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-        const validFiles = [];
+function checkFileType(files) {
+    const allowedFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    const validFiles = [];
     
-        for (let i = 0; i < files.length; i++) {
-            if (allowedFileTypes.includes(files[i].type)) {
-                validFiles.push(files[i]);
-            } else {
-                messageDiv.textContent = `Mindestens  Datei hat ein unerlaubtes Format und wurde entfernt. Bitte nur .jpg, .jpeg oder .png Dateien hochladen.`;
-                messageDiv.style.color = 'red';
-                console.log(files[i]);
-            }
+    for (let i = 0; i < files.length; i++) {
+        if (allowedFileTypes.includes(files[i].type)) {
+            validFiles.push(files[i]);
+        } else {
+            messageDiv.textContent = `Mindestens  Datei hat ein unerlaubtes Format und wurde entfernt. Bitte nur .jpg, .jpeg oder .png Dateien hochladen.`;
+            messageDiv.style.color = 'red';
+            console.log(files[i]);
         }
-        return validFiles;
     }
+    return validFiles;
+}
 
-    //-------- remove file  --------
-    function removeFile(button) {
-        var fileItem = button.parentElement;
-        fileItem.remove();
-        calculateCredits()
-    }
+//-------- remove file  --------
+function removeFile(button) {
+    var fileItem = button.parentElement;
+    const fileName = fileItem.querySelector('.file-preview').title.split(' ')[0];
+    allFiles = allFiles.filter(file => file.name !== fileName); // Remove file from allFiles array
+    fileItem.remove();
+    updateFileInput(); // Update fileInput with allFiles array
+    calculateCredits()
+}
 
-    //-------- reset files  --------
-    function resetFiles() {
-        fileList.innerHTML = '';
-        
-        fileInput.value = '';
-        messageDiv.textContent = '';
+//-------- reset files  --------
+function resetFiles() {
+    fileList.innerHTML = '';
+    allFiles = []; // Clear allFiles array
+    fileInput.value = '';
+    messageDiv.textContent = '';
 
-        calculateCredits()
-    }
+    calculateCredits()
+}
 
-    //-------- calculate credits --------
-    //1 file = 1 credit --> display on card -> credits
+//-------- update file input --------
+function updateFileInput() {
+    const dataTransfer = new DataTransfer();
+    allFiles.forEach(file => dataTransfer.items.add(file));
+    fileInput.files = dataTransfer.files;
+}
 
-    function calculateCredits() {
-        let costCounter = document.querySelector('.credits');
-        const credits = fileList.children.length;
-        costCounter.textContent = `-${credits} cp`;
-    }
+//-------- calculate credits --------
+//1 file = 1 credit
+
+function calculateCredits() {
+    let costCounter = document.querySelector('.credits');
+    const credits = fileList.children.length;
+    costCounter.textContent = `-${credits} cp`;
+}
