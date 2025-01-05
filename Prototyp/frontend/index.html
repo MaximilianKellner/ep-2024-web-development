@@ -16,6 +16,8 @@
 
     <script defer src="scripts/drag-drop.js"></script>
     <script defer src="scripts/upload.js"></script>
+    <script defer src="scripts/handle-selceted-files.js"></script>
+
   </head>
   <body>
     <header>
@@ -44,7 +46,10 @@
 
 
           <div id="file-list">
-            <div class="file-item">debug.png (0.0 KB)</div>
+            <div class="file-item">
+              <button class="remove-file" onclick="removeFile(this)">✕</button>
+              <img src="img/debug.jpg" alt="File preview" class="file-preview" />
+            </div>
 
             <div class="card">
               <h3 class="credits">- 6 cp</h3>

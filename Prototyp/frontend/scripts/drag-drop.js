@@ -64,14 +64,24 @@ function handleFiles(files) {
     for (let file of files) {
         const fileItem = document.createElement('div');
         fileItem.classList.add('file-item');
-        fileItem.textContent = `${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+    
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            fileItem.innerHTML = `
+                <button class="remove-file" onclick="removeFile(this)">✕</button>
+                <img src="${e.target.result}" alt="File preview" class="file-preview" />
+                ${file.name} (${(file.size / 1024).toFixed(2)} KB)
+            `;
+        };
+        reader.readAsDataURL(file);
+        
         
         if (file.size > maxFileSize) {
             fileItem.style.color = 'red';
             fileItem.textContent += ' - Datei zu groß (max. 10 MB)';
         }
         
-        fileList.appendChild(fileItem);
+        fileList.insertBefore(fileItem, fileList.firstChild); // Anhängen an den Anfang der Liste
     }
     fileInput.files = files;
 }

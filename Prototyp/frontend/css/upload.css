@@ -66,16 +66,49 @@
 
     margin-top: 15px;
     text-align: left;
-    max-height: 200px;    
+    max-height: 200px;   
+    align-items: end;
 }
 
 .file-item {
-    width: fit-content;
-    padding: 5px;
+    position: relative;
+    width: var(--xxxxxxl);
+    height: var(--xxxxxxl);
     background-color: var(--c-base);
     border-radius: calc(var(--border-radius-base) * 0.75);
     color: #ffffff;
     box-shadow: var(--shadow);
+    margin-right: var(--xs);
+
+    .file-preview {
+        display: block;
+        width: 100%;
+        height: 100%;
+        border-radius: inherit;
+        object-fit: cover;
+    }
+    
+    .remove-file {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        width: 24px;
+        height: 24px;
+        padding: 0;
+        border: none;
+        border-radius: 50%;
+        background-color: rgb(23, 23, 23);
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.2s ease;
+        /* Add z-index to ensure button stays on top */
+        z-index: 10;
+        /* Optional: Add subtle shadow to button */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
 }
 
 #message {
@@ -83,6 +116,7 @@
     color: green;
 }
 
+/* Card which displys the credit-cost and uplad/cancel options */
 .card {
     background-color: var(--c-base);
     border-radius: var(--border-radius-small);
@@ -90,7 +124,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-left: var(--xs);
+    height: min-content;
 
     .credits {
         height: 32px;
