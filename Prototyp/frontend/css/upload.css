@@ -59,26 +59,37 @@
     display: none;
 }
 
+.file-row {
+    display: flex;
+    align-items: end;
+
 #file-list {
     width: 100%;
     display: flex;
-    justify-content: end;
-
-    margin-top: 15px;
-    text-align: left;
-    max-height: 200px;   
+    flex-direction: row-reverse;  /* Lässt Items von rechts starten */    overflow-x: auto;
+    direction: rtl;  /* Scrollbar startet von rechts */
     align-items: end;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    scroll-behavior: smooth;
 }
 
 .file-item {
+    flex: 0 0 auto; /* Verhindert das Verkleinern der Elemente */
+    direction: ltr;
+    display: inline-block;
     position: relative;
     width: var(--xxxxxl);
     height: var(--xxxxxl);
     background-color: var(--c-base);
-    border-radius: calc(var(--border-radius-base) * 0.75);
+    border-radius: calc(var(--border-radius-small) * 0.75);
     color: #ffffff;
     box-shadow: var(--shadow);
     margin-right: var(--xs);
+    margin-top: var(--xs);
+
+    &:first-child {
+    }
 
     .file-preview {
         display: block;
@@ -106,7 +117,11 @@
         justify-content: center;
         transition: background-color 0.2s ease;
         z-index: 10;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        box-shadow: var(--shadow);
+    }
+
+    .remove-button:hover {
+        background-color: var(--c-red);
     }
 }
 
@@ -117,6 +132,7 @@
 
 /* Card which displys the credit-cost and uplad/cancel options */
 .card {
+    direction: ltr;
     background-color: var(--c-base);
     border-radius: var(--border-radius-small);
     box-shadow: var(--shadow);
@@ -124,6 +140,7 @@
     flex-direction: column;
     align-items: center;
     height: min-content;
+    width: min-content;
 
     .credits {
         height: 32px;
@@ -169,4 +186,6 @@
         background-color: var(--c-red);
         }
     }   
+}
+
 }
