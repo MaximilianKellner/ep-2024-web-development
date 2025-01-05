@@ -138,7 +138,6 @@
 /* Card which displys the credit-cost and uplad/cancel options */
 .card {
     margin-top: var(--s); /*verhindert, dass die row springt, wenn alle cards gelöscht sind.*/
-
     background-color: var(--c-base);
     border-radius: var(--border-radius-small);
     box-shadow: var(--shadow);
@@ -147,6 +146,8 @@
     align-items: center;
     height: min-content;
     width: min-content;
+
+    transition: all 0.2s ease;
 
     .credits {
         height: 32px;

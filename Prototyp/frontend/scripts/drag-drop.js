@@ -3,6 +3,7 @@ const dropArea = document.getElementById('drop-area');
 const fileInput = document.getElementById('fileInput');
 const fileList = document.getElementById('file-list');
 const messageDiv = document.getElementById('message');
+const uploadCard = document.querySelector('.card');
 let allFiles = []; // Array to store all files
 
 //-------- Highlight  --------
@@ -122,6 +123,7 @@ function resetFiles() {
     messageDiv.textContent = '';
     
     calculateCredits()
+
 }
 
 //-------- update file input --------
@@ -138,4 +140,10 @@ function calculateCredits() {
     let costCounter = document.querySelector('.credits');
     const credits = fileList.children.length;
     costCounter.textContent = `-${credits} cp`;
+
+    if (credits > 0) {
+        uploadCard.style.opacity = 1;
+    } else {
+        uploadCard.style.opacity = 0;
+    }
 }
