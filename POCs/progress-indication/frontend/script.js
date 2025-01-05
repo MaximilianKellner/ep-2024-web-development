@@ -19,12 +19,16 @@ const downloadBytes = document.getElementById('download-bytes');
 const downloadEstimated = document.getElementById('download-estimated');
 const downloadRate = document.getElementById('download-rate');
 
-formUl.addEventListener('submit', function (e) {
+// Für OptimierungsstatusSSE
+const optimizationStatus = document.getElementById('optimization-status');
 
+formUl.addEventListener('submit', function (e) {
+    e.preventDefault();
     const formData = new FormData();
     const file = document.getElementById('file-ul');
     const img = file.files[0];
     formData.append('image', img);
+
 
     const config = {
         onUploadProgress: function (progressEvent) {
@@ -46,9 +50,25 @@ formUl.addEventListener('submit', function (e) {
     }
 
     axios.post('http://localhost:3000/upload', formData, config)
-        .then(res => console.log(res))
+        .then((res) => {
+            console.log(res.data);
+
+            const timeEventSource = new EventSource('http://localhost:3000/progress');
+
+            timeEventSource.addEventListener('message', function (event) {
+                console.log('Message from server:', event.data);
+            });
+
+        })
         .catch(err => console.log(err))
 })
+
+const eventSource = new EventSource('http://localhost:3000/progress');
+eventSource.onmessage = (event) => {
+    optimizationStatus.textContent = event.data;
+    console.log(event.data)
+
+};
 
 buttonDl.addEventListener('click', function (e) {
 
