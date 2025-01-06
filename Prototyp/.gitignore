@@ -1,0 +1,11 @@
+# Ignore contents of upload and optimized folders
+backend/customers/debug-kunde-1/uploaded/*
+backend/customers/debug-kunde-1/optimized/*
+
+
+
+# Common files to ignore
+.DS_Store
+node_modules/
+.env
+*.log
