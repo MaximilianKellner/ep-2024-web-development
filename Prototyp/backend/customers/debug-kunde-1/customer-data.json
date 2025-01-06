@@ -13,8 +13,8 @@
     },
     "configSettings": {
         "credits": "9999",
-        "maxFileInKB": "100",
+        "maxFileInKB": "500",
         "maxWidthInPX": "500",
-        "bw-filter": true
+        "bwFilter": true
     }
 }

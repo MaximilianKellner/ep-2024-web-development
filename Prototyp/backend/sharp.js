@@ -1,5 +1,4 @@
 const fs = require('fs');
-const { get } = require('http');
 const path = require('path');
 const sharp = require('sharp');
 
@@ -24,13 +23,13 @@ function getCustomerData(filterworld){
 
 async function compressToSize(inputPath, outputPath) {
     try {
-        let maxSizeInMB = getCustomerData('max-file-size-kb')/1024;
+        let maxSizeInMB = getCustomerData('max-file-size-kb')/1024; //Output ist eine Zahl
         if(!maxSizeInMB){
             throw new Error('Max file size not found');
         }
         let quality = 100;
         let currentSize = fs.statSync(inputPath).size / (1024 * 1024); // Convert to MB
-        console.log(`Original size: ${currentSize.toFixed(3)} MB`);
+        console.log('Original size: ${currentSize.toFixed(3)} MB');
 
         while (currentSize > maxSizeInMB && quality > 0) {
             await sharp(inputPath)
@@ -55,7 +54,8 @@ async function compressToSize(inputPath, outputPath) {
 }
 
 // Usage example:
-compressToSize('./customers/debug-kunde-1/uploaded/debug2.jpg', './customers/debug-kunde-1/optimized/debug2-opt.jpg')
+compressToSize('./customers/debug-kunde-1/uploaded/V1.png', './customers/debug-kunde-1/optimized/V1.0-opt.jpg')
     .then(path => console.log('Compressed file saved at:', path))
     .catch(err => console.error('Error:', err));
 
+module.exports = { getCustomerData, compressToSize };
