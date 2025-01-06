@@ -19,7 +19,39 @@ function getCustomerData(filterworld){
     return data;
 }
 
-// getCustomerData('max-file-size-kb');
+
+
+async function processAllFiles(customerID) {
+    const uploadDir = path.join(__dirname, 'customers', customerID, 'uploaded');
+    const optimizedDir = path.join(__dirname, 'customers', customerID, 'optimized');
+    
+    // Ensure optimized directory exists
+    if (!fs.existsSync(optimizedDir)) {
+        fs.mkdirSync(optimizedDir, { recursive: true });
+    }
+
+    try {
+        const files = fs.readdirSync(uploadDir);
+        const imageFiles = files.filter(file => 
+            /\.(jpg|jpeg|png)$/i.test(file)
+        );
+
+        for (const file of imageFiles) {
+            const inputPath = path.join(uploadDir, file);
+            const outputPath = path.join(optimizedDir, file);
+            
+            try {
+                await compressToSize(inputPath, outputPath);
+                console.log(`Successfully processed: ${file}`);
+            } catch (error) {
+                console.error(`Error processing ${file}:`, error);
+            }
+        }
+    } catch (error) {
+        console.error('Error reading directory:', error);
+        throw error;
+    }
+}
 
 async function compressToSize(inputPath, outputPath) {
     try {
@@ -29,7 +61,7 @@ async function compressToSize(inputPath, outputPath) {
         }
         let quality = 100;
         let currentSize = fs.statSync(inputPath).size / (1024 * 1024); // Convert to MB
-        console.log('Original size: ${currentSize.toFixed(3)} MB');
+        console.log(`Original size: ${currentSize.toFixed(3)} MB`);
 
         while (currentSize > maxSizeInMB && quality > 0) {
             await sharp(inputPath)
@@ -53,9 +85,12 @@ async function compressToSize(inputPath, outputPath) {
     }
 }
 
-// Usage example:
-compressToSize('./customers/debug-kunde-1/uploaded/V1.png', './customers/debug-kunde-1/optimized/V1-opt.jpg')
-    .then(path => console.log('Compressed file saved at:', path))
+
+
+// Replace the example usage with:
+processAllFiles('debug-kunde-1')
+    .then(() => console.log('All files processed'))
     .catch(err => console.error('Error:', err));
 
-module.exports = { getCustomerData, compressToSize };
+module.exports = { getCustomerData, compressToSize, processAllFiles };
+
