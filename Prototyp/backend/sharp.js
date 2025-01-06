@@ -34,7 +34,7 @@ async function compressToSize(inputPath, outputPath) {
         while (currentSize > maxSizeInMB && quality > 0) {
             await sharp(inputPath)
                 .jpeg({ quality: quality })
-                .toFile(outputPath);
+                .toFile(outputPath); 
 
             currentSize = fs.statSync(outputPath).size / (1024 * 1024); // Convert to MB
             console.log(`Current size: ${currentSize.toFixed(3)} MB at quality: ${quality}`);
@@ -54,7 +54,7 @@ async function compressToSize(inputPath, outputPath) {
 }
 
 // Usage example:
-compressToSize('./customers/debug-kunde-1/uploaded/V1.png', './customers/debug-kunde-1/optimized/V1.0-opt.jpg')
+compressToSize('./customers/debug-kunde-1/uploaded/V1.png', './customers/debug-kunde-1/optimized/V1-opt.jpg')
     .then(path => console.log('Compressed file saved at:', path))
     .catch(err => console.error('Error:', err));
 
