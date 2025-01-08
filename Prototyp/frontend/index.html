@@ -12,14 +12,13 @@
       rel="stylesheet"
     />
 
-    <link rel="icon" href="img/icon/upload-cloud.svg"/>
+    <link rel="icon" href="img/icon/upload-cloud.svg" />
 
     <link rel="stylesheet" href="css/main.css" />
 
     <script defer src="scripts/drag-drop.js"></script>
     <script defer src="scripts/upload.js"></script>
     <script defer src="scripts/1-config.js"></script>
-
   </head>
   <body>
     <header>
@@ -33,17 +32,27 @@
 
         <form id="uploadForm">
           <div class="upload-center">
-            <img src="./img/icon/upload-cloud.svg" alt="Upload Icon" id="dropIcon" />
+            <img
+              src="./img/icon/upload-cloud.svg"
+              alt="Upload Icon"
+              id="dropIcon"
+            />
             <div class="file-upload-container">
               <p>Dateien hierher ziehen oder</p>
               <label for="fileInput" class="select-btn"
-                >Dateien auswählen</label>
+                >Dateien auswählen</label
+              >
             </div>
           </div>
 
           <!-- TODO: Add allowed inputs.-->
-          <input type="file" id="fileInput" name="files" accept=".jpg, .jpeg, .png" multiple />
-
+          <input
+            type="file"
+            id="fileInput"
+            name="files"
+            accept=".jpg, .jpeg, .png"
+            multiple
+          />
 
           <div class="file-row">
             <div id="file-list">
@@ -57,7 +66,6 @@
                 <button class="action accept" type="submit">✔</button>
               </div>
             </div>
-
           </div>
         </form>
       </div>
@@ -65,41 +73,49 @@
 
       <h2>Übertragene Dateien</h2>
       <p>
-        Hier findest du deine hochgeladenen Dateien, die bereits optimiert wurden. Sie sind ab dem Zeitpunkt des Uploads 24 Stunden lang verfügbar und werden danach automatisch gelöscht.
+        Hier findest du deine hochgeladenen Dateien, die bereits optimiert
+        wurden. Sie sind ab dem Zeitpunkt des Uploads 24 Stunden lang verfügbar
+        und werden danach automatisch gelöscht.
       </p>
       <ul id="uploadedFiles"></ul>
 
       <table>
-          <thead>
-              <tr>
-                  <th><input type="checkbox" name="selector" id="selector"></th>
-                  <th>Vorschau</th>
-                  <th>Name</th>
-                  <th>Größe</th>
-                  <th>Upload</th>
-                  <th>verbleibende Zeit</th>
-                  <th>Download</th>
-              </tr>
+        <thead>
+          <tr>
+            <th><input type="checkbox" name="selector" id="selector" /></th>
+            <th>Vorschau</th>
+            <th>Name</th>
+            <th>Größe</th>
+            <th>Upload</th>
+            <th>verbleibende Zeit</th>
+            <th>Download</th>
+          </tr>
+        </thead>
+
         <tbody>
           <tr>
-              <td><input type="checkbox" name="selector" id="selector"></td>
-              <td><img class="preview-mid" src="img/debug2.jpg" alt="debug.jpg"></td>
-              <td>debug.png</td>
-              <td>0.0 KB</td>
-              <td>01.01.2021</td>
-              <td>20h</td>
-              <td><button>Download</button></td>
+            <td><input type="checkbox" name="selector" id="selector" /></td>
+            <td>
+              <img class="preview-mid" src="img/debug2.jpg" alt="debug.jpg" />
+            </td>
+            <td>debug.png</td>
+            <td>0.0 KB</td>
+            <td>01.01.2021</td>
+            <td>20h</td>
+            <td><button>Download</button></td>
           </tr>
           <tr>
-            <td><input type="checkbox" name="selector" id="selector"></td>
-            <td><img class="preview-mid" src="img/debug.jpg" alt="debug.jpg"></td>
+            <td><input type="checkbox" name="selector" id="selector" /></td>
+            <td>
+              <img class="preview-mid" src="img/debug.jpg" alt="debug.jpg" />
+            </td>
             <td>debug.png</td>
             <td>0.0 KB</td>
             <td>01.01.2021</td>
             <td>4h</td>
             <td><button>Download</button></td>
-        </tr>
-
+          </tr>
+        </tbody>
       </table>
     </main>
     <footer></footer>
