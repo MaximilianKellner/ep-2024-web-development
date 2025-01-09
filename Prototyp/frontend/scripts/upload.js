@@ -3,6 +3,7 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
 
     const fileInput = document.getElementById('fileInput');
     const messageDiv = document.getElementById('message');
+    const fileList = document.getElementById('file-list');
     const files = fileInput.files;
 
     if (files.length <= 0) {
@@ -30,29 +31,46 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
 
     const formData = new FormData();
     for (let i = 0; i < files.length; i++) {
-        formData.append('files', files[i]);
+        formData.append('images', files[i]);
+
+        const filePreview = document.querySelector('.file-preview');
+        const progressBar = document.querySelector('progress');
+        const progressLabel = document.querySelector('label');
+    
+        filePreview.src = URL.createObjectURL(files[i]);
+        progressBar.value = 0;
     }
 
+    // Upload-Request
     try {
-        const response = await fetch('http://localhost:5000/upload', {
-            method: 'POST',
-            body: formData,
+        const response = await axios.post('http://localhost:5000/upload-multiple', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+            onUploadProgress: function (progressEvent) {
+                const percentCompleted = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+                const progressBars = document.querySelectorAll('#file-list .file-item progress');
+                const progressLabels = document.querySelectorAll('#file-list .file-item label');
+
+                // Fortschrittsanzeige update
+                for (let i = 0; i < progressBars.length; i++) {
+                    progressBars[i].value = percentCompleted;
+                    progressLabels[i].textContent = `${percentCompleted}%`;
+                }
+            },
         });
 
-        const responseText = await response.text();
-
-        if (response.ok) {
-            messageDiv.textContent = responseText;
+        if (response.status === 204) {
+            messageDiv.textContent = 'Upload erfolgreich!';
             messageDiv.style.color = 'green';
-            fileInput.value = ''; // Eingabefeld zurücksetzen
-            document.getElementById('file-list').innerHTML = ''; // Dateiliste leeren
-        } else {
-            messageDiv.textContent = `Fehler beim Hochladen: ${responseText}`;
-            messageDiv.style.color = 'red';
+            fileInput.value = '';
         }
     } catch (error) {
-        console.error('Detaillierter Fehler:', error);
-        messageDiv.textContent = `Netzwerkfehler: ${error.message}`;
+        console.error('Fehler beim Hochladen:', error);
+        messageDiv.textContent = `Fehler beim Hochladen: ${error.message}`;
         messageDiv.style.color = 'red';
     }
+
+
+
 });
