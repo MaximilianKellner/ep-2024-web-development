@@ -71,6 +71,43 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
         messageDiv.style.color = 'red';
     }
 
+    //SSE Handling
+    // Optimierungsüberwachung mit EventSource (Server-Sent Events)
+    const eventSource = new EventSource('http://localhost:5000/progress');
+    eventSource.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        const li = document.createElement('li');
+        li.textContent = `Status: ${data.status}, Nachricht: ${data.message}`;
+        uploadStatusList.appendChild(li);
+    };
 
+    eventSource.addEventListener('active', (event) => {
+        const data = JSON.parse(event.data);
+        const li = document.createElement('li');
+        li.textContent = `${data.filename} -- optimization: ${data.message}`;
+        uploadStatusList.appendChild(li);
+    });
+
+    eventSource.addEventListener('error', (event) => {
+        const data = JSON.parse(event.data);
+        const li = document.createElement('li');
+        li.textContent = `${data.filename} -- optimization: ${data.message}`;
+        uploadStatusList.appendChild(li);
+    });
+
+    eventSource.addEventListener('complete', (event) => {
+        const data = JSON.parse(event.data);
+        const li = document.createElement('li');
+        li.textContent = `${data.filename} -- optimization: ${data.message}`;
+        uploadStatusList.appendChild(li);
+        eventSource.close();
+    });
+
+    eventSource.onerror = () => {
+        console.error('Fehler beim Empfangen von Fortschritts-Updates.');
+        messageDiv.textContent = 'Fehler bei Fortschritts-Updates.';
+        messageDiv.style.color = 'red';
+        eventSource.close();
+    };
 
 });
