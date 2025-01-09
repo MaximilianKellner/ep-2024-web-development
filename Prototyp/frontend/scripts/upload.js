@@ -43,7 +43,7 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
 
     // Upload-Request
     try {
-        const response = await axios.post('http://localhost:5000/upload-multiple', formData, {
+        const response = await axios.post('http://localhost:5000/debug-kunde-1/upload', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -73,7 +73,7 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
 
     //SSE Handling
     // Optimierungsüberwachung mit EventSource (Server-Sent Events)
-    const eventSource = new EventSource('http://localhost:5000/progress');
+    const eventSource = new EventSource('http://localhost:5000/debug-kunde-1/progress');
     eventSource.onmessage = (event) => {
         const data = JSON.parse(event.data);
         const li = document.createElement('li');
