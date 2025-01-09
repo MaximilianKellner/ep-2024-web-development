@@ -5,12 +5,14 @@ import express from 'express';
 import cors from 'cors';
 import multer from 'multer';
 import { processAllFiles } from './sharp.js';
-
+import optimizationEventEmitter from './optimizationEventEmitter.js';
 
 const app = express();
 const PORT = 5000;
 
 const UPLOAD_DIR = './customers/debug-kunde-1/uploaded';
+
+let optimizationEventActive = false;
 
 // TODO: Definiere erlaubte Origins und weitere Spezifikationen, wenn der Service bereit für Auslieferung ist.
 app.use(cors());
@@ -48,7 +50,25 @@ app.post('/:id/upload', upload.array('files'), (req, res, next) => {
     console.log(userId);
 
     //TODO: Das Verzeichnis muss automatisch erstellt werden, wenn es nicht existiert(?)
-    processAllFiles(userId);
+    optimizationEventActive = true;
+    processAllFiles(userId)
+        .then(() => console.log('Done!'))
+        .catch(error => console.error('Error processing files:', error));
+});
+
+app.get('/progress', (req, res) => {
+
+    if (optimizationEventActive === true) {
+        res.setHeader('Content-Type', 'text/event-stream');
+        res.setHeader('Cache-Control', 'no-cache');
+        res.setHeader('Connection', 'keep-alive');
+        res.flushHeaders();
+
+        optimizationEventEmitter.on('progress', (progress) => {
+            console.log("Progress from emitter: ", progress);
+            res.write(progress);
+        })
+    }
 });
 
 app.listen(PORT, () =>
