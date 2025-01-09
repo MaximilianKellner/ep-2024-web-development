@@ -1,6 +1,12 @@
-const fs = require('fs');
-const path = require('path');
-const sharp = require('sharp');
+import fs from 'fs';
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import path from 'path';
+import sharp from 'sharp';
+import optimizationEventEmitter from './optimizationEventEmitter.js';
+import OptimizationEventStatus from './optimizationEventStatus.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 function getCustomerData(filterworld){
     const filePath = path.join(__dirname, 'customers', 'debug-kunde-1', 'customer-data.json');
@@ -33,7 +39,7 @@ async function processAllFiles(customerID) {
     try {
         const files = fs.readdirSync(uploadDir);
         const imageFiles = files.filter(file => 
-            /\.(jpg|jpeg|png)$/i.test(file)
+            /\.(jpg|jpeg|png)/i.test(file)
         );
 
         for (const file of imageFiles) {
@@ -71,12 +77,16 @@ async function compressToSize(inputPath, outputPath) {
             currentSize = fs.statSync(outputPath).size / (1024 * 1024); // Convert to MB
             console.log(`Current size: ${currentSize.toFixed(3)} MB at quality: ${quality}`);
             quality -= 5;
+
+            optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.active);
         }
 
         if (currentSize <= maxSizeInMB) {
             console.log(`Successfully compressed to ${currentSize.toFixed(3)} MB`);
+            optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.complete)
             return outputPath;
         } else {
+            optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.error);
             throw new Error('Konnte nicht zur gewünschten Größe komprimiert werden');
         }
     } catch (error) {
@@ -92,5 +102,5 @@ processAllFiles('debug-kunde-1')
     .then(() => console.log('All files processed'))
     .catch(err => console.error('Error:', err));
 
-module.exports = { getCustomerData, compressToSize, processAllFiles };
+export  { getCustomerData, compressToSize, processAllFiles };
 
