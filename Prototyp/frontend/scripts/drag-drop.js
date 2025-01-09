@@ -68,7 +68,14 @@ function handleFiles(files) {
         reader.onload = function(e) {
             fileItem.innerHTML = `
             <button class="remove-button" onclick="removeFile(this)">✕</button>
-            <img src="${e.target.result}" alt="File preview" class="file-preview" title="${file.name} (${(file.size / (1024 * 1024)).toFixed(2)} MB)" />
+
+            <div>
+            <label for="progress-bar-ul">0%</label>
+            <progress id="progress-bar-ul" value="0" max="100"></progress>
+            </div>
+
+            <img class="file-preview" src="${e.target.result}" alt="File preview" title="${file.name} (${(file.size / (1024 * 1024)).toFixed(2)} MB)" />
+            
         `;
         };
         reader.readAsDataURL(file);

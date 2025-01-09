@@ -4,7 +4,7 @@ const fs = require('fs');
 const multer = require('multer'); // Importiere multer für den Datei-Upload
 
 const app = express();
-const PORT = 3000;
+const PORT = 5000;
 
 let optimizationEventActive = false;
 let optimizationProgressCounter = 1;
@@ -50,6 +50,15 @@ app.post('/upload', upload.single('image'), (req, res, next) => {
         status = optimizationEventStatus.error;
     }, 50000);
 
+});
+
+app.post('/upload-multiple', upload.array('images', 10), (req, res, next) => {
+    // `images` ist der Name des Feldes im FormData-Objekt (s. Client-Code)
+    if (!req.files || req.files.length === 0) {
+        return res.status(400).send('No files uploaded.');
+    }
+
+    res.status(204).send('Files uploaded successfully.');
 });
 
 
