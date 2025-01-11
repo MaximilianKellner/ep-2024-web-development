@@ -6,12 +6,15 @@ import cors from 'cors';
 import multer from 'multer';
 import { processAllFiles } from './sharp.js';
 import optimizationEventEmitter from './optimizationEventEmitter.js';
+import fs from 'fs';
 import path from 'path';
+
 
 const app = express();
 const PORT = 5000;
 
 const UPLOAD_DIR = './customers/debug-kunde-1/uploaded';
+const OPTIMIZED_DIR = './customers/debug-kunde-1/optimized';
 
 let optimizationEventActive = false;
 
@@ -62,19 +65,78 @@ app.post('/:id/upload', upload.array('images'), (req, res, next) => {
 
 app.get('/debug-kunde-1/progress', (req, res) => {
 
-   
-        res.setHeader('Content-Type', 'text/event-stream');
-        res.setHeader('Cache-Control', 'no-cache');
-        res.setHeader('Connection', 'keep-alive');
-        res.flushHeaders();
-        res.write('');
-        
-        optimizationEventEmitter.on('progress', (progress) => {
-            console.log("Progress from emitter: ", progress);
-            res.write(progress);
-        })
-    
+    //TODO: Work with user id from request
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.flushHeaders();
+    // TODO: Add error handling with callback
+    res.write('');
+
+    optimizationEventEmitter.on('progress', (progress) => {
+        console.log("Progress from emitter: ", progress);
+        res.write(progress);
+    })
+
 });
+
+app.get('/:id/download/:imageName', (req, res, next) => {
+
+    // TODO: Mehrere Dateien könnten den gleichen Namen haben und sollten unterschieden werden.
+    // TODO: Nutzer-ID einsetzen.
+    const userId = req.params.id;
+    const imageName = req.params.imageName;
+
+    handleImageRequest(imageName, res);
+
+});
+
+async function findImage(imageName) {
+    try {
+        const files = await fs.promises.readdir(OPTIMIZED_DIR);
+        const image = files.find(file => file.includes(imageName));
+        return image;
+    } catch (err) {
+        console.error(err);
+        return null;
+    }
+}
+
+async function downloadImage(imageName, res) {
+    const filePath = `${OPTIMIZED_DIR}/${imageName}`;
+    const fileStream = fs.createReadStream(filePath);
+
+    fs.stat(filePath, (err, stats) => {
+        if (err) {
+            res.status(404).send('File not found');
+            return;
+        }
+
+        // Notwendige Header
+        res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');  //Very important!
+        res.setHeader('Content-Length', stats.size);
+        res.setHeader('Content-Type', 'image/png');
+        res.setHeader('Content-Disposition', `attachment; filename="${imageName}"`);
+
+        // Sende die Datei zum Download
+        fileStream.pipe(res);
+    });
+
+    fileStream.on('error', err => {
+        console.log(err);
+        res.status(500).send('Error downloading file');
+    });
+}
+
+async function handleImageRequest(imageName, res) {
+    let image = await findImage(imageName);
+    console.log("Gefunden Bild: ", image);
+    if (image) {
+        await downloadImage(image, res);
+    } else {
+        res.status(404).send('Image not found');
+    }
+}
 
 app.use(express.static('../frontend'));
 
