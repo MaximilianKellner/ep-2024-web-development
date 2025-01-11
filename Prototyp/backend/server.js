@@ -14,6 +14,9 @@ const UPLOAD_DIR = './customers/debug-kunde-1/uploaded';
 
 let optimizationEventActive = false;
 
+// TODO: Felder in der JSON überarbeiten -> maxFileinKB, maxWidthInPX sind irreführend.
+// TODO: Endpunkt, um über die zum Download bereiten Dateien zu informieren (/available-downloads).
+
 // TODO: Definiere erlaubte Origins und weitere Spezifikationen, wenn der Service bereit für Auslieferung ist.
 app.use(cors());
 
@@ -38,7 +41,7 @@ const upload = multer({ storage: storage });
 
 // TODO: Sicherstellen, dass der Key "images" im <form> definiert ist.
 // TODO: Sollen einzelne und mehrere Dateien hochgeladen werden? Sollen diese unterschiedlich behandelt werden?
-app.post('/:id/upload', upload.array('files'), (req, res, next) => {
+app.post('/:id/upload', upload.array('images'), (req, res, next) => {
 
     if (!req.files) {
         return res.status(400).send('No file uploaded.');
@@ -56,19 +59,20 @@ app.post('/:id/upload', upload.array('files'), (req, res, next) => {
         .catch(error => console.error('Error processing files:', error));
 });
 
-app.get('/progress', (req, res) => {
+app.get('/debug-kunde-1/progress', (req, res) => {
 
-    if (optimizationEventActive === true) {
+   
         res.setHeader('Content-Type', 'text/event-stream');
         res.setHeader('Cache-Control', 'no-cache');
         res.setHeader('Connection', 'keep-alive');
         res.flushHeaders();
-
+        res.write('');
+        
         optimizationEventEmitter.on('progress', (progress) => {
             console.log("Progress from emitter: ", progress);
             res.write(progress);
         })
-    }
+    
 });
 
 app.listen(PORT, () =>
