@@ -103,7 +103,7 @@ async function findImage(imageName) {
     }
 }
 
-async function downloadImage(imageName, res) {
+async function sendImage(imageName, res) {
     const filePath = `${OPTIMIZED_DIR}/${imageName}`;
     const fileStream = fs.createReadStream(filePath);
 
@@ -133,7 +133,7 @@ async function handleImageRequest(imageName, res) {
     let image = await findImage(imageName);
     console.log("Gefunden Bild: ", image);
     if (image) {
-        await downloadImage(image, res);
+        await sendImage(image, res);
     } else {
         res.status(404).send('Image not found');
     }
