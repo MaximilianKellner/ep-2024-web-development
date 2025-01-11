@@ -5,12 +5,18 @@ import express from 'express';
 import cors from 'cors';
 import multer from 'multer';
 import { processAllFiles } from './sharp.js';
-
+import optimizationEventEmitter from './optimizationEventEmitter.js';
+import path from 'path';
 
 const app = express();
 const PORT = 5000;
 
 const UPLOAD_DIR = './customers/debug-kunde-1/uploaded';
+
+let optimizationEventActive = false;
+
+// TODO: Felder in der JSON überarbeiten -> maxFileinKB, maxWidthInPX sind irreführend.
+// TODO: Endpunkt, um über die zum Download bereiten Dateien zu informieren (/available-downloads).
 
 // TODO: Definiere erlaubte Origins und weitere Spezifikationen, wenn der Service bereit für Auslieferung ist.
 app.use(cors());
@@ -36,7 +42,7 @@ const upload = multer({ storage: storage });
 
 // TODO: Sicherstellen, dass der Key "images" im <form> definiert ist.
 // TODO: Sollen einzelne und mehrere Dateien hochgeladen werden? Sollen diese unterschiedlich behandelt werden?
-app.post('/:id/upload', upload.array('files'), (req, res, next) => {
+app.post('/:id/upload', upload.array('images'), (req, res, next) => {
 
     if (!req.files) {
         return res.status(400).send('No file uploaded.');
@@ -48,8 +54,29 @@ app.post('/:id/upload', upload.array('files'), (req, res, next) => {
     console.log(userId);
 
     //TODO: Das Verzeichnis muss automatisch erstellt werden, wenn es nicht existiert(?)
-    processAllFiles(userId);
+    optimizationEventActive = true;
+    processAllFiles(userId)
+        .then(() => console.log('Done!'))
+        .catch(error => console.error('Error processing files:', error));
 });
+
+app.get('/debug-kunde-1/progress', (req, res) => {
+
+   
+        res.setHeader('Content-Type', 'text/event-stream');
+        res.setHeader('Cache-Control', 'no-cache');
+        res.setHeader('Connection', 'keep-alive');
+        res.flushHeaders();
+        res.write('');
+        
+        optimizationEventEmitter.on('progress', (progress) => {
+            console.log("Progress from emitter: ", progress);
+            res.write(progress);
+        })
+    
+});
+
+app.use(express.static('../frontend'));
 
 app.listen(PORT, () =>
     console.log(`Server listening on port ${PORT}`),
