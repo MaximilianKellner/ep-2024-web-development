@@ -1,9 +1,12 @@
+
+
 document.getElementById('uploadForm').addEventListener('submit', async (event) => {
     event.preventDefault();
 
     const fileInput = document.getElementById('fileInput');
     const messageDiv = document.getElementById('message');
     const fileList = document.getElementById('file-list');
+    const uploadStatusList = document.querySelector('.upload-status-list');
     const files = fileInput.files;
 
     if (files.length <= 0) {
@@ -13,7 +16,7 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
     }
 
     //-------- Upload Limitationen --------
-    if(files.length > MAX_FILE_COUNT) {
+    if (files.length > MAX_FILE_COUNT) {
         messageDiv.textContent = `Maximal ${MAX_FILE_COUNT} Dateien auswählen.`;
         messageDiv.style.color = 'red';
         return;
@@ -21,7 +24,7 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
 
     for (let i = 0; i < files.length; i++) {
         if (files[i].size > MAX_FILE_SIZE) {
-            messageDiv.textContent = `Die Datei ${files[i].name} überschreitet die maximale Größe von ${MAX_FILE_SIZE / 1024/1024} MB.`;
+            messageDiv.textContent = `Die Datei ${files[i].name} überschreitet die maximale Größe von ${MAX_FILE_SIZE / 1024 / 1024} MB.`;
             messageDiv.style.color = 'red';
             return;
         }
@@ -36,7 +39,7 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
         const filePreview = document.querySelector('.file-preview');
         const progressBar = document.querySelector('progress');
         const progressLabel = document.querySelector('label');
-    
+
         filePreview.src = URL.createObjectURL(files[i]);
         progressBar.value = 0;
     }
@@ -64,50 +67,41 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
             messageDiv.textContent = 'Upload erfolgreich!';
             messageDiv.style.color = 'green';
             fileInput.value = '';
+
+            //SSE Handling
+            // Optimierungsüberwachung mit EventSource (Server-Sent Events)
+            const eventSource = new EventSource('http://localhost:5000/debug-kunde-1/progress');
+
+            if (eventSource) {     
+                eventSource.onmessage = (event) => {
+                    messageDiv.innerHTML = `Optimization status: ${event.data}`;
+                };
+
+                /*
+                eventSource.addEventListener('active', (event) => {
+                    messageDiv.innerHTML = `Optimization active: ${event.data}`;
+                });
+    
+                eventSource.addEventListener('error', (event) => {
+                    messageDiv.innerHTML = `Optimization error: ${event.data}`;
+                });
+    
+                eventSource.addEventListener('complete', (event) => {
+                    messageDiv.innerHTML = `Optimization complete: ${event.data}`;
+                    eventSource.close();
+                });
+    
+                eventSource.onerror = () => {
+                    console.error('Fehler beim Empfangen von Fortschritts-Updates.');
+                    messageDiv.textContent = 'Fehler bei Fortschritts-Updates.';
+                    messageDiv.style.color = 'red';
+                    eventSource.close();
+                };*/
+            }
         }
     } catch (error) {
         console.error('Fehler beim Hochladen:', error);
         messageDiv.textContent = `Fehler beim Hochladen: ${error.message}`;
         messageDiv.style.color = 'red';
     }
-
-    //SSE Handling
-    // Optimierungsüberwachung mit EventSource (Server-Sent Events)
-    const eventSource = new EventSource('http://localhost:5000/debug-kunde-1/progress');
-    eventSource.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        const li = document.createElement('li');
-        li.textContent = `Status: ${data.status}, Nachricht: ${data.message}`;
-        uploadStatusList.appendChild(li);
-    };
-
-    eventSource.addEventListener('active', (event) => {
-        const data = JSON.parse(event.data);
-        const li = document.createElement('li');
-        li.textContent = `${data.filename} -- optimization: ${data.message}`;
-        uploadStatusList.appendChild(li);
-    });
-
-    eventSource.addEventListener('error', (event) => {
-        const data = JSON.parse(event.data);
-        const li = document.createElement('li');
-        li.textContent = `${data.filename} -- optimization: ${data.message}`;
-        uploadStatusList.appendChild(li);
-    });
-
-    eventSource.addEventListener('complete', (event) => {
-        const data = JSON.parse(event.data);
-        const li = document.createElement('li');
-        li.textContent = `${data.filename} -- optimization: ${data.message}`;
-        uploadStatusList.appendChild(li);
-        eventSource.close();
-    });
-
-    eventSource.onerror = () => {
-        console.error('Fehler beim Empfangen von Fortschritts-Updates.');
-        messageDiv.textContent = 'Fehler bei Fortschritts-Updates.';
-        messageDiv.style.color = 'red';
-        eventSource.close();
-    };
-
 });
