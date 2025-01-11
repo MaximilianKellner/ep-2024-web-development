@@ -1,5 +1,3 @@
-
-
 document.getElementById('uploadForm').addEventListener('submit', async (event) => {
     event.preventDefault();
 
@@ -46,57 +44,39 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
 
     // Upload-Request
     try {
-        const response = await axios.post('http://localhost:5000/debug-kunde-1/upload', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-            onUploadProgress: function (progressEvent) {
-                const percentCompleted = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-                const progressBars = document.querySelectorAll('#file-list .file-item progress');
-                const progressLabels = document.querySelectorAll('#file-list .file-item label');
+        for (let i = 0; i < files.length; i++) {
+            const singleFormData = new FormData();
+            singleFormData.append('images', files[i]);
 
-                // Fortschrittsanzeige update
-                for (let i = 0; i < progressBars.length; i++) {
+            const response = await axios.post('http://localhost:5000/debug-kunde-1/upload', singleFormData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                onUploadProgress: function (progressEvent) {
+                    const percentCompleted = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+                    const progressBars = document.querySelectorAll('#file-list .file-item progress');
+                    const progressLabels = document.querySelectorAll('#file-list .file-item label');
+
+                    // Fortschrittsanzeige update
                     progressBars[i].value = percentCompleted;
                     progressLabels[i].textContent = `${percentCompleted}%`;
+                },
+            });
+
+            if (response.status === 204) {
+                messageDiv.textContent = 'Upload erfolgreich!';
+                messageDiv.style.color = 'green';
+                fileInput.value = '';
+
+                //SSE Handling
+                // Optimierungsüberwachung mit EventSource (Server-Sent Events)
+                const eventSource = new EventSource('http://localhost:5000/debug-kunde-1/progress');
+
+                if (eventSource) {     
+                    eventSource.onmessage = (event) => {
+                        messageDiv.innerHTML = `Optimization status: ${event.data}`;
+                    };
                 }
-            },
-        });
-
-        if (response.status === 204) {
-            messageDiv.textContent = 'Upload erfolgreich!';
-            messageDiv.style.color = 'green';
-            fileInput.value = '';
-
-            //SSE Handling
-            // Optimierungsüberwachung mit EventSource (Server-Sent Events)
-            const eventSource = new EventSource('http://localhost:5000/debug-kunde-1/progress');
-
-            if (eventSource) {     
-                eventSource.onmessage = (event) => {
-                    messageDiv.innerHTML = `Optimization status: ${event.data}`;
-                };
-
-                /*
-                eventSource.addEventListener('active', (event) => {
-                    messageDiv.innerHTML = `Optimization active: ${event.data}`;
-                });
-    
-                eventSource.addEventListener('error', (event) => {
-                    messageDiv.innerHTML = `Optimization error: ${event.data}`;
-                });
-    
-                eventSource.addEventListener('complete', (event) => {
-                    messageDiv.innerHTML = `Optimization complete: ${event.data}`;
-                    eventSource.close();
-                });
-    
-                eventSource.onerror = () => {
-                    console.error('Fehler beim Empfangen von Fortschritts-Updates.');
-                    messageDiv.textContent = 'Fehler bei Fortschritts-Updates.';
-                    messageDiv.style.color = 'red';
-                    eventSource.close();
-                };*/
             }
         }
     } catch (error) {

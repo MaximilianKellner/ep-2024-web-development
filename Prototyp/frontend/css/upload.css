@@ -128,6 +128,14 @@
     .remove-button:hover {
       background-color: var(--c-red);
     }
+
+    .progress-bar-container{
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+    }
+
   }
 
   #message {
