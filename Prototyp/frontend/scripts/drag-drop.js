@@ -56,7 +56,7 @@ function handleFiles(files) {
 
     if (files.length > MAX_FILE_COUNT) {
         messageDiv.textContent = `Maximal ${MAX_FILE_COUNT} Dateien auswählen.`;
-        messageDiv.style.color = 'red';
+        messageDiv.classList.add('error');
         return;
     }
     

@@ -205,6 +205,10 @@
 #message {
   margin-top: 10px;
   color: var(--c-green);
+
+  &.error {
+    color: var(--c-red);
+  }
 }
 
 .upload-status-list{

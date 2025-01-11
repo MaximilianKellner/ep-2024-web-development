@@ -8,22 +8,24 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
     const files = fileInput.files;
 
     if (files.length <= 0) {
+
+        //clear classlist 
         messageDiv.textContent = 'Bitte mindestens eine Datei auswählen.';
-        messageDiv.style.color = 'var(--c-red)';
+        messageDiv.classList.add('error');
         return;
     }
 
     //-------- Upload Limitationen --------
     if (files.length > MAX_FILE_COUNT) {
         messageDiv.textContent = `Maximal ${MAX_FILE_COUNT} Dateien auswählen.`;
-        messageDiv.style.color = 'var(--c-red)';
+        messageDiv.classList.add('error');
         return;
     }
 
     for (let i = 0; i < files.length; i++) {
         if (files[i].size > MAX_FILE_SIZE) {
             messageDiv.textContent = `Die Datei ${files[i].name} überschreitet die maximale Größe von ${MAX_FILE_SIZE / 1024 / 1024} MB.`;
-            messageDiv.style.color = 'var(--c-red)';
+            messageDiv.classList.add('error');
             return;
         }
     }
@@ -65,7 +67,7 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
 
             if (response.status === 204) {
                 messageDiv.textContent = 'Upload erfolgreich!';
-                messageDiv.style.color = 'var(--c-green)';
+                messageDiv.classList.remove('error');
                 fileInput.value = '';
 
                 //SSE Handling
@@ -91,6 +93,6 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
     } catch (error) {
         console.error('Fehler beim Hochladen:', error);
         messageDiv.textContent = `Fehler beim Hochladen: ${error.message}`;
-        messageDiv.style.color = 'var(--c-red)';
+        messageDiv.classList.add('error');
     }
 });
