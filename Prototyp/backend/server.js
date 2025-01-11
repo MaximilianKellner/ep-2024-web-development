@@ -23,6 +23,7 @@ let optimizationEventActive = false;
 
 // TODO: Definiere erlaubte Origins und weitere Spezifikationen, wenn der Service bereit für Auslieferung ist.
 app.use(cors());
+app.use(express.static('../frontend'));
 
 // TODO: Dateien mit nicht validem oder fehlendem Dateityp sollen abgelehnt werden.
 // TODO: Dateien, die das Credit-Limit übersteigen, sollen abgelehnt werden.
@@ -137,8 +138,6 @@ async function handleImageRequest(imageName, res) {
         res.status(404).send('Image not found');
     }
 }
-
-app.use(express.static('../frontend'));
 
 app.listen(PORT, () =>
     console.log(`Server listening on port ${PORT}`),
