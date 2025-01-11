@@ -6,6 +6,7 @@ import cors from 'cors';
 import multer from 'multer';
 import { processAllFiles } from './sharp.js';
 import optimizationEventEmitter from './optimizationEventEmitter.js';
+import path from 'path';
 
 const app = express();
 const PORT = 5000;
@@ -74,6 +75,8 @@ app.get('/debug-kunde-1/progress', (req, res) => {
         })
     
 });
+
+app.use(express.static('../frontend'));
 
 app.listen(PORT, () =>
     console.log(`Server listening on port ${PORT}`),
