@@ -9,21 +9,21 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
 
     if (files.length <= 0) {
         messageDiv.textContent = 'Bitte mindestens eine Datei auswählen.';
-        messageDiv.style.color = 'red';
+        messageDiv.style.color = 'var(--c-red)';
         return;
     }
 
     //-------- Upload Limitationen --------
     if (files.length > MAX_FILE_COUNT) {
         messageDiv.textContent = `Maximal ${MAX_FILE_COUNT} Dateien auswählen.`;
-        messageDiv.style.color = 'red';
+        messageDiv.style.color = 'var(--c-red)';
         return;
     }
 
     for (let i = 0; i < files.length; i++) {
         if (files[i].size > MAX_FILE_SIZE) {
             messageDiv.textContent = `Die Datei ${files[i].name} überschreitet die maximale Größe von ${MAX_FILE_SIZE / 1024 / 1024} MB.`;
-            messageDiv.style.color = 'red';
+            messageDiv.style.color = 'var(--c-red)';
             return;
         }
     }
@@ -65,7 +65,7 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
 
             if (response.status === 204) {
                 messageDiv.textContent = 'Upload erfolgreich!';
-                messageDiv.style.color = 'green';
+                messageDiv.style.color = 'var(--c-green)';
                 fileInput.value = '';
 
                 //SSE Handling
@@ -74,7 +74,16 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
 
                 if (eventSource) {     
                     eventSource.onmessage = (event) => {
-                        messageDiv.innerHTML = `Optimization status: ${event.data}`;
+
+                        if (event.data === 'done') {
+                            uploadStatusList.innerHTML += '<li>Optimization done</li>';
+                            eventSource.close();
+                        }
+
+                        if (event.data === 'error') {
+                            uploadStatusList.innerHTML += '<li class="error" >Optimization error</li>';
+                            eventSource.close();
+                        }                        
                     };
                 }
             }
@@ -82,6 +91,6 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
     } catch (error) {
         console.error('Fehler beim Hochladen:', error);
         messageDiv.textContent = `Fehler beim Hochladen: ${error.message}`;
-        messageDiv.style.color = 'red';
+        messageDiv.style.color = 'var(--c-red)';
     }
 });

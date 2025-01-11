@@ -138,10 +138,6 @@
 
   }
 
-  #message {
-    margin-top: 10px;
-    color: green;
-  }
 
   /* Card which displys the credit-cost and uplad/cancel options */
   .card {
@@ -204,4 +200,22 @@
       }
     }
   }
+}
+
+#message {
+  margin-top: 10px;
+  color: var(--c-green);
+}
+
+.upload-status-list{
+  list-style-type: none;
+
+  li{
+    color: var(--c-green);
+
+    &.error{
+      color: var(--c-red);
+    }
+  }
+
 }
