@@ -42,7 +42,7 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
         const progressCircle = progressBarContainer.querySelector('#progress-circle circle:nth-child(2)');
 
         filePreview.src = URL.createObjectURL(files[i]);
-        progressBarContainer.classList.add('blur');
+        progressBarContainer.classList.remove('hidden');
         progressLabel.textContent = '0%';
         progressCircle.style.strokeDashoffset = '282.6';
     }

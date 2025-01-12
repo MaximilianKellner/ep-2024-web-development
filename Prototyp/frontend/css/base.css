@@ -10,11 +10,6 @@ body {
   background-color: var(--c-base);
 }
 
-header {
-  margin-top: 40px;
-  margin-left: 50px;
-}
-
 main {
   width: 80%;
   margin: 0 auto;
@@ -33,6 +28,10 @@ main {
   height: 20px;
 }
 
+li, a {
+  text-decoration: none;
+}
+
 button {
   border: none;
   font-size: medium;
@@ -45,5 +44,32 @@ button {
 }
 
 header {
-  position: relative;
+
+  margin-top: 40px;
+  margin-left: 50px;
+  margin-right: 50px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  a {
+    text-decoration: none;
+  }
+}
+
+.nav-links ul {
+  display: flex;
+  list-style: none;
+  gap: var(--m);
+}
+
+.nav-links ul li a h2{
+  font-size: var(--l);
+  font-weight: 600;
+  line-height: normal;
+}
+
+.hover-light-blue:hover {
+  color: var(--c-lighter);
 }
