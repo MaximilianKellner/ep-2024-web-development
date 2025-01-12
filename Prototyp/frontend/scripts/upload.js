@@ -81,13 +81,16 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
                 if (eventSource) {     
                     eventSource.onmessage = (event) => {
 
-                        if (event.data === 'done') {
-                            uploadStatusList.innerHTML += '<li>Optimization done</li>';
+                        messageDiv.innerHTML = `Optimization status: ${event.data}`;
+
+                        if (event.data === 'complete' || event.data === 'done' || event.data === ' complete') {
+                            uploadStatusList.innerHTML += '<li>debug.jpg optimiert</li>';
                             eventSource.close();
                         }
 
-                        if (event.data === 'error') {
-                            uploadStatusList.innerHTML += '<li class="error" >Optimization error</li>';
+                        else if (event.data === 'error') {
+                            console.log('Optimization error');
+                            uploadStatusList.innerHTML += '<li class="error">debug.jpg optimiert</li>';
                             eventSource.close();
                         }                        
                     };
