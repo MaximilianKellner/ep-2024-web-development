@@ -129,19 +129,6 @@
       background-color: var(--c-red);
     }
 
-    /*
-    .progress-bar-container{
-      position: absolute;
-      bottom: 0;
-      left: 0;
-
-      progress{
-        display: n;
-        width: 100%;
-      }
-    }
-    */
-
     .progress-bar-container {
       position: absolute;
       bottom: 0;
@@ -261,6 +248,10 @@
 
 .upload-status-list{
   list-style-type: none;
+  max-height: 100px;
+  overflow-y: auto;
+  padding-right: var(--s);
+  width: fit-content;
 
   li{
     color: var(--c-green);
