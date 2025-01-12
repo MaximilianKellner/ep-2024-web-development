@@ -74,6 +74,8 @@ app.get('/debug-kunde-1/progress', (req, res) => {
     // TODO: Add error handling with callback
     res.write('');
 
+    // TODO: Der Listener sollte mit einer Nutzer-ID verknüpft sein.
+    // TODO: Der Listener sollte nach der Optimierung zerstört werden
     optimizationEventEmitter.on('progress', (progress) => {
         console.log("Progress from emitter: ", progress);
         res.write(progress);
@@ -92,6 +94,21 @@ app.get('/:id/download/:imageName', (req, res, next) => {
 
 });
 
+app.get('/:userId/optimized-images', async (req, res) => {
+    const userId = req.params.userId;
+
+
+    try {
+        const files = (await fs.promises.readdir(OPTIMIZED_DIR)).filter(file =>
+            /\.(jpg|jpeg|png)/i.test(file)
+        );
+        res.json(files);
+    } catch (error) {
+        console.error('Error reading optimized directory:', error);
+        res.status(500).send('Error reading optimized directory');
+    }
+});
+
 async function findImage(imageName) {
     try {
         const files = await fs.promises.readdir(OPTIMIZED_DIR);
@@ -102,7 +119,7 @@ async function findImage(imageName) {
         return null;
     }
 }
-
+// TODO: Suffix sollte wieder entfernt werden.
 async function sendImage(imageName, res) {
     const filePath = `${OPTIMIZED_DIR}/${imageName}`;
     const fileStream = fs.createReadStream(filePath);
