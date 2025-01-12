@@ -37,11 +37,14 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
         formData.append('images', files[i]);
 
         const filePreview = document.querySelector('.file-preview');
-        const progressBar = document.querySelector('progress');
-        const progressLabel = document.querySelector('label');
+        const progressBarContainer = document.querySelector('.progress-bar-container');
+        const progressLabel = progressBarContainer.querySelector('.circle-label');
+        const progressCircle = progressBarContainer.querySelector('#progress-circle circle:nth-child(2)');
 
         filePreview.src = URL.createObjectURL(files[i]);
-        progressBar.value = 0;
+        progressBarContainer.classList.add('blur');
+        progressLabel.textContent = '0%';
+        progressCircle.style.strokeDashoffset = '282.6';
     }
 
     // Upload-Request
@@ -50,18 +53,19 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
             const singleFormData = new FormData();
             singleFormData.append('images', files[i]);
 
+            const fileItem = document.querySelectorAll('.file-item')[i];
+            const progressBarContainer = fileItem.querySelector('.progress-bar-container');
+            const progressLabel = progressBarContainer.querySelector('.circle-label');
+            const progressCircle = progressBarContainer.querySelector('#progress-circle circle:nth-child(2)');
+
             const response = await axios.post('http://localhost:5000/debug-kunde-1/upload', singleFormData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
                 onUploadProgress: function (progressEvent) {
                     const percentCompleted = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-                    const progressBars = document.querySelectorAll('#file-list .file-item progress');
-                    const progressLabels = document.querySelectorAll('#file-list .file-item label');
-
-                    // Fortschrittsanzeige update
-                    progressBars[i].value = percentCompleted;
-                    progressLabels[i].textContent = `${percentCompleted}%`;
+                    progressLabel.textContent = `${percentCompleted}%`;
+                    progressCircle.style.strokeDashoffset = 282.6 - (282.6 * percentCompleted / 100);
                 },
             });
 

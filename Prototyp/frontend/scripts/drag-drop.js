@@ -69,10 +69,13 @@ function handleFiles(files) {
             fileItem.innerHTML = `
             <button class="remove-button" onclick="removeFile(this)">✕</button>
 
-            <div>
-            <label for="progress-bar-ul">0%</label>
-            <progress id="progress-bar-ul" value="0" max="100"></progress>
-            </div>
+            <div class="progress-bar-container">
+                  <label for="progress-circle" class="circle-label">0%</label>
+                  <svg id="progress-circle" width="50" height="50" viewBox="0 0 100 100">
+                      <circle cx="50" cy="50" r="45" stroke="#010015" stroke-width="2" fill="none"/>
+                      <circle cx="50" cy="50" r="45" stroke="#c0d8ff" stroke-width="8" fill="none" stroke-dasharray="282.6" stroke-dashoffset="282.6"/>
+                  </svg>
+                  </div>
 
             <img class="file-preview" src="${e.target.result}" alt="File preview" title="${file.name} (${(file.size / (1024 * 1024)).toFixed(2)} MB)" />
             
@@ -83,7 +86,7 @@ function handleFiles(files) {
         if (file.size > MAX_FILE_SIZE) {
             fileItem.style.border = '3px solid var(--c-red)';
             messageDiv.textContent = `Die farblich markierten Dateien überschreitet die maximale Größe von ${MAX_FILE_SIZE / 1024/1024} MB.`;
-            messageDiv.style.color = 'red';
+            messageDiv.classList.add('error');
 
         }
         
@@ -105,7 +108,7 @@ function checkFileType(files) {
             validFiles.push(files[i]);
         } else {
             messageDiv.textContent = `Mindestens eine Datei hat ein unerlaubtes Format und wurde entfernt. Bitte nur .jpg, .jpeg oder .png Dateien hochladen.`;
-            messageDiv.style.color = 'red';
+            messageDiv.classList.add('error');
             console.log(files[i]);
         }
     }
