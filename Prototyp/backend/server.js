@@ -23,6 +23,7 @@ let optimizationEventActive = false;
 
 // TODO: Definiere erlaubte Origins und weitere Spezifikationen, wenn der Service bereit für Auslieferung ist.
 app.use(cors());
+app.use(express.static('../frontend'));
 
 // TODO: Dateien mit nicht validem oder fehlendem Dateityp sollen abgelehnt werden.
 // TODO: Dateien, die das Credit-Limit übersteigen, sollen abgelehnt werden.
@@ -73,6 +74,8 @@ app.get('/debug-kunde-1/progress', (req, res) => {
     // TODO: Add error handling with callback
     res.write('');
 
+    // TODO: Der Listener sollte mit einer Nutzer-ID verknüpft sein.
+    // TODO: Der Listener sollte nach der Optimierung zerstört werden
     optimizationEventEmitter.on('progress', (progress) => {
         console.log("Progress from emitter: ", progress);
         res.write(progress);
@@ -91,6 +94,21 @@ app.get('/:id/download/:imageName', (req, res, next) => {
 
 });
 
+app.get('/:userId/optimized-images', async (req, res) => {
+    const userId = req.params.userId;
+
+
+    try {
+        const files = (await fs.promises.readdir(OPTIMIZED_DIR)).filter(file =>
+            /\.(jpg|jpeg|png)/i.test(file)
+        );
+        res.json(files);
+    } catch (error) {
+        console.error('Error reading optimized directory:', error);
+        res.status(500).send('Error reading optimized directory');
+    }
+});
+
 async function findImage(imageName) {
     try {
         const files = await fs.promises.readdir(OPTIMIZED_DIR);
@@ -101,8 +119,8 @@ async function findImage(imageName) {
         return null;
     }
 }
-
-async function downloadImage(imageName, res) {
+// TODO: Suffix sollte wieder entfernt werden.
+async function sendImage(imageName, res) {
     const filePath = `${OPTIMIZED_DIR}/${imageName}`;
     const fileStream = fs.createReadStream(filePath);
 
@@ -132,13 +150,11 @@ async function handleImageRequest(imageName, res) {
     let image = await findImage(imageName);
     console.log("Gefunden Bild: ", image);
     if (image) {
-        await downloadImage(image, res);
+        await sendImage(image, res);
     } else {
         res.status(404).send('Image not found');
     }
 }
-
-app.use(express.static('../frontend'));
 
 app.listen(PORT, () =>
     console.log(`Server listening on port ${PORT}`),
