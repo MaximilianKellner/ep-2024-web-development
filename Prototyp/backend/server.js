@@ -89,8 +89,9 @@ app.get('/:id/download/:imageName', (req, res, next) => {
     // TODO: Nutzer-ID einsetzen.
     const userId = req.params.id;
     const imageName = req.params.imageName;
+    const contentDispositionType = 'attachment';
 
-    handleImageRequest(imageName, res);
+    handleImageRequest(imageName, res, contentDispositionType);
 
 });
 
@@ -120,7 +121,7 @@ async function findImage(imageName) {
     }
 }
 // TODO: Suffix sollte wieder entfernt werden.
-async function sendImage(imageName, res) {
+async function sendImage(imageName, res, contentDispositionType) {
     const filePath = `${OPTIMIZED_DIR}/${imageName}`;
     const fileStream = fs.createReadStream(filePath);
 
@@ -134,7 +135,7 @@ async function sendImage(imageName, res) {
         res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');  //Very important!
         res.setHeader('Content-Length', stats.size);
         res.setHeader('Content-Type', 'image/png');
-        res.setHeader('Content-Disposition', `attachment; filename="${imageName}"`);
+        res.setHeader('Content-Disposition', `${contentDispositionType}; filename="${imageName}"`);
 
         // Sende die Datei zum Download
         fileStream.pipe(res);
@@ -146,11 +147,11 @@ async function sendImage(imageName, res) {
     });
 }
 
-async function handleImageRequest(imageName, res) {
+async function handleImageRequest(imageName, res, contentDispositionType) {
     let image = await findImage(imageName);
     console.log("Gefunden Bild: ", image);
     if (image) {
-        await sendImage(image, res);
+        await sendImage(image, res, contentDispositionType);
     } else {
         res.status(404).send('Image not found');
     }
