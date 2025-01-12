@@ -1,5 +1,3 @@
-
-
 document.getElementById('uploadForm').addEventListener('submit', async (event) => {
     event.preventDefault();
 
@@ -10,22 +8,24 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
     const files = fileInput.files;
 
     if (files.length <= 0) {
+
+        //clear classlist 
         messageDiv.textContent = 'Bitte mindestens eine Datei auswählen.';
-        messageDiv.style.color = 'red';
+        messageDiv.classList.add('error');
         return;
     }
 
     //-------- Upload Limitationen --------
     if (files.length > MAX_FILE_COUNT) {
         messageDiv.textContent = `Maximal ${MAX_FILE_COUNT} Dateien auswählen.`;
-        messageDiv.style.color = 'red';
+        messageDiv.classList.add('error');
         return;
     }
 
     for (let i = 0; i < files.length; i++) {
         if (files[i].size > MAX_FILE_SIZE) {
             messageDiv.textContent = `Die Datei ${files[i].name} überschreitet die maximale Größe von ${MAX_FILE_SIZE / 1024 / 1024} MB.`;
-            messageDiv.style.color = 'red';
+            messageDiv.classList.add('error');
             return;
         }
     }
@@ -37,71 +37,66 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
         formData.append('images', files[i]);
 
         const filePreview = document.querySelector('.file-preview');
-        const progressBar = document.querySelector('progress');
-        const progressLabel = document.querySelector('label');
+        const progressBarContainer = document.querySelector('.progress-bar-container');
+        const progressLabel = progressBarContainer.querySelector('.circle-label');
+        const progressCircle = progressBarContainer.querySelector('#progress-circle circle:nth-child(2)');
 
         filePreview.src = URL.createObjectURL(files[i]);
-        progressBar.value = 0;
+        progressBarContainer.classList.add('blur');
+        progressLabel.textContent = '0%';
+        progressCircle.style.strokeDashoffset = '282.6';
     }
 
     // Upload-Request
     try {
-        const response = await axios.post('http://localhost:5000/debug-kunde-1/upload', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-            onUploadProgress: function (progressEvent) {
-                const percentCompleted = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-                const progressBars = document.querySelectorAll('#file-list .file-item progress');
-                const progressLabels = document.querySelectorAll('#file-list .file-item label');
+        for (let i = 0; i < files.length; i++) {
+            const singleFormData = new FormData();
+            singleFormData.append('images', files[i]);
 
-                // Fortschrittsanzeige update
-                for (let i = 0; i < progressBars.length; i++) {
-                    progressBars[i].value = percentCompleted;
-                    progressLabels[i].textContent = `${percentCompleted}%`;
+            const fileItem = document.querySelectorAll('.file-item')[i];
+            const progressBarContainer = fileItem.querySelector('.progress-bar-container');
+            const progressLabel = progressBarContainer.querySelector('.circle-label');
+            const progressCircle = progressBarContainer.querySelector('#progress-circle circle:nth-child(2)');
+
+            const response = await axios.post('http://localhost:5000/debug-kunde-1/upload', singleFormData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                onUploadProgress: function (progressEvent) {
+                    const percentCompleted = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+                    progressLabel.textContent = `${percentCompleted}%`;
+                    progressCircle.style.strokeDashoffset = 282.6 - (282.6 * percentCompleted / 100);
+                },
+            });
+
+            if (response.status === 204) {
+                messageDiv.textContent = 'Upload erfolgreich!';
+                messageDiv.classList.remove('error');
+                fileInput.value = '';
+
+                //SSE Handling
+                // Optimierungsüberwachung mit EventSource (Server-Sent Events)
+                const eventSource = new EventSource('http://localhost:5000/debug-kunde-1/progress');
+
+                if (eventSource) {     
+                    eventSource.onmessage = (event) => {
+
+                        if (event.data === 'done') {
+                            uploadStatusList.innerHTML += '<li>Optimization done</li>';
+                            eventSource.close();
+                        }
+
+                        if (event.data === 'error') {
+                            uploadStatusList.innerHTML += '<li class="error" >Optimization error</li>';
+                            eventSource.close();
+                        }                        
+                    };
                 }
-            },
-        });
-
-        if (response.status === 204) {
-            messageDiv.textContent = 'Upload erfolgreich!';
-            messageDiv.style.color = 'green';
-            fileInput.value = '';
-
-            //SSE Handling
-            // Optimierungsüberwachung mit EventSource (Server-Sent Events)
-            const eventSource = new EventSource('http://localhost:5000/debug-kunde-1/progress');
-
-            if (eventSource) {     
-                eventSource.onmessage = (event) => {
-                    messageDiv.innerHTML = `Optimization status: ${event.data}`;
-                };
-
-                /*
-                eventSource.addEventListener('active', (event) => {
-                    messageDiv.innerHTML = `Optimization active: ${event.data}`;
-                });
-    
-                eventSource.addEventListener('error', (event) => {
-                    messageDiv.innerHTML = `Optimization error: ${event.data}`;
-                });
-    
-                eventSource.addEventListener('complete', (event) => {
-                    messageDiv.innerHTML = `Optimization complete: ${event.data}`;
-                    eventSource.close();
-                });
-    
-                eventSource.onerror = () => {
-                    console.error('Fehler beim Empfangen von Fortschritts-Updates.');
-                    messageDiv.textContent = 'Fehler bei Fortschritts-Updates.';
-                    messageDiv.style.color = 'red';
-                    eventSource.close();
-                };*/
             }
         }
     } catch (error) {
         console.error('Fehler beim Hochladen:', error);
         messageDiv.textContent = `Fehler beim Hochladen: ${error.message}`;
-        messageDiv.style.color = 'red';
+        messageDiv.classList.add('error');
     }
 });

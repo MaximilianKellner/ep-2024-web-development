@@ -59,22 +59,54 @@
           <div class="file-row">
             <div id="file-list">
               
+              <div class="file-item">
+                <button class="remove-button" onclick="removeFile(this)">✕</button>
+    
+                <div class="progress-bar-container">
+                <label for="progress-bar-ul">0%</label>
+                <progress id="progress-bar-ul" value="0" max="100"></progress>
+                </div>
+    
+                <img class="file-preview" src="img/debug.jpg" alt="debug.jpg" />
+                
+              </div>
+
+              <div class="file-item">
+                <button class="remove-button" onclick="removeFile(this)">✕</button>
+    
+                <div class="progress-bar-container">
+                  <label for="progress-circle" class="circle-label">0%</label>
+                  <svg id="progress-circle" width="50" height="50" viewBox="0 0 100 100">
+                      <circle cx="50" cy="50" r="45" stroke="#010015" stroke-width="2" fill="none"/>
+                      <circle cx="50" cy="50" r="45" stroke="#c0d8ff" stroke-width="8" fill="none" stroke-dasharray="282.6" stroke-dashoffset="282.6"/>
+                  </svg>
+                  </div>
+    
+                <img class="file-preview" src="img/debug.jpg" alt="debug.jpg" />
+                
+              </div>
+
             </div>
 
             <div class="card">
               <h3 class="credits">- 0 cp</h3>
               <div class="actions">
                 <button class="action reject" onclick="resetFiles()">✕</button>
-                <button class="action accept" type="submit">✔</button>
+                <button class="action accept" type="submit">
+                  <img src="./img/icon/upload-icon.svg" alt="upload-icon" />
+                </button>
               </div>
             </div>
           </div>
         </form>
       </div>
       <div id="message"></div>
-      <div class="upload-status-list"></div> 
 
-      <h2>Übertragene Dateien</h2>
+      <ul class="upload-status-list">
+
+      </ul>
+
+      <h2>Optimierte Dateien</h2>
       <p>
         Hier findest du deine hochgeladenen Dateien, die bereits optimiert
         wurden. Sie sind ab dem Zeitpunkt des Uploads 24 Stunden lang verfügbar
