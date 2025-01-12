@@ -69,7 +69,7 @@ function handleFiles(files) {
             fileItem.innerHTML = `
             <button class="remove-button" onclick="removeFile(this)">✕</button>
 
-            <div class="progress-bar-container">
+            <div class="progress-bar-container blur hidden">
                   <label for="progress-circle" class="circle-label">0%</label>
                   <svg id="progress-circle" width="50" height="50" viewBox="0 0 100 100">
                       <circle cx="50" cy="50" r="45" stroke="#010015" stroke-width="2" fill="none"/>

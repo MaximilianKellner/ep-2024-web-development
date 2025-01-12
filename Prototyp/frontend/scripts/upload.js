@@ -30,42 +30,25 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
         }
     }
 
-    //-------- Anfrage und Antwort --------
-
-    const formData = new FormData();
-    for (let i = 0; i < files.length; i++) {
-        formData.append('images', files[i]);
-
-        const filePreview = document.querySelector('.file-preview');
-        const progressBarContainer = document.querySelector('.progress-bar-container');
-        const progressLabel = progressBarContainer.querySelector('.circle-label');
-        const progressCircle = progressBarContainer.querySelector('#progress-circle circle:nth-child(2)');
-
-        filePreview.src = URL.createObjectURL(files[i]);
-        progressBarContainer.classList.add('blur');
-        progressLabel.textContent = '0%';
-        progressCircle.style.strokeDashoffset = '282.6';
-    }
-
     // Upload-Request
     try {
         for (let i = 0; i < files.length; i++) {
             const singleFormData = new FormData();
             singleFormData.append('images', files[i]);
 
-            const fileItem = document.querySelectorAll('.file-item')[i];
-            const progressBarContainer = fileItem.querySelector('.progress-bar-container');
-            const progressLabel = progressBarContainer.querySelector('.circle-label');
-            const progressCircle = progressBarContainer.querySelector('#progress-circle circle:nth-child(2)');
+            const progressBarContainers = document.querySelectorAll('.progress-bar-container');
+            const progressLabels = document.querySelectorAll('.circle-label');
+            const progressCircles = document.querySelectorAll('#progress-circle circle:nth-child(2)');
 
             const response = await axios.post('http://localhost:5000/debug-kunde-1/upload', singleFormData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
                 onUploadProgress: function (progressEvent) {
+                    progressBarContainers[i].classList.remove('hidden');
                     const percentCompleted = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-                    progressLabel.textContent = `${percentCompleted}%`;
-                    progressCircle.style.strokeDashoffset = 282.6 - (282.6 * percentCompleted / 100);
+                    progressLabels[i].textContent = `${percentCompleted}%`;
+                    progressCircles[i].style.strokeDashoffset = 282.6 - (282.6 * percentCompleted / 100);
                 },
             });
 
@@ -81,13 +64,16 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
                 if (eventSource) {     
                     eventSource.onmessage = (event) => {
 
-                        if (event.data === 'done') {
-                            uploadStatusList.innerHTML += '<li>Optimization done</li>';
+                        messageDiv.innerHTML = `Optimization status: ${event.data}`;
+
+                        if (event.data === 'complete' || event.data === 'done' || event.data === ' complete') {
+                            uploadStatusList.innerHTML += '<li>debug.jpg optimiert</li>';
                             eventSource.close();
                         }
 
-                        if (event.data === 'error') {
-                            uploadStatusList.innerHTML += '<li class="error" >Optimization error</li>';
+                        else if (event.data === 'error') {
+                            console.log('Optimization error');
+                            uploadStatusList.innerHTML += '<li class="error">debug.jpg optimiert</li>';
                             eventSource.close();
                         }                        
                     };
