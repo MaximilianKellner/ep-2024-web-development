@@ -31,7 +31,7 @@ function getCustomerData(filterworld) {
 }
 
 
-
+// TODO: Originale der bereits optimierten Dateien entfernen.
 async function processAllFiles(customerID) {
     
     try {
@@ -53,7 +53,7 @@ async function processAllFiles(customerID) {
             const outputPath = path.join(optimizedDir, file);
 
             try {
-                await compressToSize(inputPath, outputPath);
+                await compressToSize(inputPath, outputPath, file);
                 console.log(`Successfully processed: ${file}`);
             } catch (error) {
                 console.error(`Error processing ${file}:`, error);
@@ -65,7 +65,7 @@ async function processAllFiles(customerID) {
     }
 }
 
-async function compressToSize(inputPath, outputPath) {
+async function compressToSize(inputPath, outputPath, fileName) {
     try {
         let maxSizeInMB = getCustomerData('max-file-size-kb') / 1024; //Output ist eine Zahl
         if (!maxSizeInMB) {
@@ -83,16 +83,16 @@ async function compressToSize(inputPath, outputPath) {
             currentSize = fs.statSync(outputPath).size / (1024 * 1024); // Convert to MB
             console.log(`Current size: ${currentSize.toFixed(3)} MB at quality: ${quality}`);
             quality -= 5;
-
-            optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.active);
+            // TODO: Send file name
+            optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Active, fileName);
         }
 
         if (currentSize <= maxSizeInMB) {
             console.log(`Successfully compressed to ${currentSize.toFixed(3)} MB`);
-            optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.complete)
+            optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Complete, fileName);
             return outputPath;
         } else {
-            optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.error);
+            optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Error, fileName);
             throw new Error('Konnte nicht zur gewünschten Größe komprimiert werden');
         }
     } catch (error) {
