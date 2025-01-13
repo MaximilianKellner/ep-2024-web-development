@@ -76,10 +76,17 @@ app.get('/debug-kunde-1/progress', (req, res) => {
 
     // TODO: Der Listener sollte mit einer Nutzer-ID verknüpft sein.
     // TODO: Der Listener sollte nach der Optimierung zerstört werden
-    optimizationEventEmitter.on('progress', (progress) => {
-        console.log("Progress from emitter: ", progress);
-        res.write(progress);
-    })
+    const sendProgress = (status, fileName) => {
+        const data = JSON.stringify({ status, fileName });
+        res.write(`data: ${data}\n\n`);
+    };
+
+    optimizationEventEmitter.on('progress', sendProgress);
+
+    req.on('close', () => {
+        console.log('Connection closed');
+        optimizationEventEmitter.removeListener('progress', sendProgress);
+    });
 
 });
 
