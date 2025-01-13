@@ -66,6 +66,11 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
 
                         messageDiv.innerHTML = `Optimization status: ${event.data}`;
 
+                        const eventObject = JSON.parse(event.data);
+                        const status = eventObject.status;
+                        const fileName = eventObject.fileName;
+                        console.log("Status: ", status, "Filename: ", fileName);
+
                         if (event.data === 'complete' || event.data === 'done' || event.data === ' complete') {
                             uploadStatusList.innerHTML += '<li>debug.jpg optimiert</li>';
                             eventSource.close();
