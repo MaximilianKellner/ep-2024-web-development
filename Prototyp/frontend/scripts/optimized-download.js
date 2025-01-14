@@ -4,7 +4,7 @@ function createImageRequest(image) {
     });
 }
 
-function calculateDaysSinceCreation(fileName) {
+function calculateHoursLeft(fileName) {
     const uniqueSuffix = fileName.split('-').pop();
     const timestamp = uniqueSuffix.split('_')[0];
 
@@ -20,12 +20,13 @@ function calculateDaysSinceCreation(fileName) {
     // Berechne die Differenz in Tagen
     const currentDate = new Date();
     const timeDifference = currentDate - creationDate;
-    const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+    const hoursDifference = Math.floor(timeDifference / (1000 * 60 * 60));
+    const hoursLeft = MAX_FILE_STORAGE_HOURS - hoursDifference;
 
     console.log(`Erstellt am: ${creationDate.toLocaleString()}`);
-    console.log(`Vergangene Tage: ${daysDifference}`);
+    console.log(`Vergangene Stunden: ${hoursDifference}`);
 
-    return daysDifference;
+    return hoursLeft;
 }
 
 function getFileNameWithoutSuffix(fileName) {
@@ -78,8 +79,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         uploadDateCell.textContent = creationDate.toLocaleString();
 
                         const remainingTimeCell = document.createElement('td');
-                        const daysDifference = calculateDaysSinceCreation(fileNames[index]);
-                        remainingTimeCell.textContent = `${daysDifference} Tage`;
+                        const hoursLeft = calculateHoursLeft(fileNames[index]);
+                        remainingTimeCell.textContent = `${hoursLeft}h`;
 
                         const downloadCell = document.createElement('td');
                         const downloadButton = document.createElement('button');
