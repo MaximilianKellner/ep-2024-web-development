@@ -36,7 +36,9 @@ const storage = multer.diskStorage({
         cb(null, UPLOAD_DIR);
     },
     filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '' + Math.round(Math.random() * 1E9);
+        const timestamp = Date.now();
+        const randomSuffix = Math.round(Math.random() * 1E9);
+        const uniqueSuffix = `${timestamp}_${randomSuffix}`;
         console.log("Unique suffix: ", uniqueSuffix);
         cb(null, `${file.originalname}-${uniqueSuffix}`);
     }
@@ -91,12 +93,12 @@ app.get('/debug-kunde-1/progress', (req, res) => {
 });
 
 app.get('/:id/download/:imageName', (req, res, next) => {
+    const contentDispositionType = req.query.cdtype ? 'inline' : 'attachment';
 
     // TODO: Mehrere Dateien könnten den gleichen Namen haben und sollten unterschieden werden.
     // TODO: Nutzer-ID einsetzen.
     const userId = req.params.id;
     const imageName = req.params.imageName;
-    const contentDispositionType = 'attachment';
 
     handleImageRequest(imageName, res, contentDispositionType);
 
