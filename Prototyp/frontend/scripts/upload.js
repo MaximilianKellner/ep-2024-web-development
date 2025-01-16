@@ -95,9 +95,13 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
                             uploadStatusList.innerHTML += `<li class="error">${fileName_noSuffix} error</li>`;
                         }
                         else if (status === 'close') {
+                            messageDiv.textContent = 'Vorgang abgeschlossen';
+                            messageDiv.classList.remove('error');
+
                             loadOptimizedTable();
                             console.log('Connection closed');
                             eventSource.close();
+                            resetFiles();
                         }
                     };
                 }
