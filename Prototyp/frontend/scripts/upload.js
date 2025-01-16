@@ -67,6 +67,10 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
                         const eventObject = JSON.parse(event.data);
                         const status = eventObject.status;
                         const fileName = eventObject.fileName;
+                        const credits = eventObject.credits;
+
+                        //errors are handled in the backend
+                        document.querySelector('.credits-banner').textContent = `${credits} Credits`;
  
                         // rm suffix
                         const suffixIndex = fileName.lastIndexOf('-');
