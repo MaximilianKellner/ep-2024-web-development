@@ -69,8 +69,12 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
                         const fileName = eventObject.fileName;
                         const credits = eventObject.credits;
 
-                        //errors are handled in the backend
-                        document.querySelector('.credits-banner').textContent = `${credits} Credits`;
+                        // Set Credit Banner
+                        if (credits >= 0) {
+                            document.querySelector('.credits-banner').textContent = `${credits} Credits`;   
+                        } else {
+                            document.querySelector('.credits-banner').textContent = `-1 Credits`;
+                        }
  
                         // rm suffix
                         const suffixIndex = fileName.lastIndexOf('-');
