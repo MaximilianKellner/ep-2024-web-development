@@ -134,6 +134,19 @@ app.get('/:userId/optimized-images', async (req, res) => {
     }
 });
 
+app.get('/:userId/credits', async (req, res) => {
+    const userId = req.params.userId;
+
+    try {
+        const customerData = await fs.promises.readFile(`./customers/${userId}/customer-data.json`, 'utf8');
+        const credits = JSON.parse(customerData).configSettings.credits;
+        res.json({ credits });
+    } catch (error) {
+        console.error('Error reading credits:', error);
+        res.status(500).send('Error reading credits');
+    }
+});
+
 async function findImage(imageName) {
     try {
         const files = await fs.promises.readdir(OPTIMIZED_DIR);
