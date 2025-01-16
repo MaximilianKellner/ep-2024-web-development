@@ -78,14 +78,16 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
 
                         if (status === 'complete') {
                             uploadStatusList.innerHTML += `<li>${fileName_noSuffix} optimiert</li>`;
-                            eventSource.close();
                         }
 
                         else if (status === 'error') {
                             console.log('Optimization error');
                             uploadStatusList.innerHTML += `<li class="error">${fileName_noSuffix} error</li>`;
+                        }
+                        else if (status === 'close') {
+                            console.log('Connection closed');
                             eventSource.close();
-                        }                        
+                        }
                     };
                 }
             }
