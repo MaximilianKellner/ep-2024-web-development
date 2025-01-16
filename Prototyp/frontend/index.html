@@ -36,8 +36,10 @@
     <main>
       <h2>Dateien hochladen</h2>
       <div id="drop-area">
-        <h3 class="credits-banner"></h3>
-
+        <div class="credits-banner">
+          <div class="credits current">99999 Credits</div>
+          <div class="credits subtract"> -0 cp</div>
+        </div>
         <form id="uploadForm">
           <div class="upload-center">
             <img
@@ -70,13 +72,10 @@
             </div>
 
             <div class="card">
-              <h3 class="credits">- 0 cp</h3>
-              <div class="actions">
                 <button class="action reject" onclick="resetFiles()">✕</button>
                 <button class="action accept" type="submit">
                   <img src="./img/icon/upload-icon.svg" alt="upload-icon" />
                 </button>
-              </div>
             </div>
           </div>
         </form>

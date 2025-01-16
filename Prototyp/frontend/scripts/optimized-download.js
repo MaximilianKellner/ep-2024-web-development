@@ -60,6 +60,11 @@ function createTableRow(fileData) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    loadOptimizedTable();
+});
+
+function loadOptimizedTable() {
+
     const tbody = document.getElementById('image-table-body');
 
     // Event Delegation für Download Buttons
@@ -110,4 +115,4 @@ document.addEventListener('DOMContentLoaded', () => {
                 .catch(err => console.error('Fehler beim Laden der Bilder:', err));
         })
         .catch(err => console.error('Fehler beim Abrufen der Dateiliste:', err));
-});
+}
