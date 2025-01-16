@@ -52,7 +52,7 @@ function createTableRow(fileData) {
             <td>${hoursLeft}h</td>
             <td>
                 <button class="download-btn" data-url="${url}" data-filename="${fileNameWithoutSuffix}">
-                    <img src="./img/icon/download.svg" alt="download" />
+                    <img src="./img/icon/download.svg" alt="download" onclick="this.parentElement.click()" />
                 </button>
             </td>
         </tr>
