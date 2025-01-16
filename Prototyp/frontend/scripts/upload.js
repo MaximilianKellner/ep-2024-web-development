@@ -71,9 +71,9 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
 
                         // Set Credit Banner
                         if (credits >= 0) {
-                            document.querySelector('.credits-banner').textContent = `${credits} Credits`;   
+                            document.getElementById('credits-current').textContent = `${credits} Credits`;   
                         } else {
-                            document.querySelector('.credits-banner').textContent = `-1 Credits`;
+                            document.getElementById('credits-current').textContent = `-1 Credits`;
                         }
  
                         // rm suffix
@@ -95,9 +95,13 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
                             uploadStatusList.innerHTML += `<li class="error">${fileName_noSuffix} error</li>`;
                         }
                         else if (status === 'close') {
+                            messageDiv.textContent = 'Vorgang abgeschlossen';
+                            messageDiv.classList.remove('error');
+
                             loadOptimizedTable();
                             console.log('Connection closed');
                             eventSource.close();
+                            resetFiles();
                         }
                     };
                 }
@@ -116,8 +120,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         const response = await axios.get('http://localhost:5000/debug-kunde-1/credits');
         const credits = response.data.credits;
         console.log('Credits on Load:', credits);
-        document.querySelector('.credits-banner').textContent = `${credits} Credits`;
+        document.getElementById('credits-current').textContent = `${credits} Credits`;
     } catch (error) {
+        document.getElementById('credits-current').textContent = `-1 Credits`;
+
         console.error('Error getting credits:', error);
     }
 });
