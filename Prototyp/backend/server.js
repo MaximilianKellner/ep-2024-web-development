@@ -18,6 +18,9 @@ const OPTIMIZED_DIR = './customers/debug-kunde-1/optimized';
 
 let optimizationEventActive = false;
 
+// TODO: Credit Points an Client mitschicken.
+// TODO: Die Bilder sollten nach der 
+// TODO: Der Ordner uploaded sollte nach der Optimierung geleert werden.
 // TODO: Felder in der JSON überarbeiten -> maxFileinKB, maxWidthInPX sind irreführend.
 // TODO: Endpunkt, um über die zum Download bereiten Dateien zu informieren (/available-downloads).
 
@@ -66,7 +69,7 @@ app.post('/:id/upload', upload.array('images'), (req, res, next) => {
         .catch(error => console.error('Error processing files:', error));
 });
 
-app.get('/debug-kunde-1/progress', (req, res) => {
+app.get('/debug-kunde-1/progress', async (req, res) => {
 
     //TODO: Work with user id from request
     res.setHeader('Content-Type', 'text/event-stream');
@@ -76,10 +79,22 @@ app.get('/debug-kunde-1/progress', (req, res) => {
     // TODO: Add error handling with callback
     res.write('');
 
+    // Get credits from user
+
+    let credits = undefined;
+    try {
+        const customerData = await fs.promises.readFile('./customers/debug-kunde-1/customer-data.json', 'utf8');
+        credits = JSON.parse(customerData).configSettings.credits;
+        console.log('Credits:', credits);
+    } catch (error) {  
+        console.error('Error reading credits:', error);
+        res.status(500).send('Error reading credits');
+    }
+
     // TODO: Der Listener sollte mit einer Nutzer-ID verknüpft sein.
     // TODO: Der Listener sollte nach der Optimierung zerstört werden
     const sendProgress = (status, fileName) => {
-        const data = JSON.stringify({ status, fileName });
+        const data = JSON.stringify({ status, fileName, credits });
         res.write(`data: ${data}\n\n`);
     };
 
