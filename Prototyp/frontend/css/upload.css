@@ -48,9 +48,9 @@
   background: linear-gradient(91deg, var(--c-fade-1) 0%, var(--c-fade-2) 100%);
   border-radius: var(--border-radius-base);
   padding: var(--s);
-  min-height: fit-content;
   text-align: center;
   position: relative;
+  min-height: 300px;
 }
 
 #drop-area.highlight {
@@ -67,11 +67,15 @@
 }
 
 .upload-center {
-  padding: 150px 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  width: 100%;
 }
 
 .file-upload-container {
@@ -103,6 +107,8 @@
   display: flex;
   align-items: end;
 
+
+  margin-top: 300px;
   #file-list {
     width: 100%;
     display: flex;
