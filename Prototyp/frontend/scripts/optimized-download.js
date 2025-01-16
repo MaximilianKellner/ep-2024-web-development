@@ -35,7 +35,47 @@ function getFileNameWithoutSuffix(fileName) {
     return parts.join('-'); // Füge die Teile wieder zusammen
 }
 
+function createTableRow(fileData) {
+    const { url, fileName, fileNameWithoutSuffix, blob, creationDate, hoursLeft } = fileData;
+    
+    return `
+        <tr>
+            <td>
+                <input type="checkbox" name="selector">
+            </td>
+            <td>
+                <img class="preview-mid" src="${url}" alt="${fileNameWithoutSuffix}">
+            </td>
+            <td>${fileNameWithoutSuffix}</td>
+            <td>${(blob.size / 1024).toFixed(2)} KB</td>
+            <td>${creationDate.toLocaleString()}</td>
+            <td>${hoursLeft}h</td>
+            <td>
+                <button class="download-btn" data-url="${url}" data-filename="${fileNameWithoutSuffix}">
+                    <img src="./img/icon/download.svg" alt="download" />
+                </button>
+            </td>
+        </tr>
+    `;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    const tbody = document.getElementById('image-table-body');
+
+    // Event Delegation für Download Buttons
+    tbody.addEventListener('click', (e) => {
+        if (e.target.classList.contains('download-btn')) {
+            const url = e.target.dataset.url;
+            const filename = e.target.dataset.filename;
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', filename);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        }
+    });
+
     axios.get('http://localhost:5000/debug-kunde-1/optimized-images')
         .then((response) => {
             const fileNames = response.data;
@@ -45,68 +85,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
             Promise.all(imageRequests)
                 .then(responses => {
-                    const tbody = document.getElementById('image-table-body');
-                    responses.forEach(({ data, headers }, index) => {
+                    const tableContent = responses.map((response, index) => {
+                        const { data, headers } = response;
                         const contentType = headers['content-type'];
                         const blob = new Blob([data], { type: contentType });
                         const url = URL.createObjectURL(blob);
-
-                        const row = document.createElement('tr');
-
-                        const checkboxCell = document.createElement('td');
-                        const checkbox = document.createElement('input');
-                        checkbox.type = 'checkbox';
-                        checkbox.name = 'selector';
-                        checkboxCell.appendChild(checkbox);
-
-                        const previewCell = document.createElement('td');
-                        const img = document.createElement('img');
-                        img.className = 'preview-mid';
-                        img.src = url;
-                        previewCell.appendChild(img);
-
-                        const nameCell = document.createElement('td');
-                        const fileNameWithoutSuffix = getFileNameWithoutSuffix(fileNames[index]);
-                        nameCell.textContent = fileNameWithoutSuffix;
-
-                        const sizeCell = document.createElement('td');
-                        sizeCell.textContent = `${(blob.size / 1024).toFixed(2)} KB`;
-
-                        const uploadDateCell = document.createElement('td');
-                        const uniqueSuffix = fileNames[index].split('-').pop(); // assuming the uniqueSuffix is part of the filename
+                        const uniqueSuffix = fileNames[index].split('-').pop();
                         const timestamp = uniqueSuffix.split('_')[0];
                         const creationDate = new Date(parseInt(timestamp));
-                        uploadDateCell.textContent = creationDate.toLocaleString();
-
-                        const remainingTimeCell = document.createElement('td');
                         const hoursLeft = calculateHoursLeft(fileNames[index]);
-                        remainingTimeCell.textContent = `${hoursLeft}h`;
 
-                        const downloadCell = document.createElement('td');
-                        const downloadButton = document.createElement('button');
-                        downloadButton.textContent = 'Download';
-                        downloadButton.addEventListener('click', () => {
-                            const link = document.createElement('a');
-                            link.href = url;
-                            link.setAttribute('download', fileNamesWithoutSuffix[index]);
-                            document.body.appendChild(link);
-                            link.click();
-                            link.remove();
+                        return createTableRow({
+                            url,
+                            fileName: fileNames[index],
+                            fileNameWithoutSuffix: fileNamesWithoutSuffix[index],
+                            blob,
+                            creationDate,
+                            hoursLeft
                         });
-                        downloadCell.appendChild(downloadButton);
+                    }).join('');
 
-                        row.appendChild(checkboxCell);
-                        row.appendChild(previewCell);
-                        row.appendChild(nameCell);
-                        row.appendChild(sizeCell);
-                        row.appendChild(uploadDateCell);
-                        row.appendChild(remainingTimeCell);
-                        row.appendChild(downloadCell);
-
-                        tbody.appendChild(row);
-                    });
+                    tbody.innerHTML = tableContent;
                 })
-                .catch(err => console.log(err));
+                .catch(err => console.error('Fehler beim Laden der Bilder:', err));
         })
-        .catch(err => console.log(err));
+        .catch(err => console.error('Fehler beim Abrufen der Dateiliste:', err));
 });
