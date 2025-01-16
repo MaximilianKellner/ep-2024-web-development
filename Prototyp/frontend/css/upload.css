@@ -102,13 +102,13 @@
 }
 
 .file-row {
+  height: 80px;
   padding-top: var(--s);
-
   display: flex;
-  align-items: end;
-
+  align-items: center;
 
   margin-top: 300px;
+
   #file-list {
     width: 100%;
     display: flex;
@@ -211,19 +211,14 @@
   }
 
 
-  /* Card which displys the credit-cost and uplad/cancel options */
+  /* Card which displys uplad/cancel options */
   .card {
-    margin-top: var(
-      --s
-    ); /*verhindert, dass die row springt, wenn alle cards gelöscht sind.*/
+    margin-top: var(--xs); /*verhindert, dass die row springt, wenn alle cards gelöscht sind.*/
     background-color: var(--c-base);
     border-radius: var(--border-radius-small);
     box-shadow: var(--shadow);
     display: flex;
-    flex-direction: row;
     align-items: center;
-    height: min-content;
-    width: min-content;
     opacity: 1;
 
     transition: all 0.2s ease;
@@ -234,7 +229,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 32px;
+      height: var(--xxxl);
+      width: var(--xxxl);
       font-size: 20px;
       font-weight: bold;
       border-radius: 0;
