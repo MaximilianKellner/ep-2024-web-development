@@ -1,24 +1,56 @@
-.credits-banner {
+.credits-banner{
+  float: right;
+  position: relative;
+  z-index: 1;
+}
+  .credits {
+    display: flex;
   color: var(--c-base);
   border-radius: var(--border-radius-small);
-  background: #c0d8ff;
+  background: var(--c-lighter);
   box-shadow: var(--shadow);
-
   font-style: italic;
   font-weight: 700;
-  width: fit-content;
-  padding: var(--xs);
-  float: right;
-  margin-bottom: -50px;
+  padding: calc(var(--xs)/2) var(--xs);
+  transition: all 0.3s ease-in-out;
+  box-sizing: border-box; /*FiX: Padding wird in die Breite eingerechnet */
+
+  &.current {
+    position: relative;
+    z-index: 2;
+    width: fit-content;
+
+    &.active {
+      border-radius: var(--border-radius-small) var(--border-radius-small) 0 0 ;
+    }
+  }
+
+  &.subtract {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translateY(0);
+    color: white;
+    background: var(--c-base);
+    transition: all 0.3s ease-in-out;
+    width: 100%;
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    
+    &.active {
+      transform: translateY(100%);
+      border-radius: 0 0 var(--border-radius-small) var(--border-radius-small);
+    }}
 }
 
 #drop-area {
   background: linear-gradient(91deg, var(--c-fade-1) 0%, var(--c-fade-2) 100%);
   border-radius: var(--border-radius-base);
   padding: var(--s);
-  min-height: fit-content;
   text-align: center;
   position: relative;
+  min-height: 300px;
 }
 
 #drop-area.highlight {
@@ -35,11 +67,15 @@
 }
 
 .upload-center {
-  padding: 150px 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  width: 100%;
 }
 
 .file-upload-container {
@@ -66,10 +102,12 @@
 }
 
 .file-row {
+  height: 80px;
   padding-top: var(--s);
-
   display: flex;
-  align-items: end;
+  align-items: center;
+
+  margin-top: 300px;
 
   #file-list {
     width: 100%;
@@ -170,47 +208,29 @@
           transform-origin: 50% 50%;
       }
   }
-
   }
 
 
-  /* Card which displys the credit-cost and uplad/cancel options */
+  /* Card which displys uplad/cancel options */
   .card {
-    margin-top: var(
-      --s
-    ); /*verhindert, dass die row springt, wenn alle cards gelöscht sind.*/
+    margin-top: var(--xs); /*verhindert, dass die row springt, wenn alle cards gelöscht sind.*/
     background-color: var(--c-base);
     border-radius: var(--border-radius-small);
     box-shadow: var(--shadow);
     display: flex;
-    flex-direction: column;
     align-items: center;
-    height: min-content;
-    width: min-content;
     opacity: 0;
 
     transition: all 0.2s ease;
 
-    .credits {
-      height: 32px;
-      font-size: 16px;
-      font-style: italic;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-    }
-
-    .actions {
-      display: flex;
-      width: 100%;
-    }
 
     .action {
       flex: 1;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 32px;
+      height: var(--xxxl);
+      width: var(--xxxl);
       font-size: 20px;
       font-weight: bold;
       border-radius: 0;
@@ -218,12 +238,14 @@
       &.reject {
         background-color: var(--c-base);
         border-bottom-left-radius: var(--border-radius-small);
+        border-top-left-radius: var(--border-radius-small);
       }
 
       &.accept {
         background-color: var(--c-lighter);
         color: var(--c-base);
         border-bottom-right-radius: var(--border-radius-small);
+        border-top-right-radius: var(--border-radius-small);
       }
 
       &.accept:hover {
