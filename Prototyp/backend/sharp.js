@@ -73,11 +73,23 @@ async function compressToSize(inputPath, outputPath, fileName) {
         }
         let quality = 100;
         let currentSize = fs.statSync(inputPath).size / (1024 * 1024); // Convert to MB
+    
         console.log(`Original size: ${currentSize.toFixed(3)} MB`);
+
+        if (currentSize <= maxSizeInMB) {
+            await sharp(inputPath)
+                .jpeg({ quality: 100 })
+                .rotate()
+                .toFile(outputPath);
+            console.log(`File already within size limit, copying to optimized folder`);
+            optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Complete, fileName);
+            return outputPath;
+        }
 
         while (currentSize > maxSizeInMB && quality > 0) {
             await sharp(inputPath)
                 .jpeg({ quality: quality })
+                .rotate() // Auto-rotate based on EXIF data
                 .toFile(outputPath);
 
             currentSize = fs.statSync(outputPath).size / (1024 * 1024); // Convert to MB
