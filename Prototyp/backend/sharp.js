@@ -52,13 +52,15 @@ async function processAllFiles(customerID) {
             const inputPath = path.join(uploadDir, file);
             const outputPath = path.join(optimizedDir, file);
 
-            try {
-                await compressToSize(inputPath, outputPath, file);
-                optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Close, file);
-                console.log(`Successfully processed: ${file}`);
+           try {
+                const done = await compressToSize(inputPath, outputPath, file);
+                console.log(Successfully processed: ${file});
+                if (done != undefined)   {
+                    optimizationEventEmitter.updateCredits(customerID);
+                }
             } catch (error) {
-                console.error(`Error processing ${file}:`, error);
-            }
+                console.error(Error processing ${file}:, error);
+            }
         }
     } catch (error) {
         console.error('Error reading directory:', error);
