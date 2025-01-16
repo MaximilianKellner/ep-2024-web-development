@@ -54,6 +54,7 @@ async function processAllFiles(customerID) {
 
             try {
                 await compressToSize(inputPath, outputPath, file);
+                optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Close, file);
                 console.log(`Successfully processed: ${file}`);
             } catch (error) {
                 console.error(`Error processing ${file}:`, error);

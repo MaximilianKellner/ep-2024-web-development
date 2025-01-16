@@ -19,8 +19,8 @@ const OPTIMIZED_DIR = './customers/debug-kunde-1/optimized';
 
 let optimizationEventActive = false;
 
+// TODO: Auf verschieden Browsern testen -> Multiple download funktioniert nicht auf Chrome
 // TODO: Credit Points an Client mitschicken. -> DONE
-// TODO: Die Bilder sollten nach der Optimierung aus ./uploaded gelöscht werden. -> DONE
 // TODO: Der Ordner uploaded sollte nach der Optimierung geleert werden.
 // TODO: Felder in der JSON überarbeiten -> maxFileinKB, maxWidthInPX sind irreführend.
 // TODO: Endpunkt, um über die zum Download bereiten Dateien zu informieren (/available-downloads).

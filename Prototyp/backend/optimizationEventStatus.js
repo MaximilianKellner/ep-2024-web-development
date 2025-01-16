@@ -1,7 +1,8 @@
 const OptimizationEventStatus = {
     "Active": 'active',
     "Error": 'error',
-    "Complete": 'complete'
+    "Complete": 'complete',
+    "Close": 'close'
 }
 
 export default OptimizationEventStatus;
