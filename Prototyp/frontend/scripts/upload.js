@@ -80,15 +80,18 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
 
                         messageDiv.innerHTML = `${fileName_noSuffix} status: ${status}`;
 
+                        /*
                         if (status === 'complete') {
                             uploadStatusList.innerHTML += `<li>${fileName_noSuffix} optimiert</li>`;
                         }
+                        */
 
-                        else if (status === 'error') {
+                        if (status === 'error') {
                             console.log('Optimization error');
                             uploadStatusList.innerHTML += `<li class="error">${fileName_noSuffix} error</li>`;
                         }
                         else if (status === 'close') {
+                            loadOptimizedTable();
                             console.log('Connection closed');
                             eventSource.close();
                         }
