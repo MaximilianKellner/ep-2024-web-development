@@ -69,8 +69,12 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
                         const fileName = eventObject.fileName;
                         const credits = eventObject.credits;
 
-                        //errors are handled in the backend
-                        document.querySelector('.credits-banner').textContent = `${credits} Credits`;
+                        // Set Credit Banner
+                        if (credits >= 0) {
+                            document.getElementById('credits-current').textContent = `${credits} Credits`;   
+                        } else {
+                            document.getElementById('credits-current').textContent = `-1 Credits`;
+                        }
  
                         // rm suffix
                         const suffixIndex = fileName.lastIndexOf('-');
@@ -80,17 +84,24 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
 
                         messageDiv.innerHTML = `${fileName_noSuffix} status: ${status}`;
 
+                        /*
                         if (status === 'complete') {
                             uploadStatusList.innerHTML += `<li>${fileName_noSuffix} optimiert</li>`;
                         }
+                        */
 
-                        else if (status === 'error') {
+                        if (status === 'error') {
                             console.log('Optimization error');
                             uploadStatusList.innerHTML += `<li class="error">${fileName_noSuffix} error</li>`;
                         }
                         else if (status === 'close') {
+                            messageDiv.textContent = 'Vorgang abgeschlossen';
+                            messageDiv.classList.remove('error');
+
+                            loadOptimizedTable();
                             console.log('Connection closed');
                             eventSource.close();
+                            resetFiles();
                         }
                     };
                 }
@@ -100,5 +111,19 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
         console.error('Fehler beim Hochladen:', error);
         messageDiv.textContent = `Fehler beim Hochladen: ${error.message}`;
         messageDiv.classList.add('error');
+    }
+});
+
+//Check Credits on load
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const response = await axios.get('http://localhost:5000/debug-kunde-1/credits');
+        const credits = response.data.credits;
+        console.log('Credits on Load:', credits);
+        document.getElementById('credits-current').textContent = `${credits} Credits`;
+    } catch (error) {
+        document.getElementById('credits-current').textContent = `-1 Credits`;
+
+        console.error('Error getting credits:', error);
     }
 });
