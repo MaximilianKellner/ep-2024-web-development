@@ -53,8 +53,11 @@ async function processAllFiles(customerID) {
             const outputPath = path.join(optimizedDir, file);
 
             try {
-                await compressToSize(inputPath, outputPath, file);
+                const done = await compressToSize(inputPath, outputPath, file);
                 console.log(`Successfully processed: ${file}`);
+                if (done != undefined)   {
+                    optimizationEventEmitter.updateCredits(customerID);
+                }
             } catch (error) {
                 console.error(`Error processing ${file}:`, error);
             }
