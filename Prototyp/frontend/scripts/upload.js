@@ -64,21 +64,26 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
                 if (eventSource) {     
                     eventSource.onmessage = (event) => {
 
-                        messageDiv.innerHTML = `Optimization status: ${event.data}`;
-
                         const eventObject = JSON.parse(event.data);
                         const status = eventObject.status;
                         const fileName = eventObject.fileName;
-                        console.log("Status: ", status, "Filename: ", fileName);
+ 
+                        // rm suffix
+                        const suffixIndex = fileName.lastIndexOf('-');
+                        if (suffixIndex !== -1) {
+                            fileName_noSuffix = fileName.substring(0, suffixIndex);
+                        }
 
-                        if (event.data === 'complete' || event.data === 'done' || event.data === ' complete') {
-                            uploadStatusList.innerHTML += '<li>debug.jpg optimiert</li>';
+                        messageDiv.innerHTML = `${fileName_noSuffix} status: ${status}`;
+
+                        if (status === 'complete') {
+                            uploadStatusList.innerHTML += `<li>${fileName_noSuffix} optimiert</li>`;
                             eventSource.close();
                         }
 
-                        else if (event.data === 'error') {
+                        else if (status === 'error') {
                             console.log('Optimization error');
-                            uploadStatusList.innerHTML += '<li class="error">debug.jpg optimiert</li>';
+                            uploadStatusList.innerHTML += `<li class="error">${fileName_noSuffix} error</li>`;
                             eventSource.close();
                         }                        
                     };
