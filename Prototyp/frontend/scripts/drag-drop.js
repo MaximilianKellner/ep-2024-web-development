@@ -168,7 +168,7 @@ function toggleSubtractCredits(action) {
         } else if (action === 'remove') {
             element.classList.remove('active');
         } else {
-            element.classList.toggle('active');
+            element.classList.add(' ');
         }
     });
 }
