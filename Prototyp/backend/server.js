@@ -9,6 +9,7 @@ import optimizationEventEmitter from './optimizationEventEmitter.js';
 import fs from 'fs';
 import path from 'path';
 import OptimizationEventStatus from './optimizationEventStatus.js';
+import { pool } from './db.js';
 
 
 const app = express();
@@ -61,12 +62,15 @@ app.post('/:id/upload', upload.array('images'), async (req, res, next) => {
     console.log(req.files);
     res.status(204).send('File uploaded successfully.');
     const userId = req.params.id;
-    console.log(userId);
+    console.log('User ID:', userId);
 
+    // Extrahiere die Dateinamen aus den hochgeladenen Dateien
+    const fileNames = req.files.map(file => file.filename);  // Hole die Dateinamen
+    console.log('File names:', fileNames);
 
     //TODO: Das Verzeichnis muss automatisch erstellt werden, wenn es nicht existiert(?)
     optimizationEventActive = true;
-    processAllFiles(userId)
+    processAllFiles(userId, fileNames)
         .then(async () => {
             console.log('Done!');
         })
@@ -118,7 +122,7 @@ app.get('/debug-kunde-1/progress', async (req, res) => {
 
 async function removeFiles(directory) {
     try {
-        const files = (await fs.promises.readdir(directory)).filter(file => !/\.gitkeep$/i.test(file)); 
+        const files = (await fs.promises.readdir(directory)).filter(file => !/\.gitkeep$/i.test(file));
         for (const file of files) {
             console.log(`Deleting ${file}`);
             const filePath = path.join(directory, file);
@@ -177,6 +181,16 @@ app.get('/:userId/credits', async (req, res) => {
     } catch (error) {
         console.error('Error reading credits:', error);
         res.status(500).send('Error reading credits');
+    }
+});
+
+app.get('/db', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM customer');
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error reading from database:', error);
+        res.status(500).send('Error reading from database');
     }
 });
 

@@ -5,10 +5,11 @@ import path from 'path';
 import sharp from 'sharp';
 import optimizationEventEmitter from './optimizationEventEmitter.js';
 import OptimizationEventStatus from './optimizationEventStatus.js';
+import { pool } from './db.js';
 // TODO: Should be inside try-catch
 
 function getCustomerData(filterworld) {
-    
+
     try {
         const __dirname = dirname(fileURLToPath(import.meta.url));
         const filePath = path.join(__dirname, 'customers', 'debug-kunde-1', 'customer-data.json');
@@ -32,31 +33,28 @@ function getCustomerData(filterworld) {
 
 
 // TODO: Originale der bereits optimierten Dateien entfernen.
-async function processAllFiles(customerID) {
-    
+async function processAllFiles(customerID, fileNames) {
+
     try {
         const __dirname = dirname(fileURLToPath(import.meta.url));
         const uploadDir = path.join(__dirname, 'customers', customerID, 'uploaded');
         const optimizedDir = path.join(__dirname, 'customers', customerID, 'optimized');
-    
+
         // Ensure optimized directory exists
         if (!fs.existsSync(optimizedDir)) {
             fs.mkdirSync(optimizedDir, { recursive: true });
         }
         const files = fs.readdirSync(uploadDir);
-        const imageFiles = files.filter(file =>
-            /\.(jpg|jpeg|png)/i.test(file)
-        );
 
-        for (const file of imageFiles) {
+        for (const file of fileNames) {
             const inputPath = path.join(uploadDir, file);
             const outputPath = path.join(optimizedDir, file);
 
            try {
                 const done = await compressToSize(inputPath, outputPath, file);
-                console.log(`Successfully processed: ${file}`);
-                if (done != undefined)   {
-                    optimizationEventEmitter.updateCredits(customerID);
+                if (done) {
+                    console.log(`Successfully processed: ${file}`);
+                    await pool.query('UPDATE customer SET credits = credits - 1 WHERE customer_id = $1', [customerID]);
                 }
             } catch (error) {
                 console.error(`Error processing ${file}:`, error);
@@ -76,7 +74,7 @@ async function compressToSize(inputPath, outputPath, fileName) {
         }
         let quality = 100;
         let currentSize = fs.statSync(inputPath).size / (1024 * 1024); // Convert to MB
-    
+
         console.log(`Original size: ${currentSize.toFixed(3)} MB`);
 
         if (currentSize <= maxSizeInMB) {
