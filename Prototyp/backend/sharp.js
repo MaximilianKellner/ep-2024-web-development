@@ -54,12 +54,12 @@ async function processAllFiles(customerID) {
 
            try {
                 const done = await compressToSize(inputPath, outputPath, file);
-                console.log(Successfully processed: ${file});
+                console.log(`Successfully processed: ${file}`);
                 if (done != undefined)   {
                     optimizationEventEmitter.updateCredits(customerID);
                 }
             } catch (error) {
-                console.error(Error processing ${file}:, error);
+                console.error(`Error processing ${file}:`, error);
             }
         }
     } catch (error) {
