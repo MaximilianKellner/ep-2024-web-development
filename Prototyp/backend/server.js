@@ -79,7 +79,7 @@ app.post('/:id/upload', upload.array('images'), async (req, res, next) => {
 
 });
 
-app.get('/debug-kunde-1/progress', async (req, res) => {
+app.get('/:userId/progress', async (req, res) => {
 
     //TODO: Work with user id from request
     res.setHeader('Content-Type', 'text/event-stream');
@@ -91,10 +91,12 @@ app.get('/debug-kunde-1/progress', async (req, res) => {
 
     // Get credits from user
 
+    const userId = req.params.userId;
+
     let credits = undefined;
     try {
-        const customerData = await fs.promises.readFile('./customers/debug-kunde-1/customer-data.json', 'utf8');
-        credits = JSON.parse(customerData).configSettings.credits;
+        const result = await pool.query('SELECT credits FROM customer WHERE customer_id = $1', [userId]);
+        const credits = result.rows[0]?.credits; // Optional-Chaining, um null/undefined zu vermeiden
         console.log('Credits:', credits);
     } catch (error) {
         console.error('Error reading credits:', error);
@@ -173,10 +175,10 @@ app.get('/:userId/optimized-images', async (req, res) => {
 
 app.get('/:userId/credits', async (req, res) => {
     const userId = req.params.userId;
-
+    console.log(`Displaying credits for user:${userId}-`);    
     try {
-        const customerData = await fs.promises.readFile(`./customers/${userId}/customer-data.json`, 'utf8');
-        const credits = JSON.parse(customerData).configSettings.credits;
+        const result = await pool.query('SELECT credits FROM customer WHERE customer_id = $1', [userId]);
+        const credits = result.rows[0]?.credits; // Optional-Chaining, um null/undefined zu vermeiden
         res.json({ credits });
     } catch (error) {
         console.error('Error reading credits:', error);
