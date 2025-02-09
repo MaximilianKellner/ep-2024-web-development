@@ -21,6 +21,7 @@
   --border-radius-small: calc(var(--border-radius-base) * 0.75);
 
   --shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.2);
+  --shadow-light: 0px 0px 20px 0px rgba(238, 244, 255, 0.5);
 }
 
 :root {

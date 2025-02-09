@@ -96,7 +96,7 @@
       <table>
         <thead>
           <tr>
-            <th><input type="checkbox" name="selector" id="selector" /></th>
+            <th><input type="checkbox" name="select-all" id="select-all" /></th>
             <th>Vorschau</th>
             <th>Name</th>
             <th>Größe</th>
@@ -107,6 +107,34 @@
         </thead>
 
         <tbody id="image-table-body">
+
+          <tr>
+            <td>
+
+              <label className="checkbox-container">
+                <input
+                  type="checkbox"
+                  name="selector"
+                  checked={}
+                  onChange={}
+                />
+                <span className="checkmark"></span>
+              </label>
+            </td>
+            <td>
+              <img class="preview-mid" src="img/debug2.jpg" alt="debug.jpg" />
+            </td>
+            <td>aaaaaaaaaaaaaaaaaaaaaaaaaa.jpg</td>
+            <td>850.91 KB</td>
+            <td>16.1.2025, 19:51:16</td>
+            <td>-549h</td>
+            <td>
+                <button class="download-btn" data-url="blob:http://127.0.0.1:3000/d46110b4-1947-4802-adff-851d37956ee7" data-filename="mclaren.jpg">
+                    <img src="./img/icon/download.svg" alt="download" onclick="this.parentElement.click()">
+                </button>
+            </td>
+          </tr>
+
           <!--
           <tr>
             <td><input type="checkbox" name="selector" id="selector" /></td>
@@ -137,6 +165,9 @@
           -->
         </tbody>
       </table>
+
+      <button id="download-selected-btn">Auswahl herunterladen</button>
+
     </main>
     <footer></footer>
   </body>
