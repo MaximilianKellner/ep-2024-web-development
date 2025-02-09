@@ -37,7 +37,7 @@
       <h2>Dateien hochladen</h2>
       <div id="drop-area">
         <div class="credits-banner">
-          <div id="credits-current" class="credits current"> 999 Credits</div>
+          <div id="credits-current" class="credits current"> 0 Credits</div>
           <div class="credits subtract"> -0 cp</div>
         </div>
         <form id="uploadForm">
@@ -96,7 +96,7 @@
       <table>
         <thead>
           <tr>
-            <th><input type="checkbox" name="selector" id="selector" /></th>
+            <th><input type="checkbox" name="select-all" id="select-all" /></th>
             <th>Vorschau</th>
             <th>Name</th>
             <th>Größe</th>
@@ -107,6 +107,10 @@
         </thead>
 
         <tbody id="image-table-body">
+
+          <tr>
+            <td>
+
           <!--
           <tr>
             <td><input type="checkbox" name="selector" id="selector" /></td>
@@ -137,6 +141,9 @@
           -->
         </tbody>
       </table>
+
+      <button id="download-selected-btn">Auswahl herunterladen</button>
+
     </main>
     <footer></footer>
   </body>

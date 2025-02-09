@@ -46,7 +46,7 @@ function createTableRow(fileData) {
             <td>
                 <img class="preview-mid" src="${url}" alt="${fileNameWithoutSuffix}">
             </td>
-            <td>${fileNameWithoutSuffix}</td>
+            <td class="limited-text" >${fileNameWithoutSuffix}</td>
             <td>${(blob.size / 1024).toFixed(2)} KB</td>
             <td>${creationDate.toLocaleString()}</td>
             <td>${hoursLeft}h</td>
@@ -115,4 +115,29 @@ function loadOptimizedTable() {
                 .catch(err => console.error('Fehler beim Laden der Bilder:', err));
         })
         .catch(err => console.error('Fehler beim Abrufen der Dateiliste:', err));
+}
+
+// ------ checkbox selection ------
+document.getElementById('select-all').addEventListener('change', function() {
+    const checkboxes = document.getElementsByName('selector');
+    checkboxes.forEach(checkbox => checkbox.checked = this.checked);
+});
+
+// ------ download selected ------
+document.getElementById('download-selected-btn').addEventListener('click', downloadSelectedFiles);
+
+function downloadSelectedFiles() {
+    const checkboxes = document.querySelectorAll('input[name="selector"]:checked');
+    checkboxes.forEach(checkbox => {
+        const row = checkbox.closest('tr');
+        const downloadBtn = row.querySelector('.download-btn');
+        const url = downloadBtn.dataset.url;
+        const filename = downloadBtn.dataset.filename;
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', filename);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+    });
 }
