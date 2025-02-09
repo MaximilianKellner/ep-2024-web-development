@@ -117,6 +117,10 @@ async function processAllFiles(customerID) {
 // }
 
 async function compressToSize(inputPath, outputPath, fileName) {
+    if(inputPath.endsWith('.svg')){
+        let tempXML = svgtoxml(inputPath, outputPath)
+        return xmltopng(tempXML, outputPath)
+    }
     try {
         let maxSizeInMB = getCustomerData('max-file-size-kb') / 1024;
         if (!maxSizeInMB) {
@@ -189,6 +193,38 @@ async function compressToSize(inputPath, outputPath, fileName) {
     }
 }
 
+async function svgtoxml(inputPath, outputPath){
+    try{
+        await sharp(inputPath)
+            .png()
+            .toFile(outputPath)
+
+        return new Promise((resolve, reject) => {
+            potrace.trace('./temp.png', {
+                threshold: 120,
+                color: '#000000'
+            }, (err, svg) => {
+                if(err) reject(err);
+                fs.writeFileSync(outputPath, svg)
+                resolve('Zu SVG komprimiert. Output:' + outputPath)
+            })
+        });
+    } catch (error){
+        console.log('Fehler bei SVG nach XML:' + error)
+        throw error
+    }
+}
+
+async function xmltopng(inputPath, outputPath){
+    try{
+        await sharp(inputPath)
+            .png()
+            .toFile(outputPath)
+    } catch (error){
+        console.log('Fehler bei XML nach PNG:' + error)
+        throw error
+    }
+}
 export { getCustomerData, compressToSize, processAllFiles };
 
 

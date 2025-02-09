@@ -100,7 +100,7 @@ function handleFiles(files) {
 //-------- check file type (.jpg, jpeg, png) and remove unallowed file--------
 
 function checkFileType(files) {
-    const allowedFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    const allowedFileTypes = ['image/jpeg', 'image/png', 'image/jpg, image/svg+xml'];
     const validFiles = [];
     
     for (let i = 0; i < files.length; i++) {
