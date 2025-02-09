@@ -46,7 +46,7 @@ function createTableRow(fileData) {
             <td>
                 <img class="preview-mid" src="${url}" alt="${fileNameWithoutSuffix}">
             </td>
-            <td>${fileNameWithoutSuffix}</td>
+            <td class="limited-text" >${fileNameWithoutSuffix}</td>
             <td>${(blob.size / 1024).toFixed(2)} KB</td>
             <td>${creationDate.toLocaleString()}</td>
             <td>${hoursLeft}h</td>
