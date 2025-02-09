@@ -18,6 +18,11 @@ tr {
   padding: var(--s);
 }
 
+th, td {
+  max-width: 250px;
+  word-wrap: break-word;
+}
+
 td {
   padding: var(--s);
   text-align: center; /* Inhalte zentrieren */
