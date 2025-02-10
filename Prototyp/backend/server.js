@@ -188,7 +188,7 @@ app.get('/:userId/credits', async (req, res) => {
 
 app.get('/db', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM customer');
+        const result = await pool.query('SELECT * FROM customer.customer');
         res.json(result.rows);
     } catch (error) {
         console.error('Error reading from database:', error);
