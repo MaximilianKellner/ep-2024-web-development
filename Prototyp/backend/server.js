@@ -8,7 +8,6 @@ import { processAllFiles } from './sharp.js';
 import optimizationEventEmitter from './optimizationEventEmitter.js';
 import fs from 'fs';
 import path from 'path';
-import OptimizationEventStatus from './optimizationEventStatus.js';
 import { pool } from './db.js';
 
 
@@ -18,7 +17,7 @@ const PORT = 5000;
 const UPLOAD_DIR = './customers/debug-kunde-1/uploaded';
 const OPTIMIZED_DIR = './customers/debug-kunde-1/optimized';
 
-let optimizationEventActive = false;
+
 
 // TODO: Auf verschieden Browsern testen -> Multiple download funktioniert nicht auf Chrome
 // TODO: Der Ordner uploaded sollte nach der Optimierung geleert werden.
@@ -64,7 +63,7 @@ app.post('/:id/upload', upload.array('images'), async (req, res, next) => {
     console.log('File names:', fileNames);
 
     //TODO: Das Verzeichnis muss automatisch erstellt werden, wenn es nicht existiert(?)
-    optimizationEventActive = true;
+
     processAllFiles(userId, fileNames)
         .then(async () => {
             console.log('Done!');
@@ -112,31 +111,6 @@ app.get('/:userId/progress', async (req, res) => {
 
 });
 
-
-async function removeFiles(directory) {
-    try {
-        const files = (await fs.promises.readdir(directory)).filter(file => !/\.gitkeep$/i.test(file));
-        for (const file of files) {
-            console.log(`Deleting ${file}`);
-            const filePath = path.join(directory, file);
-            try {
-                await fs.promises.unlink(filePath);
-                console.log(`Successfully deleted ${filePath}`);
-            } catch (err) {
-                if (err.code === 'EBUSY' || err.code === 'EPERM') {
-                    console.warn(`File is busy or permission error, retrying: ${filePath}`);
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                    await fs.promises.unlink(filePath);
-                } else {
-                    console.error(`Error deleting file: ${filePath}`, err);
-                }
-            }
-        }
-    } catch (err) {
-        console.error('Error reading uploaded directory:', err);
-    }
-}
-
 app.get('/:id/download/:imageName', (req, res, next) => {
     const contentDispositionType = req.query.cdtype ? 'inline' : 'attachment';
 
@@ -174,16 +148,6 @@ app.get('/:userId/credits', async (req, res) => {
     } catch (error) {
         console.error('Error reading credits:', error);
         res.status(500).send('Error reading credits');
-    }
-});
-
-app.get('/db', async (req, res) => {
-    try {
-        const result = await pool.query('SELECT * FROM customer');
-        res.json(result.rows);
-    } catch (error) {
-        console.error('Error reading from database:', error);
-        res.status(500).send('Error reading from database');
     }
 });
 
