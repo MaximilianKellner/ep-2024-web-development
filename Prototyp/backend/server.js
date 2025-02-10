@@ -48,7 +48,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // TODO: Sollen einzelne und mehrere Dateien hochgeladen werden? Sollen diese unterschiedlich behandelt werden?
-app.post('/:id/upload', upload.array('images'), async (req, res, next) => {
+app.post('/:userId/upload', upload.array('images'), async (req, res, next) => {
 
     if (!req.files) {
         return res.status(400).send('No file uploaded.');
@@ -56,7 +56,7 @@ app.post('/:id/upload', upload.array('images'), async (req, res, next) => {
 
     console.log(req.files);
     res.status(204).send('File uploaded successfully.');
-    const userId = req.params.id;
+    const userId = req.params.userId;
     console.log('User ID:', userId);
 
     const fileNames = req.files.map(file => file.filename);
@@ -111,12 +111,12 @@ app.get('/:userId/progress', async (req, res) => {
 
 });
 
-app.get('/:id/download/:imageName', (req, res, next) => {
+app.get('/:userId/download/:imageName', (req, res, next) => {
     const contentDispositionType = req.query.cdtype ? 'inline' : 'attachment';
 
     // TODO: Mehrere Dateien könnten den gleichen Namen haben und sollten unterschieden werden.
     // TODO: Nutzer-ID einsetzen.
-    const userId = req.params.id;
+    const userId = req.params.userId;
     const imageName = req.params.imageName;
 
     handleImageRequest(imageName, res, contentDispositionType);
