@@ -22,6 +22,11 @@ main {
   }
 }
 
+.hidden {
+  display: none;
+  opacity: 0;
+}
+
 .icon {
   color: var(--c-lighter);
   width: 20px;

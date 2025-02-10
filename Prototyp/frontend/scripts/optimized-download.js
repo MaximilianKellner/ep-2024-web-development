@@ -66,6 +66,14 @@ document.addEventListener('DOMContentLoaded', () => {
 function loadOptimizedTable() {
 
     const tbody = document.getElementById('image-table-body');
+    const table = document.getElementById('image-table');
+    const downloadButton = document.getElementById('download-selected-btn');
+
+    if (fileNames.length === 0) {
+        table.classList.add('hidden');
+        downloadButton.classList.add('hidden');
+        return;
+    }
 
     // Event Delegation für Download Buttons
     tbody.addEventListener('click', (e) => {
@@ -111,6 +119,8 @@ function loadOptimizedTable() {
                     }).join('');
 
                     tbody.innerHTML = tableContent;
+                    table.classList.remove('hidden');
+                    downloadButton.classList.remove('hidden');
                 })
                 .catch(err => console.error('Fehler beim Laden der Bilder:', err));
         })
