@@ -41,6 +41,15 @@ button {
   border-radius: var(--border-radius-small);
   cursor: pointer;
   box-shadow: var(--shadow);
+
+  &.light {
+    background-color: var(--c-lighter);
+    color: var(--c-base);
+  }
+
+  &.no-shadow {
+    box-shadow: none;
+  }
 }
 
 header {
