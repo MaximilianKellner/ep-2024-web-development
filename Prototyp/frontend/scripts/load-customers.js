@@ -25,7 +25,6 @@ window.onload = function() {
 
                 row.innerHTML = `
                     <td class="customer-row">
-                        <!-- Favicon der Kundenseite -->
                         <img src="${customer.picture_url}" alt="Kundenbild" onerror="this.onerror=null;this.src='img/icon/user.svg';" />
                         <a href="#">${customer.name}</a>
                     </td>
@@ -45,6 +44,17 @@ window.onload = function() {
                     </td>
                 `;
                 customerTable.appendChild(row);
+            });
+
+            // Reinitialize delete buttons after loading customers
+            const modal = document.getElementById("deleteModal");
+            const btns = document.querySelectorAll(".delete-btn");
+            btns.forEach((btn) => {
+                btn.onclick = function () {
+                    window.customerIdToDelete = this.closest('tr').querySelector('td:nth-child(2)').textContent;
+                    modal.style.display = "block";
+                    console.log('Kunden-ID zum Löschen:', window.customerIdToDelete);
+                };
             });
         })
         .catch(error => {
