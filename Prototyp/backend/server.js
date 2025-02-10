@@ -21,10 +21,8 @@ const OPTIMIZED_DIR = './customers/debug-kunde-1/optimized';
 let optimizationEventActive = false;
 
 // TODO: Auf verschieden Browsern testen -> Multiple download funktioniert nicht auf Chrome
-// TODO: Credit Points an Client mitschicken. -> DONE
 // TODO: Der Ordner uploaded sollte nach der Optimierung geleert werden.
 // TODO: Felder in der JSON überarbeiten -> maxFileinKB, maxWidthInPX sind irreführend.
-// TODO: Endpunkt, um über die zum Download bereiten Dateien zu informieren (/available-downloads).
 
 // TODO: Definiere erlaubte Origins und weitere Spezifikationen, wenn der Service bereit für Auslieferung ist.
 app.use(cors());
@@ -33,9 +31,8 @@ app.use(express.static('../frontend'));
 // TODO: Dateien mit nicht validem oder fehlendem Dateityp sollen abgelehnt werden.
 // TODO: Dateien, die das Credit-Limit übersteigen, sollen abgelehnt werden.
 // TODO: Uploads, die das Storage-Limit übersteigen, sollen abgelehnt werden.
-// TODO: Dateien mit dem gleichen Dateinamen sollen akzeptiert werden.
 // TODO: Regeln, was passiert, wenn durch Abbruch des Uploads/ Downloads ein Fehler auftritt.
-//-------- Speicherort und die Dateibenennung für hochgeladene Dateien --------
+
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, UPLOAD_DIR);
@@ -51,7 +48,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// TODO: Sicherstellen, dass der Key "images" im <form> definiert ist.
 // TODO: Sollen einzelne und mehrere Dateien hochgeladen werden? Sollen diese unterschiedlich behandelt werden?
 app.post('/:id/upload', upload.array('images'), async (req, res, next) => {
 
@@ -64,8 +60,7 @@ app.post('/:id/upload', upload.array('images'), async (req, res, next) => {
     const userId = req.params.id;
     console.log('User ID:', userId);
 
-    // Extrahiere die Dateinamen aus den hochgeladenen Dateien
-    const fileNames = req.files.map(file => file.filename);  // Hole die Dateinamen
+    const fileNames = req.files.map(file => file.filename);
     console.log('File names:', fileNames);
 
     //TODO: Das Verzeichnis muss automatisch erstellt werden, wenn es nicht existiert(?)
@@ -81,15 +76,12 @@ app.post('/:id/upload', upload.array('images'), async (req, res, next) => {
 
 app.get('/:userId/progress', async (req, res) => {
 
-    //TODO: Work with user id from request
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
     res.flushHeaders();
     // TODO: Add error handling with callback
     res.write('');
-
-    // Get credits from user
 
     const userId = req.params.userId;
 
@@ -104,7 +96,6 @@ app.get('/:userId/progress', async (req, res) => {
     }
 
     // TODO: Der Listener sollte mit einer Nutzer-ID verknüpft sein.
-    // TODO: Der Listener sollte nach der Optimierung zerstört werden
     const sendProgress = (status, fileName) => {
         const data = JSON.stringify({ status, fileName, credits });
         res.write(`data: ${data}\n\n`);
@@ -217,13 +208,11 @@ async function sendImage(imageName, res, contentDispositionType) {
             return;
         }
 
-        // Notwendige Header
         res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');  //Very important!
         res.setHeader('Content-Length', stats.size);
         res.setHeader('Content-Type', 'image/png');
         res.setHeader('Content-Disposition', `${contentDispositionType}; filename="${imageName}"`);
 
-        // Sende die Datei zum Download
         fileStream.pipe(res);
     });
 
