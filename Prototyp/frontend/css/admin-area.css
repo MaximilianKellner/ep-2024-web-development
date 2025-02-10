@@ -50,10 +50,15 @@
 
   .customer-row {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: last baseline;
     align-items: center;
+    gap: var(--m);
     img {
       border-radius: 50%;
+      width: var(--xl);
+      height: var(--xl);
+      padding: calc(var(--xs)/2);
+      background-color: rgba(240, 248, 255, 0.5);
     }
   }
 
@@ -79,6 +84,14 @@
 
   .icon-btn.delete-btn:hover {
     filter: drop-shadow(0px 0px 6px var(--c-red));
+  }
+
+  .red {
+    color: var(--c-red);
+  }
+
+  .amber {
+    color: var(--c-amber);
   }
 }
 
