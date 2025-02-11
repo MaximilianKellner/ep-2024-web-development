@@ -206,6 +206,10 @@ app.get('/loadCustomers', async (req, res) => {
     }
 });
 
+app.post('/createCustomers', async (req, res) => {
+    
+});
+
 app.delete('/customers/:id/delete', async (req, res) => {
     const { id } = req.params;  // Hole die Kunden-ID aus den URL-Parametern
     try {
