@@ -155,6 +155,10 @@ input {
   box-sizing: border-box;
 }
 
+#createCustomerForm input{
+  max-height: 47px;
+}
+
 .sublabel {
   display: inline-block;
   font-size: 0.9em;
