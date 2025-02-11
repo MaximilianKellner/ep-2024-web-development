@@ -1,22 +1,30 @@
 document.addEventListener("DOMContentLoaded", (event) => {
   const modal = document.getElementById("deleteModal");
-  const btns = document.querySelectorAll(".delete-btn");
   const confirmDelete = document.getElementById("confirmDelete");
   const cancelDelete = document.getElementById("cancelDelete");
-
-  btns.forEach((btn) => {
-    btn.onclick = function () {
-      modal.style.display = "block";
-    };
-  });
 
   cancelDelete.onclick = function () {
     modal.style.display = "none";
   };
 
   confirmDelete.onclick = function () {
-    console.log("Eintrag löschen");
-    // TODO löschschvorgang
+    console.log('Kunden-ID zum Löschen:', window.customerIdToDelete);
+    if (window.customerIdToDelete) {
+      fetch(`/customers/${window.customerIdToDelete}/delete`, {
+        method: 'DELETE'
+      })
+      .then(response => {
+        if (response.ok) {
+          console.log('Kunde erfolgreich gelöscht');
+          location.reload(); // reload page
+        } else {
+          console.error('Fehler beim Löschen des Kunden');
+        }
+      })
+      .catch(error => {
+        console.error('Fehler beim Löschen des Kunden:', error);
+      });
+    }
     modal.style.display = "none";
   };
 

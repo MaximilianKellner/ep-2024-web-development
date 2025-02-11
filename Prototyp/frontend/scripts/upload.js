@@ -15,7 +15,7 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
         return;
     }
 
-    //-------- Upload Limitationen --------
+    //Upload Limitationen
     if (files.length > MAX_FILE_COUNT) {
         messageDiv.textContent = `Maximal ${MAX_FILE_COUNT} Dateien auswählen.`;
         messageDiv.classList.add('error');
