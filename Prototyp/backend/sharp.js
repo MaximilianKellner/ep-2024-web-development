@@ -45,7 +45,7 @@ async function processAllFiles(customerID) {
         }
         const files = fs.readdirSync(uploadDir);
         const imageFiles = files.filter(file =>
-            /\.(jpg|jpeg|png)/i.test(file)
+            /\.(jpg|jpeg|png|svg)/i.test(file)
         );
 
         for (const file of imageFiles) {
@@ -117,10 +117,6 @@ async function processAllFiles(customerID) {
 // }
 
 async function compressToSize(inputPath, outputPath, fileName) {
-    if(inputPath.endsWith('.svg')){
-        let tempXML = svgtoxml(inputPath, outputPath)
-        return xmltopng(tempXML, outputPath)
-    }
     try {
         let maxSizeInMB = getCustomerData('max-file-size-kb') / 1024;
         if (!maxSizeInMB) {
@@ -130,6 +126,21 @@ async function compressToSize(inputPath, outputPath, fileName) {
         let quality = 100;
         let currentSize = fs.statSync(inputPath).size / (1024 * 1024); // Convert to MB
         console.log(`Original size: ${currentSize.toFixed(3)} MB`);
+
+        // SVG Verarbeitung
+        if (inputPath.includes('.svg')) {
+            console.log('SVG erkannt');
+            // Temporärer Pfad für Zwischenschritte
+            const tempPngPath = outputPath.replace('.svg', '_temp.png');
+            
+            // Konvertiere SVG zu PNG
+            await xmltopng(inputPath, tempPngPath);
+            
+            // Aktualisiere Input-Pfad und Größe für weitere Verarbeitung
+            inputPath = tempPngPath;
+            currentSize = fs.statSync(inputPath).size / (1024 * 1024);
+            console.log(`Nach SVG zu PNG Konvertierung: ${currentSize.toFixed(3)} MB`);
+        }
 
         // If file is already small enough, just copy it
         if (currentSize <= maxSizeInMB) {
@@ -142,18 +153,17 @@ async function compressToSize(inputPath, outputPath, fileName) {
             return outputPath;
         }
 
-        // Erstellen einer Sharp-Instanz, mit der wir später arbeiten können(Mehrfacher Zugriff auf das Bild)
+        // Erstellen einer Sharp-Instanz für Mehrfachzugriff
         const image = sharp(inputPath).rotate();
-        let buffer; // -> Für Speicherung im RAM
+        let buffer;
 
-        // Binäre Suche, um die optimale Qualität zu finden. Besser als mit linear von 100 bis 0 zu gehen
+        // Binäre Suche für optimale Qualität
         let minQuality = 0;
         let maxQuality = 100;
         
         while (minQuality <= maxQuality) {
             quality = Math.floor((minQuality + maxQuality) / 2);
             
-            // Bild wird im RAM verarbeitet ohne Caching auf Festplatte
             buffer = await image
                 .jpeg({ quality: quality })
                 .toBuffer();
@@ -161,19 +171,15 @@ async function compressToSize(inputPath, outputPath, fileName) {
             currentSize = buffer.length / (1024 * 1024); 
             console.log(`Momentane Größe: ${currentSize.toFixed(3)} MB. Momentane Qualität: ${quality}`);
             
-            //Client-seitiges Update über Fortschritt
             optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Active, fileName);
 
             if (currentSize > maxSizeInMB) {
                 maxQuality = quality - 1;
-            } else if (currentSize < maxSizeInMB * 0.95) { // Add some buffer to avoid too much compression
-                //Bild ist (deutlich) zu klein -> Qualität erhöhen
-                // Faktor von 0.95 verhindert erneute Komprimierung
+            } else if (currentSize < maxSizeInMB * 0.95) {
                 minQuality = quality + 1;
             } else {
-                // Beste Qualität gefunden
                 break;
-           }
+            }
         }
 
         // Speichern des finalen Ergebnisses
@@ -183,7 +189,6 @@ async function compressToSize(inputPath, outputPath, fileName) {
             optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Complete, fileName);
             return outputPath;
         } else {
-            // Bei zu häufigem Komprimieren wird das Ergebnis nicht gespeichert, da die Qualität zu schlecht ist
             optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Error, fileName);
             throw new Error(`Konnte nicht zur gewünschten Größe komprimiert werden (Letzte Größe: ${currentSize.toFixed(3)} MB)`);
         }
