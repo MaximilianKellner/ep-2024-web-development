@@ -34,7 +34,16 @@ app.use(express.static('../frontend'));
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, UPLOAD_DIR);
+        const customerUploadsDir = `customers/${req.params.userId}/uploaded`;
+        const customerOptimizedDir = `customers/${req.params.userId}/optimized`;
+        Promise.all([
+            fs.promises.mkdir(customerUploadsDir, {recursive: true}),
+            fs.promises.mkdir(customerOptimizedDir, {recursive: true})
+        ]).then(() => cb(null, customerUploadsDir))
+            .catch(err => {
+                console.log(err);
+                cb(err, null)
+            })
     },
     filename: function (req, file, cb) {
         const timestamp = Date.now();
