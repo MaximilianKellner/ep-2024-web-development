@@ -15,7 +15,8 @@
     <link rel="icon" href="img/icon/upload-cloud.svg" />
 
     <link rel="stylesheet" href="css/main.css" />
-
+    <link rel="stylesheet" href="css/admin-table.css" />
+    
     <script defer src="scripts/drag-drop.js"></script>
     <script defer src="scripts/upload.js"></script>
     <script defer src="scripts/1-config.js"></script>
@@ -24,20 +25,24 @@
   </head>
   <body>
     <header>
-      <a href="/"><h1 class="hover-light-blue">OmniMize</h1></a>
+      <a href="#"><h1 class="hover-light-blue">OmniMize</h1></a>
       
       <nav class="nav-links">
         <ul>
           <li><a href="#"> <h2 class="hover-light-blue">Credits anfragen</h2> </a></li>
           <li><a href="#"> <h2 class="hover-light-blue">Kontakt</h2></a></li>
+          <li><a href="./admin-panel.html"> <h2 class="hover-light-blue">Admin</h2></a></li>
         </ul>
+      </nav>
     </header>
 
     <main>
       <h2>Dateien hochladen</h2>
       <div id="drop-area">
-        <h3 class="credits-banner">9999 credits</h3>
-
+        <div class="credits-banner">
+          <div id="credits-current" class="credits current"> 0 Credits</div>
+          <div class="credits subtract"> -0 cp</div>
+        </div>
         <form id="uploadForm">
           <div class="upload-center">
             <img
@@ -70,13 +75,10 @@
             </div>
 
             <div class="card">
-              <h3 class="credits">- 0 cp</h3>
-              <div class="actions">
                 <button class="action reject" onclick="resetFiles()">✕</button>
                 <button class="action accept" type="submit">
                   <img src="./img/icon/upload-icon.svg" alt="upload-icon" />
                 </button>
-              </div>
             </div>
           </div>
         </form>
@@ -97,7 +99,7 @@
       <table>
         <thead>
           <tr>
-            <th><input type="checkbox" name="selector" id="selector" /></th>
+            <th><input type="checkbox" name="select-all" id="select-all" /></th>
             <th>Vorschau</th>
             <th>Name</th>
             <th>Größe</th>
@@ -108,36 +110,12 @@
         </thead>
 
         <tbody id="image-table-body">
-          <!--
-          <tr>
-            <td><input type="checkbox" name="selector" id="selector" /></td>
-            <td>
-              <img class="preview-mid" src="img/debug2.jpg" alt="debug.jpg" />
-            </td>
-            <td>debug.png</td>
-            <td>0.0 KB</td>
-            <td>01.01.2021</td>
-            <td>20h</td>
-            <td><button>
-              <img src="./img/icon/download.svg" alt="download" />
-            </button></td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" name="selector" id="selector" /></td>
-            <td>
-              <img class="preview-mid" src="img/debug.jpg" alt="debug.jpg" />
-            </td>
-            <td>debug.png</td>
-            <td>0.0 KB</td>
-            <td>01.01.2021</td>
-            <td>4h</td>
-            <td><button>
-              <img src="./img/icon/download.svg" alt="download" />
-            </button></td>
-          </tr>
-          -->
+
         </tbody>
       </table>
+
+      <button id="download-selected-btn">Auswahl herunterladen</button>
+
     </main>
     <footer></footer>
   </body>

@@ -9,6 +9,7 @@ import optimizationEventEmitter from './optimizationEventEmitter.js';
 import fs from 'fs';
 import path from 'path';
 import OptimizationEventStatus from './optimizationEventStatus.js';
+import { pool } from './db.js';
 
 
 const app = express();
@@ -19,8 +20,8 @@ const OPTIMIZED_DIR = './customers/debug-kunde-1/optimized';
 
 let optimizationEventActive = false;
 
+// TODO: Auf verschieden Browsern testen -> Multiple download funktioniert nicht auf Chrome
 // TODO: Credit Points an Client mitschicken. -> DONE
-// TODO: Die Bilder sollten nach der Optimierung aus ./uploaded gelöscht werden. -> DONE
 // TODO: Der Ordner uploaded sollte nach der Optimierung geleert werden.
 // TODO: Felder in der JSON überarbeiten -> maxFileinKB, maxWidthInPX sind irreführend.
 // TODO: Endpunkt, um über die zum Download bereiten Dateien zu informieren (/available-downloads).
@@ -61,12 +62,15 @@ app.post('/:id/upload', upload.array('images'), async (req, res, next) => {
     console.log(req.files);
     res.status(204).send('File uploaded successfully.');
     const userId = req.params.id;
-    console.log(userId);
+    console.log('User ID:', userId);
 
+    // Extrahiere die Dateinamen aus den hochgeladenen Dateien
+    const fileNames = req.files.map(file => file.filename);  // Hole die Dateinamen
+    console.log('File names:', fileNames);
 
     //TODO: Das Verzeichnis muss automatisch erstellt werden, wenn es nicht existiert(?)
     optimizationEventActive = true;
-    processAllFiles(userId)
+    processAllFiles(userId, fileNames)
         .then(async () => {
             console.log('Done!');
         })
@@ -75,7 +79,7 @@ app.post('/:id/upload', upload.array('images'), async (req, res, next) => {
 
 });
 
-app.get('/debug-kunde-1/progress', async (req, res) => {
+app.get('/:userId/progress', async (req, res) => {
 
     //TODO: Work with user id from request
     res.setHeader('Content-Type', 'text/event-stream');
@@ -87,10 +91,12 @@ app.get('/debug-kunde-1/progress', async (req, res) => {
 
     // Get credits from user
 
+    const userId = req.params.userId;
+
     let credits = undefined;
     try {
-        const customerData = await fs.promises.readFile('./customers/debug-kunde-1/customer-data.json', 'utf8');
-        credits = JSON.parse(customerData).configSettings.credits;
+        const result = await pool.query('SELECT credits FROM customer WHERE customer_id = $1', [userId]);
+        const credits = result.rows[0]?.credits; // Optional-Chaining, um null/undefined zu vermeiden
         console.log('Credits:', credits);
     } catch (error) {
         console.error('Error reading credits:', error);
@@ -118,7 +124,7 @@ app.get('/debug-kunde-1/progress', async (req, res) => {
 
 async function removeFiles(directory) {
     try {
-        const files = (await fs.promises.readdir(directory)).filter(file => !/\.gitkeep$/i.test(file)); 
+        const files = (await fs.promises.readdir(directory)).filter(file => !/\.gitkeep$/i.test(file));
         for (const file of files) {
             console.log(`Deleting ${file}`);
             const filePath = path.join(directory, file);
@@ -169,14 +175,50 @@ app.get('/:userId/optimized-images', async (req, res) => {
 
 app.get('/:userId/credits', async (req, res) => {
     const userId = req.params.userId;
-
+    console.log(`Displaying credits for user:${userId}-`);    
     try {
-        const customerData = await fs.promises.readFile(`./customers/${userId}/customer-data.json`, 'utf8');
-        const credits = JSON.parse(customerData).configSettings.credits;
+        const result = await pool.query('SELECT credits FROM customer WHERE customer_id = $1', [userId]);
+        const credits = result.rows[0]?.credits; // Optional-Chaining, um null/undefined zu vermeiden
         res.json({ credits });
     } catch (error) {
         console.error('Error reading credits:', error);
         res.status(500).send('Error reading credits');
+    }
+});
+
+app.get('/db', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM customers');
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error reading from database:', error);
+        res.status(500).send('Error reading from database');
+    }
+});
+
+app.get('/loadCustomers', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM customers');
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error reading from database:', error);
+        res.status(500).send('Error reading from database');
+    }
+});
+
+app.post('/createCustomers', async (req, res) => {
+    
+});
+
+app.delete('/customers/:id/delete', async (req, res) => {
+    const { id } = req.params;  // Hole die Kunden-ID aus den URL-Parametern
+    try {
+        // Lösche den Kunden aus der Datenbank anhand der customer_id
+        await pool.query('DELETE FROM customers WHERE customer_id = $1', [id]);
+        res.status(200).send('Kunde erfolgreich gelöscht');
+    } catch (error) {
+        console.error('Fehler beim Löschen des Kunden:', error);
+        res.status(500).send('Fehler beim Löschen des Kunden');
     }
 });
 

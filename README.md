@@ -5,12 +5,17 @@
 Im Rahmen des Entwicklungsprojekts soll eine Web Applikation erstellt werden, die einen Upload von zu großen Bilddateien erlaubt. Die Applikation ermöglicht es Nutzern, übergroße Bilddateien hochzuladen, die anschließend komprimiert und dem Kunden zum Download zur Verfügung gestellt werden. Ein Punktesystem reguliert den Upload, sodass nicht unbegrenzt viele Dateien hochgeladen werden können.
 ## Was kann unsere Applikation?
 - Unterstützte Formate:
--
+    - 
 
 ## Verwendete Technologien
-- Framework:
-- Verwendete Sprachen:
-- 
+- Frontend:
+    - HTML, CSS, JS
+    - Axios
+- Backend:
+    - Node.js
+    - Express, Multer, Cors
+    - Sharp
+    - Postgresql  
 
 ## Nutzergruppen
 

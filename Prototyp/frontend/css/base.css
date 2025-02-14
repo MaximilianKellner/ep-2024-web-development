@@ -41,6 +41,25 @@ button {
   border-radius: var(--border-radius-small);
   cursor: pointer;
   box-shadow: var(--shadow);
+  transition: all 0.3s ease-in-out;
+
+  &.light {
+    background-color: var(--c-lighter);
+    color: var(--c-base);
+  }
+
+  &.fade {
+    background: linear-gradient(91deg, var(--c-fade-1) 0%, var(--c-fade-2) 100%);
+    transition: all 0.3s ease-in-out;
+  }
+
+  &.fade:hover {
+    animation: highlight-animation 1s ease-in-out infinite alternate;
+  }
+
+  &.no-shadow {
+    box-shadow: none;
+  }
 }
 
 header {

@@ -147,13 +147,28 @@ function updateFileInput() {
 //1 file = 1 credit
 
 function calculateCredits() {
-    let costCounter = document.querySelector('.credits');
+    let costCounter = document.querySelector('.subtract');
     const credits = fileList.children.length;
     costCounter.textContent = `-${credits} cp`;
 
     if (credits > 0) {
         uploadCard.style.opacity = 1;
+        toggleSubtractCredits('add');
     } else {
         uploadCard.style.opacity = 0;
+        toggleSubtractCredits('remove');
     }
+}
+
+function toggleSubtractCredits(action) {
+    const subtractElements = document.querySelectorAll('.credits');
+    subtractElements.forEach(element => {
+        if (action === 'add') {
+            element.classList.add('active');
+        } else if (action === 'remove') {
+            element.classList.remove('active');
+        } else {
+            element.classList.add(' ');
+        }
+    });
 }
