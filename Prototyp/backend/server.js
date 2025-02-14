@@ -153,7 +153,7 @@ app.get('/:userId/credits', async (req, res) => {
 
 app.get('/db', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM customers');
+        const result = await pool.query('SELECT * FROM customer');
         res.json(result.rows);
     } catch (error) {
         console.error('Error reading from database:', error);
@@ -163,7 +163,7 @@ app.get('/db', async (req, res) => {
 
 app.get('/loadCustomers', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM customers');
+        const result = await pool.query('SELECT * FROM customer');
         res.json(result.rows);
     } catch (error) {
         console.error('Error reading from database:', error);
@@ -179,7 +179,7 @@ app.delete('/customers/:id/delete', async (req, res) => {
     const { id } = req.params;  // Hole die Kunden-ID aus den URL-Parametern
     try {
         // Lösche den Kunden aus der Datenbank anhand der customer_id
-        await pool.query('DELETE FROM customers WHERE customer_id = $1', [id]);
+        await pool.query('DELETE FROM customer WHERE customer_id = $1', [id]);
         res.status(200).send('Kunde erfolgreich gelöscht');
     } catch (error) {
         console.error('Fehler beim Löschen des Kunden:', error);
