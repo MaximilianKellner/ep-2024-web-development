@@ -27,9 +27,6 @@ const OPTIMIZED_DIR = './customers/debug-kunde-1/optimized';
 app.use(cors());
 app.use(express.static('../frontend'));
 
-// TODO: Dateien mit nicht validem oder fehlendem Dateityp sollen abgelehnt werden.
-// TODO: Dateien, die das Credit-Limit übersteigen, sollen abgelehnt werden.
-// TODO: Uploads, die das Storage-Limit übersteigen, sollen abgelehnt werden.
 // TODO: Regeln, was passiert, wenn durch Abbruch des Uploads/ Downloads ein Fehler auftritt.
 
 const storage = multer.diskStorage({
@@ -54,7 +51,26 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage: storage });
+const fileFilter = (req, file, cb) => {
+    try {
+        const acceptedMimeTypes = ["image/png", "image/jpeg", "image/jpg", "image/svg"];
+        if (acceptedMimeTypes.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(null, false);
+        }
+    } catch (err) {
+        cb(err, false);
+    }
+};
+
+// TODO: Dateien mit nicht validem oder fehlendem Dateityp sollen abgelehnt werden.
+// TODO: Dateien, die das Credit-Limit übersteigen, sollen abgelehnt werden. -> DONE: Passiert im Frontend
+// TODO: Uploads, die das Storage-Limit übersteigen, sollen abgelehnt werden.
+const upload = multer({
+    storage: storage,
+    fileFilter : fileFilter
+});
 
 // TODO: Sollen einzelne und mehrere Dateien hochgeladen werden? Sollen diese unterschiedlich behandelt werden?
 app.post('/:userId/upload', upload.array('images'), async (req, res, next) => {
@@ -71,7 +87,6 @@ app.post('/:userId/upload', upload.array('images'), async (req, res, next) => {
     const fileNames = req.files.map(file => file.filename);
     console.log('File names:', fileNames);
 
-    //TODO: Das Verzeichnis muss automatisch erstellt werden, wenn es nicht existiert(?)
 
     processAllFiles(userId, fileNames)
         .then(async () => {
@@ -91,7 +106,7 @@ app.get('/:userId/progress', async (req, res) => {
     // TODO: Add error handling with callback
     res.write('');
 
-    const userId = req.params.userId;
+    const userId = 1;
 
     let credits = undefined;
     try {
