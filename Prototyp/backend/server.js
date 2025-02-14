@@ -151,6 +151,42 @@ app.get('/:userId/credits', async (req, res) => {
     }
 });
 
+app.get('/db', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM customers');
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error reading from database:', error);
+        res.status(500).send('Error reading from database');
+    }
+});
+
+app.get('/loadCustomers', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM customers');
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error reading from database:', error);
+        res.status(500).send('Error reading from database');
+    }
+});
+
+app.post('/createCustomers', async (req, res) => {
+    
+});
+
+app.delete('/customers/:id/delete', async (req, res) => {
+    const { id } = req.params;  // Hole die Kunden-ID aus den URL-Parametern
+    try {
+        // Lösche den Kunden aus der Datenbank anhand der customer_id
+        await pool.query('DELETE FROM customers WHERE customer_id = $1', [id]);
+        res.status(200).send('Kunde erfolgreich gelöscht');
+    } catch (error) {
+        console.error('Fehler beim Löschen des Kunden:', error);
+        res.status(500).send('Fehler beim Löschen des Kunden');
+    }
+});
+
 async function findImage(imageName) {
     try {
         const files = await fs.promises.readdir(OPTIMIZED_DIR);

@@ -22,6 +22,8 @@
   font-size: var(--m);
   opacity: 0.85;
   display: flex;
+  background-color: white;
+  margin: 0;
 }
 
 #search:focus {
@@ -50,10 +52,16 @@
 
   .customer-row {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: flex;
     align-items: center;
+    gap: var(--m);
+
     img {
       border-radius: 50%;
+      width: var(--xl);
+      height: var(--xl);
+      padding: calc(var(--xs)/2);
+      background-color: rgba(240, 248, 255, 0.5);
     }
   }
 
@@ -79,6 +87,14 @@
 
   .icon-btn.delete-btn:hover {
     filter: drop-shadow(0px 0px 6px var(--c-red));
+  }
+
+  .red {
+    color: var(--c-red);
+  }
+
+  .amber {
+    color: var(--c-amber);
   }
 }
 
@@ -118,4 +134,49 @@
 
 .confirm-btn:hover {
     background-color: var(--c-red);
+}
+
+/* --------------------- Create Customer --------------------- */
+
+label {
+  display: inline-block;
+  margin-top: var(--l);
+  margin-bottom: var(--xs);
+}
+
+input {
+  width: 100%;
+  padding: var(--s);
+  border: none;
+  border-radius: var(--border-radius-small);
+  font-size: var(--m);
+  color: var(--c-base);
+  background-color: var(--c-lighter);
+  box-sizing: border-box;
+}
+
+#createCustomerForm input{
+  max-height: 47px;
+}
+
+.sublabel {
+  display: inline-block;
+  font-size: 0.9em;
+  color: #888;
+}
+
+.form-row {
+  display: flex;
+  gap: var(--m);
+}
+
+.form-group {
+  flex: 1;
+}
+
+.message-container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--m);
 }
