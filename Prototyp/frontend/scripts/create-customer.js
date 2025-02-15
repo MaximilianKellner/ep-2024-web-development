@@ -33,9 +33,6 @@ document.getElementById('createCustomerForm').addEventListener('submit', functio
         data[key] = value;
     });
 
-    //log json file 
-    console.log('Data:', data);
-
     fetch('/createCustomer', {
         method: 'POST',
         headers: {
