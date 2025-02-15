@@ -196,7 +196,7 @@ app.get('/db', async (req, res) => {
     }
 });
 
-app.get('/loadCustomers', async (req, res) => {
+app.get('/load-customers', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM customers');
         res.json(result.rows);
@@ -206,7 +206,7 @@ app.get('/loadCustomers', async (req, res) => {
     }
 });
 
-app.post('/createCustomers', async (req, res) => {
+app.post('/create-customer', async (req, res) => {
     
 });
 

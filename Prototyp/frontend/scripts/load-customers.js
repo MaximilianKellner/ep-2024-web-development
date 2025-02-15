@@ -2,7 +2,7 @@
 window.onload = function() {
     console.log('loading customers');
 
-    fetch('/loadCustomers')
+    fetch('/load-customers')
         .then(response => response.json())
         .then(data => {
             const customerTable = document.querySelector('.admin-table tbody');
