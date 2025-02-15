@@ -7,7 +7,6 @@ import multer from 'multer';
 import { processAllFiles } from './sharp.js';
 import optimizationEventEmitter from './optimizationEventEmitter.js';
 import fs from 'fs';
-import path from 'path';
 import { pool } from './db.js';
 
 
@@ -16,11 +15,9 @@ const PORT = 5000;
 
 const UPLOAD_DIR = './customers/debug-kunde-1/uploaded';
 const OPTIMIZED_DIR = './customers/debug-kunde-1/optimized';
-
-
+const uploadedFilesToDelete = [];
 
 // TODO: Auf verschieden Browsern testen -> Multiple download funktioniert nicht auf Chrome
-// TODO: Der Ordner uploaded sollte nach der Optimierung geleert werden.
 // TODO: Felder in der JSON überarbeiten -> maxFileinKB, maxWidthInPX sind irreführend.
 
 // TODO: Definiere erlaubte Origins und weitere Spezifikationen, wenn der Service bereit für Auslieferung ist.
@@ -31,6 +28,7 @@ app.use(express.static('../frontend'));
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
+        // TODO: Kontrollieren ob Nutzer existiert -> einzige "Hürde", um Dateien hochzuladen (wir haben keine wirkliche Authentifizierung)
         const customerUploadsDir = `customers/${req.params.userId}/uploaded`;
         const customerOptimizedDir = `customers/${req.params.userId}/optimized`;
         Promise.all([
@@ -53,7 +51,8 @@ const storage = multer.diskStorage({
 
 const fileFilter = (req, file, cb) => {
     try {
-        const acceptedMimeTypes = ["image/png", "image/jpeg", "image/jpg", "image/svg"];
+        const acceptedMimeTypes = ["image/png", "image/jpeg", "image/jpg", "image/svg+xml"];
+        console.log("Mime type: " + file.mimetype);
         if (acceptedMimeTypes.includes(file.mimetype)) {
             cb(null, true);
         } else {
@@ -64,38 +63,62 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
-// TODO: Dateien mit nicht validem oder fehlendem Dateityp sollen abgelehnt werden.
+// TODO: Dateien mit nicht validem oder fehlendem Dateityp sollen abgelehnt werden. -> DONE: Prüfung anhand des Mime-Types
 // TODO: Dateien, die das Credit-Limit übersteigen, sollen abgelehnt werden. -> DONE: Passiert im Frontend
 // TODO: Uploads, die das Storage-Limit übersteigen, sollen abgelehnt werden.
+//  -> Prüfung nicht bei jedem Upload, sondern regelmäßige Checks und benachrichtigen des Content Managers, wenn ein bestimmter Wert unterschritten ist
 const upload = multer({
     storage: storage,
-    fileFilter : fileFilter
+    fileFilter: fileFilter
 });
 
-// TODO: Sollen einzelne und mehrere Dateien hochgeladen werden? Sollen diese unterschiedlich behandelt werden?
+// TODO: Sollen einzelne und mehrere Dateien hochgeladen werden? Sollen diese unterschiedlich behandelt werden? Done: Nein.
+// TODO: Der Ordner uploaded sollte nach der Optimierung geleert werden.
 app.post('/:userId/upload', upload.array('images'), async (req, res, next) => {
 
-    if (!req.files) {
-        return res.status(400).send('No file uploaded.');
+    let fileNames;
+    let userId;
+
+    try {
+        if (!req.files) {
+            return res.status(400).send('No file uploaded.');
+        }
+
+        console.log(req.files);
+
+        res.status(204).send('File uploaded successfully.');
+        userId = req.params.userId;
+
+        console.log('User ID:', userId);
+        fileNames = req.files.map(file => file.filename);
+
+        console.log('File names:', fileNames);
+
+        // TODO: XMLs löschen.
+        await processAllFiles(userId, fileNames)
+
+        await deleteFiles(userId, fileNames);
+
+        uploadedFilesToDelete.push({
+            userId: userId,
+            fileNames: fileNames
+        });
+        console.log("In uploadedFilesToDelete: " + uploadedFilesToDelete.entries().toArray());
+    } catch (err) {
+        console.log(err);
     }
-
-    console.log(req.files);
-    res.status(204).send('File uploaded successfully.');
-    const userId = req.params.userId;
-    console.log('User ID:', userId);
-
-    const fileNames = req.files.map(file => file.filename);
-    console.log('File names:', fileNames);
-
-
-    processAllFiles(userId, fileNames)
-        .then(async () => {
-            console.log('Done!');
-        })
-        .catch(error => console.error('Error processing files:', error));
-
-
 });
+
+async function deleteFiles(userId, fileNames) {
+    try {
+        for (const fileName of fileNames) {
+            await fs.promises.unlink(`customers/${userId}/uploaded/${fileName}`);
+            console.log(`customers/${userId}/uploaded/${fileName}`);
+        }
+    } catch (error) {
+        console.error("Fehler beim Löschen der Dateien: ", error);
+    }
+}
 
 app.get('/:userId/progress', async (req, res) => {
 
@@ -164,7 +187,7 @@ app.get('/:userId/optimized-images', async (req, res) => {
 
 app.get('/:userId/credits', async (req, res) => {
     const userId = req.params.userId;
-    console.log(`Displaying credits for user:${userId}-`);    
+    console.log(`Displaying credits for user:${userId}-`);
     try {
         const result = await pool.query('SELECT credits FROM customer WHERE customer_id = $1', [userId]);
         const credits = result.rows[0]?.credits; // Optional-Chaining, um null/undefined zu vermeiden
@@ -196,11 +219,11 @@ app.get('/loadCustomers', async (req, res) => {
 });
 
 app.post('/createCustomers', async (req, res) => {
-    
+
 });
 
 app.delete('/customers/:id/delete', async (req, res) => {
-    const { id } = req.params;  // Hole die Kunden-ID aus den URL-Parametern
+    const {id} = req.params;  // Hole die Kunden-ID aus den URL-Parametern
     try {
         // Lösche den Kunden aus der Datenbank anhand der customer_id
         await pool.query('DELETE FROM customer WHERE customer_id = $1', [id]);

@@ -8,6 +8,8 @@ import OptimizationEventStatus from './optimizationEventStatus.js';
 import { pool } from './db.js';
 // TODO: Should be inside try-catch
 
+sharp.cache(false);
+
 function getCustomerData(filterworld) {
 
     try {
@@ -127,8 +129,8 @@ async function compressToSize(inputPath, outputPath, fileName) {
         if (!maxSizeInMB) {
             throw new Error('Max file size not found');
         }
-
         let quality = 100;
+        // TODO: Synchroner Aufruf blockiert die Event-Loop(???) -> Server antwortet langsamer auf Anfragen
         let currentSize = fs.statSync(inputPath).size / (1024 * 1024); // Convert to MB
 
         console.log(`Original size: ${currentSize.toFixed(3)} MB`);
