@@ -1,7 +1,7 @@
 const messageDiv = document.getElementById('message');
 
 //exp date > Current date
-document.getElementById('createCustomerForm').addEventListener('submit', function(event) {
+function checkExpirationDate() {
     const expirationDate = new Date(document.getElementById('expirationDate').value);
     const currentDate = new Date();
 
@@ -9,18 +9,36 @@ document.getElementById('createCustomerForm').addEventListener('submit', functio
         messageDiv.classList.add('error');
         messageDiv.style.margin = '0px';
         messageDiv.innerHTML = 'Das Ablaufdatum muss in der Zukunft liegen.';
-        event.preventDefault();
+        return false;
     }
-});
+    return true;
+}
 
-// create customer
+// create customer fill Json, send Json. (Json ist effizienter als FormData wenn man keine Dateien hochladen will.) 
 document.getElementById('createCustomerForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    if (!checkExpirationDate()) {
+        return;
+    }
+
+    event.preventDefault();
+
     const form = document.getElementById('createCustomerForm');
     const formData = new FormData(form);
 
+    const data = {};
+
+    formData.forEach((value, key) => {
+        data[key] = value;
+    });
+
     fetch('/createCustomer', {
         method: 'POST',
-        body: formData
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
     })
     .then(response => {
         if (response.ok) {
@@ -28,14 +46,12 @@ document.getElementById('createCustomerForm').addEventListener('submit', functio
             messageDiv.innerHTML = 'Kunde erfolgreich erstellt.';
             form.reset();
         } else {
-            messageDiv.classList.add('error');
-            messageDiv.innerHTML = 'Kunde konnte nicht erstellt werden.';
+            return response.text().then(err => { throw new Error(err); });
         }
     })
     .catch(error => {
         messageDiv.classList.add('error');
-        messageDiv.innerHTML = 'Kunde konnte nicht erstellt werden.';
+        console.error("Error creating customer:", error);
+        messageDiv.innerHTML = 'Kunde konnte nicht erstellt werden: ' + error.message;
     });
-
-    event.preventDefault();
 });
