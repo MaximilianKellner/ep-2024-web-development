@@ -13,7 +13,6 @@ import { pool } from './db.js';
 const app = express();
 const PORT = 5000;
 
-const UPLOAD_DIR = './customers/debug-kunde-1/uploaded';
 const OPTIMIZED_DIR = './customers/debug-kunde-1/optimized';
 const uploadedFilesToDelete = [];
 
@@ -195,16 +194,6 @@ app.get('/:userId/credits', async (req, res) => {
     } catch (error) {
         console.error('Error reading credits:', error);
         res.status(500).send('Error reading credits');
-    }
-});
-
-app.get('/db', async (req, res) => {
-    try {
-        const result = await pool.query('SELECT * FROM customer');
-        res.json(result.rows);
-    } catch (error) {
-        console.error('Error reading from database:', error);
-        res.status(500).send('Error reading from database');
     }
 });
 
