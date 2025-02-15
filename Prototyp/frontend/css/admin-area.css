@@ -62,6 +62,7 @@
       height: var(--xl);
       padding: calc(var(--xs)/2);
       background-color: rgba(240, 248, 255, 0.5);
+      object-fit: cover;
     }
   }
 

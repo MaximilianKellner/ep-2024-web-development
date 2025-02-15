@@ -129,7 +129,7 @@ app.get('/:userId/progress', async (req, res) => {
     // TODO: Add error handling with callback
     res.write('');
 
-    const userId = 1;
+    const userId = req.params.userId;
 
     let credits = undefined;
     try {
@@ -208,7 +208,7 @@ app.get('/db', async (req, res) => {
     }
 });
 
-app.get('/loadCustomers', async (req, res) => {
+app.get('/load-customers', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM customer');
         res.json(result.rows);
@@ -218,12 +218,12 @@ app.get('/loadCustomers', async (req, res) => {
     }
 });
 
-app.post('/createCustomers', async (req, res) => {
-
+app.post('/create-customer', async (req, res) => {
+    
 });
 
 app.delete('/customers/:id/delete', async (req, res) => {
-    const {id} = req.params;  // Hole die Kunden-ID aus den URL-Parametern
+    const { id } = req.params;  // Hole die Kunden-ID aus den URL-Parametern
     try {
         // Lösche den Kunden aus der Datenbank anhand der customer_id
         await pool.query('DELETE FROM customer WHERE customer_id = $1', [id]);

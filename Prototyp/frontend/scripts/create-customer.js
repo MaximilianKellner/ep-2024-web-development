@@ -18,7 +18,7 @@ document.getElementById('createCustomerForm').addEventListener('submit', functio
     const form = document.getElementById('createCustomerForm');
     const formData = new FormData(form);
 
-    fetch('/createCustomers', {
+    fetch('/createCustomer', {
         method: 'POST',
         body: formData
     })
