@@ -35,7 +35,7 @@ window.onload = function() {
                         <button class="icon-btn delete-btn" title="Löschen">    
                             <img src="img/icon/delete.svg" alt="Löschen" />
                         </button>
-                        <button class="icon-btn" title="Kontaktieren" onclick="location.href='mailto:${customer.email}'">
+                        <button class="icon-btn" title="E-Mail an ${customer.email}" onclick="location.href='mailto:${customer.email}'">
                             <img src="img/icon/mail.svg" alt="Kontaktieren" />
                         </button>
                         <button class="icon-btn" title="Bearbeiten">

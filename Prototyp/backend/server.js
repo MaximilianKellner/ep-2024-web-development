@@ -19,6 +19,7 @@ const uploadedFilesToDelete = [];
 // TODO: Felder in der JSON überarbeiten -> maxFileinKB, maxWidthInPX sind irreführend.
 
 // TODO: Definiere erlaubte Origins und weitere Spezifikationen, wenn der Service bereit für Auslieferung ist.
+app.use(express.json());
 app.use(cors());
 app.use(express.static('../frontend'));
 app.use(express.urlencoded({extended: false}));
@@ -236,6 +237,19 @@ app.post('/create-customer', async (req, res) => {
         console.log(error);
     }
 });
+
+
+app.post('/createCustomer', async (req, res) => {
+    const { customer_name, email, expiration_date, credits, img_url, max_file_size_kb, max_file_width_px } = req.body;
+    try {
+        await pool.query('INSERT INTO customer (customer_name, email, expiration_date, credits, img_url, max_file_size_kb, max_file_width_px) VALUES ($1, $2, $3, $4, $5, $6, $7)', [customer_name, email, expiration_date, credits, img_url, max_file_size_kb, max_file_width_px]);
+        res.status(201).send('Kunde erfolgreich erstellt');
+    } catch (error) {
+        console.error('Fehler beim Erstellen des Kunden:', error);
+        res.status(500).send('Fehler beim Erstellen des Kunden');
+    }
+});
+
 
 app.delete('/customers/:id/delete', async (req, res) => {
     const {id} = req.params;  // Hole die Kunden-ID aus den URL-Parametern
