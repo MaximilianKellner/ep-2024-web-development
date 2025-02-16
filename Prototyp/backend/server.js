@@ -4,10 +4,10 @@
 import express from 'express';
 import cors from 'cors';
 import multer from 'multer';
-import { processAllFiles } from './sharp.js';
+import {processAllFiles} from './sharp.js';
 import optimizationEventEmitter from './optimizationEventEmitter.js';
 import fs from 'fs';
-import { pool } from './db.js';
+import {pool} from './db.js';
 
 
 const app = express();
@@ -26,18 +26,14 @@ app.use(express.static('../frontend'));
 // TODO: Regeln, was passiert, wenn durch Abbruch des Uploads/ Downloads ein Fehler auftritt.
 
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        // TODO: Kontrollieren ob Nutzer existiert -> einzige "Hürde", um Dateien hochzuladen (wir haben keine wirkliche Authentifizierung)
-        const customerUploadsDir = `customers/${req.params.userId}/uploaded`;
-        const customerOptimizedDir = `customers/${req.params.userId}/optimized`;
-        Promise.all([
-            fs.promises.mkdir(customerUploadsDir, {recursive: true}),
-            fs.promises.mkdir(customerOptimizedDir, {recursive: true})
-        ]).then(() => cb(null, customerUploadsDir))
-            .catch(err => {
-                console.log(err);
-                cb(err, null)
-            })
+    destination: async function (req, file, cb) {
+        const customer = await pool.query('SELECT * FROM customer WHERE customer_id = $1', [req.params.userId]);
+        if (customer.rows.length > 0) {
+            const customerUploadsDir = `customers/${req.params.userId}/uploaded`;
+            cb(null, customerUploadsDir);
+        } else {
+            cb(new Error("Dieser Kunde existiert nicht"));
+        }
     },
     filename: function (req, file, cb) {
         const timestamp = Date.now();
@@ -72,7 +68,8 @@ const upload = multer({
 });
 
 // TODO: Sollen einzelne und mehrere Dateien hochgeladen werden? Sollen diese unterschiedlich behandelt werden? Done: Nein.
-// TODO: Der Ordner uploaded sollte nach der Optimierung geleert werden.
+// TODO: Der Ordner uploaded sollte nach der Optimierung geleert werden. -> Done.
+// TODO: Fehlerbehandlung von Multer Errors in /uploaded
 app.post('/:userId/upload', upload.array('images'), async (req, res, next) => {
 
     let fileNames;
@@ -142,7 +139,7 @@ app.get('/:userId/progress', async (req, res) => {
 
     // TODO: Der Listener sollte mit einer Nutzer-ID verknüpft sein.
     const sendProgress = (status, fileName) => {
-        const data = JSON.stringify({ status, fileName, credits });
+        const data = JSON.stringify({status, fileName, credits});
         res.write(`data: ${data}\n\n`);
     };
 
@@ -190,7 +187,7 @@ app.get('/:userId/credits', async (req, res) => {
     try {
         const result = await pool.query('SELECT credits FROM customer WHERE customer_id = $1', [userId]);
         const credits = result.rows[0]?.credits; // Optional-Chaining, um null/undefined zu vermeiden
-        res.json({ credits });
+        res.json({credits});
     } catch (error) {
         console.error('Error reading credits:', error);
         res.status(500).send('Error reading credits');
@@ -208,11 +205,11 @@ app.get('/load-customers', async (req, res) => {
 });
 
 app.post('/create-customer', async (req, res) => {
-    
+
 });
 
 app.delete('/customers/:id/delete', async (req, res) => {
-    const { id } = req.params;  // Hole die Kunden-ID aus den URL-Parametern
+    const {id} = req.params;  // Hole die Kunden-ID aus den URL-Parametern
     try {
         // Lösche den Kunden aus der Datenbank anhand der customer_id
         await pool.query('DELETE FROM customer WHERE customer_id = $1', [id]);
@@ -233,6 +230,7 @@ async function findImage(imageName) {
         return null;
     }
 }
+
 // TODO: Suffix sollte wieder entfernt werden.
 async function sendImage(imageName, res, contentDispositionType) {
     const filePath = `${OPTIMIZED_DIR}/${imageName}`;
