@@ -8,7 +8,7 @@
 
 ## Kontext und Problemstellung
 
-Um neue Nutzer anzulegen
+Um neue Nutzer anzulegen muss sich ein Admin zuerst anmelden können. Dafür werden Konten für Administratoren angelegt in denen Nutzername und Passwort gespeichert werden. Nach einem erfolgreichen Login kann der Admin nun neue Kunden anlegen und bestehende bearbeiten. Das Problem ist jedoch, dass bei einem Teilen des Links 
 
 ## Entscheidungsfaktoren
 
