@@ -17,28 +17,17 @@ function checkExpirationDate() {
 // create customer fill Json, send Json. (Json ist effizienter als FormData wenn man keine Dateien hochladen will.) 
 document.getElementById('createCustomerForm').addEventListener('submit', function(event) {
     event.preventDefault();
-    
-    if (!checkExpirationDate()) {
-        return;
-    }
-
-    event.preventDefault();
-
     const form = document.getElementById('createCustomerForm');
     const formData = new FormData(form);
-
-    const data = {};
-
-    formData.forEach((value, key) => {
-        data[key] = value;
-    });
-
-    fetch('/createCustomer', {
+    const urlEncoded = new URLSearchParams(formData).toString();
+    console.log(formData)
+    console.log(urlEncoded)
+    fetch('/create-customer', {
         method: 'POST',
+        body: urlEncoded,
         headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
+            'Content-type': 'application/x-www-form-urlencoded'
+        }
     })
     .then(response => {
         if (response.ok) {
