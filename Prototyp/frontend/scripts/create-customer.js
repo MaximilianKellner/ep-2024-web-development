@@ -15,12 +15,18 @@ document.getElementById('createCustomerForm').addEventListener('submit', functio
 
 // create customer
 document.getElementById('createCustomerForm').addEventListener('submit', function(event) {
+    event.preventDefault();
     const form = document.getElementById('createCustomerForm');
     const formData = new FormData(form);
-
-    fetch('/createCustomer', {
+    const urlEncoded = new URLSearchParams(formData).toString();
+    console.log(formData)
+    console.log(urlEncoded)
+    fetch('/create-customer', {
         method: 'POST',
-        body: formData
+        body: urlEncoded,
+        headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+        }
     })
     .then(response => {
         if (response.ok) {
@@ -36,6 +42,4 @@ document.getElementById('createCustomerForm').addEventListener('submit', functio
         messageDiv.classList.add('error');
         messageDiv.innerHTML = 'Kunde konnte nicht erstellt werden.';
     });
-
-    event.preventDefault();
 });

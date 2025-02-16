@@ -9,7 +9,6 @@ import optimizationEventEmitter from './optimizationEventEmitter.js';
 import fs from 'fs';
 import {pool} from './db.js';
 
-
 const app = express();
 const PORT = 5000;
 
@@ -22,6 +21,7 @@ const uploadedFilesToDelete = [];
 // TODO: Definiere erlaubte Origins und weitere Spezifikationen, wenn der Service bereit für Auslieferung ist.
 app.use(cors());
 app.use(express.static('../frontend'));
+app.use(express.urlencoded({extended: false}));
 
 // TODO: Regeln, was passiert, wenn durch Abbruch des Uploads/ Downloads ein Fehler auftritt.
 
@@ -205,7 +205,34 @@ app.get('/load-customers', async (req, res) => {
 });
 
 app.post('/create-customer', async (req, res) => {
+    // TODO: Bezeichnungen sollten im Front- und Backend vereinheitlicht werden!!!
+    try {
+        const result = await pool.query(
+            `INSERT INTO customer (customer_name, email, expiration_date, credits, img_url, max_file_size_kb,
+                                   max_file_width_px)
+             VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING customer_id`,
+            [
+                req.body.customerName,
+                req.body.customerEmail,
+                req.body.expirationDate,
+                req.body.credits,
+                req.body.pictureUrl,
+                req.body.maxFileInKB,
+                req.body.maxWidthInPX
+            ]
+        );
 
+        const customerId = result.rows[0].customer_id;
+        console.log("Customer id: " + customerId);
+
+        const customerUploadsDir = `customers/${customerId}/uploaded`;
+        const customerOptimizedDir = `customers/${customerId}/optimized`;
+
+        await fs.promises.mkdir(customerUploadsDir, {recursive: true});
+        await fs.promises.mkdir(customerOptimizedDir, {recursive: true});
+    } catch (err) {
+        console.log(err);
+    }
 });
 
 app.delete('/customers/:id/delete', async (req, res) => {
