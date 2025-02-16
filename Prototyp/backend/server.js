@@ -337,17 +337,20 @@ dotenv.config();
 // const jwt = require('jsonwebtoken');
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
+// import { title } from 'process';
 
 app.use(express.json());
 
 //Sollten am besten in einer Datenbank gespeichert werden.
 const posts = [
-    {username: 'Kyle', title: 'Post 1'},
-    {username: 'Jim', title: 'Post 2'}
+    {Firmenname: 'Apple', maxFileInKB: 1000, maxWidthInPX: 1000},
+    {Firmenname: 'Google', maxFileInKB: 2000, maxWidthInPX: 2000},
+    {Firmenname: 'Microsoft', maxFileInKB: 3000, maxWidthInPX: 3000}
 ]
 
 app.get('/posts', authenticateToken, (req, res) =>{
-    res.json(posts.filter(post => post.username === req.user.name))
+    // Hier werden Posts angezeigt, die alle Admins angelegt haben. Wenn nur bestimmte angezeigt werden sollenn, dann filtern.
+    res.json(posts)
 })
 
 app.post('/login', (req, res) =>{

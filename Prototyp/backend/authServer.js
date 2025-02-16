@@ -1,11 +1,15 @@
+import dotenv from 'dotenv';
+import express from 'express';
+import jwt from 'jsonwebtoken';
+import cors from 'cors';  // Füge cors import hinzu
+
 dotenv.config();
 
-import dotenv from 'dotenv';
-import express from 'express'
-import jwt from 'jsonwebtoken'
-const app = express()
-//Sollten am besten in einer Datenbank gespeichert werden
-let refreshTokens = []
+const app = express();
+let refreshTokens = [];
+
+// Aktiviere CORS
+app.use(cors());
 app.use(express.json());
 
 app.post('/token', (req, res) =>{
