@@ -53,8 +53,8 @@ const fileFilter = (req, file, cb) => {
         } else {
             cb(null, false);
         }
-    } catch (err) {
-        cb(err, false);
+    } catch (error) {
+        cb(error, false);
     }
 };
 
@@ -100,8 +100,8 @@ app.post('/:userId/upload', upload.array('images'), async (req, res, next) => {
             fileNames: fileNames
         });
         console.log("In uploadedFilesToDelete: " + uploadedFilesToDelete.entries().toArray());
-    } catch (err) {
-        console.log(err);
+    } catch (error) {
+        console.log(error);
     }
 });
 
@@ -118,57 +118,59 @@ async function deleteFiles(userId, fileNames) {
 
 app.get('/:userId/progress', async (req, res) => {
 
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-    res.flushHeaders();
-    // TODO: Add error handling with callback
-    res.write('');
-
-    const userId = req.params.userId;
-
-    let credits = undefined;
     try {
+        res.setHeader('Content-Type', 'text/event-stream');
+        res.setHeader('Cache-Control', 'no-cache');
+        res.setHeader('Connection', 'keep-alive');
+        res.flushHeaders();
+        // TODO: Add error handling with callback
+        res.write('');
+
+        const userId = req.params.userId;
+
         const result = await pool.query('SELECT credits FROM customer WHERE customer_id = $1', [userId]);
         const credits = result.rows[0]?.credits; // Optional-Chaining, um null/undefined zu vermeiden
         console.log('Credits:', credits);
+
+        // TODO: Der Listener sollte mit einer Nutzer-ID verknüpft sein.
+        const sendProgress = (status, fileName) => {
+            const data = JSON.stringify({status, fileName, credits});
+            res.write(`data: ${data}\n\n`);
+        };
+
+        optimizationEventEmitter.on('progress', sendProgress);
+
+        const handleClosingConnection = async () => {
+            console.log('Connection closed');
+            optimizationEventEmitter.removeListener('progress', sendProgress);
+        };
+
+        req.on('close', handleClosingConnection);
+
     } catch (error) {
         console.error('Error reading credits:', error);
         res.status(500).send('Error reading credits');
     }
-
-    // TODO: Der Listener sollte mit einer Nutzer-ID verknüpft sein.
-    const sendProgress = (status, fileName) => {
-        const data = JSON.stringify({status, fileName, credits});
-        res.write(`data: ${data}\n\n`);
-    };
-
-    optimizationEventEmitter.on('progress', sendProgress);
-
-    const handleClosingConnection = async () => {
-        console.log('Connection closed');
-        optimizationEventEmitter.removeListener('progress', sendProgress);
-    };
-
-    req.on('close', handleClosingConnection);
-
 });
 
 app.get('/:userId/download/:imageName', (req, res, next) => {
-    const contentDispositionType = req.query.cdtype ? 'inline' : 'attachment';
 
-    // TODO: Mehrere Dateien könnten den gleichen Namen haben und sollten unterschieden werden.
-    // TODO: Nutzer-ID einsetzen.
-    const userId = req.params.userId;
-    const imageName = req.params.imageName;
+    try {
+        const contentDispositionType = req.query.cdtype ? 'inline' : 'attachment';
 
-    handleImageRequest(imageName, res, contentDispositionType);
+        // TODO: Mehrere Dateien könnten den gleichen Namen haben und sollten unterschieden werden.
+        // TODO: Nutzer-ID einsetzen.
+        const userId = req.params.userId;
+        const imageName = req.params.imageName;
 
+        handleImageRequest(imageName, res, contentDispositionType);
+    } catch (error) {
+
+    }
 });
 
 app.get('/:userId/optimized-images', async (req, res) => {
     const userId = req.params.userId;
-
 
     try {
         const files = (await fs.promises.readdir(OPTIMIZED_DIR)).filter(file =>
@@ -230,8 +232,8 @@ app.post('/create-customer', async (req, res) => {
 
         await fs.promises.mkdir(customerUploadsDir, {recursive: true});
         await fs.promises.mkdir(customerOptimizedDir, {recursive: true});
-    } catch (err) {
-        console.log(err);
+    } catch (error) {
+        console.log(error);
     }
 });
 
@@ -252,44 +254,54 @@ async function findImage(imageName) {
         const files = await fs.promises.readdir(OPTIMIZED_DIR);
         const image = files.find(file => file.includes(imageName));
         return image;
-    } catch (err) {
-        console.error(err);
+    } catch (error) {
+        console.error(error);
         return null;
     }
 }
 
 // TODO: Suffix sollte wieder entfernt werden.
 async function sendImage(imageName, res, contentDispositionType) {
-    const filePath = `${OPTIMIZED_DIR}/${imageName}`;
-    const fileStream = fs.createReadStream(filePath);
 
-    fs.stat(filePath, (err, stats) => {
-        if (err) {
-            res.status(404).send('File not found');
-            return;
-        }
+    try {
+        const filePath = `${OPTIMIZED_DIR}/${imageName}`;
+        const fileStream = fs.createReadStream(filePath);
 
-        res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');  //Very important!
-        res.setHeader('Content-Length', stats.size);
-        res.setHeader('Content-Type', 'image/png');
-        res.setHeader('Content-Disposition', `${contentDispositionType}; filename="${imageName}"`);
+        fs.stat(filePath, (error, stats) => {
+            if (error) {
+                res.status(404).send('File not found');
+                return;
+            }
 
-        fileStream.pipe(res);
-    });
+            res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');  //Very important!
+            res.setHeader('Content-Length', stats.size);
+            res.setHeader('Content-Type', 'image/png');
+            res.setHeader('Content-Disposition', `${contentDispositionType}; filename="${imageName}"`);
 
-    fileStream.on('error', err => {
-        console.log(err);
-        res.status(500).send('Error downloading file');
-    });
+            fileStream.pipe(res);
+        });
+
+        fileStream.on('error', error => {
+            console.log(error);
+            res.status(500).send('Error downloading file');
+        });
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 async function handleImageRequest(imageName, res, contentDispositionType) {
-    let image = await findImage(imageName);
-    console.log("Gefunden Bild: ", image);
-    if (image) {
-        await sendImage(image, res, contentDispositionType);
-    } else {
-        res.status(404).send('Image not found');
+
+    try {
+        let image = await findImage(imageName);
+        console.log("Gefunden Bild: ", image);
+        if (image) {
+            await sendImage(image, res, contentDispositionType);
+        } else {
+            res.status(404).send('Image not found');
+        }
+    } catch (error) {
+        console.log(error);
     }
 }
 
