@@ -1,25 +1,27 @@
 # Hier werden dann die Kundendaten abgefragt
-GET http://localhost:3000/posts
+GET http://localhost:5000/posts
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSmltIiwiaWF0IjoxNzM5NzE1MTYwLCJleHAiOjE3Mzk3MTUxOTB9.8AXE8d0bonfX85V9EDbfyqJxClaSco0W2YoWuE8G1oU
 
 ###
 
-POST http://localhost:4000/token
+POST http://localhost:4050/token
 Content-Type: application/json
 # Refresh Token muss hier rein gepasted werden
 {
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSmltIiwiaWF0IjoxNzM5NzE1MzQxfQ.KKiLzy-InO4NDCkYdN_dQytclO7LmNXvQQwaidAhDPs"
 }
+
 ###
-DELETE http://localhost:4000/logout
+DELETE http://localhost:4050/logout
 Content-Type: application/json
 # Refresh Token muss hier rein gepasted werden
 {
   "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSmltIiwiaWF0IjoxNzM5NzE1MzQxfQ.KKiLzy-InO4NDCkYdN_dQytclO7LmNXvQQwaidAhDPs"
-}	
+}
+
 ###
 # Hier wird ein neuer Admin mit einem JWT AccessToken angelegt	
-POST http://localhost:4000/login
+POST http://localhost:4050/login
 Content-Type: application/json
 
 {
