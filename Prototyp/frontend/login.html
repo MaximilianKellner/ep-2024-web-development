@@ -4,12 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login with Tokens</title>
-    <script src="../backend/requestHandler.js" defer></script>
+    <script src="./scripts/requestHandler.js" defer></script>
 </head>
 <body>
     <input type="text" class="username" placeholder="Username">
     <input type="password" class="password" placeholder="Password">
     <button class="loginButton">Login</button>
-
+<script>
+    //Überprüfung ob ein Token vorhanden ist
+    if(localStorage.getItem('accessToken') != null){
+        const token = localStorage.getItem('accessToken');
+        console.log('Token aus login.html'+token)
+        //Überprüfung ob der Token gültig ist
+    }
+    else {
+        console.log('Token ist null')
+    }
+</script>
 </body>
 </html>
