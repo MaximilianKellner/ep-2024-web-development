@@ -7,13 +7,13 @@ const jwt = require('jsonwebtoken');
 app.use(express.json());
 
 //Sollten am besten in einer Datenbank gespeichert werden.
-const posts = [
+const customers = [
     {username: 'Kyle', title: 'Post 1'},
     {username: 'Jim', title: 'Post 2'}
 ]
 
-app.get('/posts', authenticateToken, (req, res) =>{
-    res.json(posts.filter(post => post.username === req.user.name))
+app.get('/customers', authenticateToken, (req, res) =>{
+    res.json(customers.filter(post => post.username === req.user.name))
 })
 
 app.post('/login', (req, res) =>{

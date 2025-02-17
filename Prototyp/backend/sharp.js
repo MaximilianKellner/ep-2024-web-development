@@ -10,6 +10,8 @@ import { pool } from './db.js';
 
 sharp.cache(false);
 
+
+//Das muss in DB konvertiert werden
 function getCustomerData(filterworld) {
 
     try {

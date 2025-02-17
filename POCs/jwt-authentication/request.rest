@@ -1,5 +1,5 @@
 # Hier werden dann die Kundendaten abgefragt
-GET http://localhost:5000/posts
+GET http://localhost:5000/customers
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSmltIiwiaWF0IjoxNzM5NzE1MTYwLCJleHAiOjE3Mzk3MTUxOTB9.8AXE8d0bonfX85V9EDbfyqJxClaSco0W2YoWuE8G1oU
 
 ###
