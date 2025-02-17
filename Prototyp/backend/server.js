@@ -16,6 +16,7 @@ const PORT = 5000;
 
 const OPTIMIZED_DIR = './customers/debug-kunde-1/optimized';
 const uploadedFilesToDelete = [];
+// TODO: Ablaufender Kundenlink -> u.a. Kunde benachrichtigen mit neuem Kundenlink !!!
 
 // TODO: Auf verschieden Browsern testen -> Multiple download funktioniert nicht auf Chrome
 // TODO: Definiere erlaubte Origins und weitere Spezifikationen, wenn der Service bereit für Auslieferung ist.
