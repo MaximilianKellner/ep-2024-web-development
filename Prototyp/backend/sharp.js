@@ -10,24 +10,13 @@ import { pool } from './db.js';
 
 sharp.cache(false);
 
-function getCustomerData(filterworld) {
+async function getCustomerData(userId, optimizationParameter = 'max_file_size_kb') {
 
     try {
-        const __dirname = dirname(fileURLToPath(import.meta.url));
-        const filePath = path.join(__dirname, 'customers', 'debug-kunde-1', 'customer-data.json');
-        const data = JSON.parse(fs.readFileSync(filePath));
-        //Es soll nur der Wert des angegebenen Schlüssels zurückgegeben werden
-        if (filterworld === 'name') {
-            console.log('Customer Data: ', data.customerData.name);
-            return data[filterworld];
-        }
-        if (filterworld === 'max-file-size-kb') {
-            console.log('Max Size: ', data.configSettings.maxFileInKB);
-            let maxFileSize = data.configSettings.maxFileInKB;
-            return maxFileSize;
-        }
-        console.log('Customer Data: ', data);
-        return data;
+        // TODO: Should DB store size in B, KB, MB?
+        const data = await pool.query(`SELECT ${[optimizationParameter]} FROM customer WHERE customer_id = $1`, [userId]);
+        console.log('Customer Data: ', data.rows[0]?.[optimizationParameter]);
+        return data.rows[0]?.[optimizationParameter];
     } catch (error) {
         console.error('Error:', error);
     }
@@ -57,7 +46,7 @@ async function processAllFiles(customerID, fileNames) {
             const outputPath = path.join(optimizedDir, file);
 
            try {
-                const done = await compressToSize(inputPath, outputPath, file);
+                const done = await compressToSize(inputPath, outputPath, file, customerID);
                 if (done) {
                     console.log(`Successfully processed: ${file}`);
                     await pool.query('UPDATE customer SET credits = credits - 1 WHERE customer_id = $1', [customerID]);
@@ -123,9 +112,9 @@ async function processAllFiles(customerID, fileNames) {
 //     }
 // }
 
-async function compressToSize(inputPath, outputPath, fileName) {
+async function compressToSize(inputPath, outputPath, fileName, userId) {
     try {
-        let maxSizeInMB = getCustomerData('max-file-size-kb') / 1024;
+        let maxSizeInMB = await getCustomerData(userId) / 1024;
         if (!maxSizeInMB) {
             throw new Error('Max file size not found');
         }
@@ -171,7 +160,7 @@ async function compressToSize(inputPath, outputPath, fileName) {
         
         while (minQuality <= maxQuality) {
             quality = Math.floor((minQuality + maxQuality) / 2);
-            
+            // TODO: Handle error "Error: Expected integer between 1 and 100 for quality but received 0 of type number"
             buffer = await image
                 .jpeg({ quality: quality })
                 .toBuffer();
