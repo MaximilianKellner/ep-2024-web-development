@@ -8,40 +8,48 @@ import {processAllFiles} from './sharp.js';
 import optimizationEventEmitter from './optimizationEventEmitter.js';
 import fs from 'fs';
 import {pool} from './db.js';
+import apiErrorHandler from "./apiErrorHandler.js";
+import ApiError from './ApiError.js';
 
 const app = express();
 const PORT = 5000;
 
 const OPTIMIZED_DIR = './customers/debug-kunde-1/optimized';
 const uploadedFilesToDelete = [];
+// TODO: Ablaufender Kundenlink -> u.a. Kunde benachrichtigen mit neuem Kundenlink !!!
 
 // TODO: Auf verschieden Browsern testen -> Multiple download funktioniert nicht auf Chrome
-// TODO: Felder in der JSON überarbeiten -> maxFileinKB, maxWidthInPX sind irreführend.
-
 // TODO: Definiere erlaubte Origins und weitere Spezifikationen, wenn der Service bereit für Auslieferung ist.
 app.use(express.json());
 app.use(cors());
 app.use(express.static('../frontend'));
 app.use(express.urlencoded({extended: false}));
-
 // TODO: Regeln, was passiert, wenn durch Abbruch des Uploads/ Downloads ein Fehler auftritt.
-
 const storage = multer.diskStorage({
     destination: async function (req, file, cb) {
-        const customer = await pool.query('SELECT * FROM customer WHERE customer_id = $1', [req.params.userId]);
-        if (customer.rows.length > 0) {
-            const customerUploadsDir = `customers/${req.params.userId}/uploaded`;
-            cb(null, customerUploadsDir);
-        } else {
-            cb(new Error("Dieser Kunde existiert nicht"));
+        try {
+            const customer = await pool.query('SELECT * FROM customer WHERE customer_id = $1', [req.params.userId]);
+            if (customer.rows.length > 0) {
+                const customerUploadsDir = `customers/${req.params.userId}/uploaded`;
+                cb(null, customerUploadsDir);
+            } else {
+                // Sicherheitsrelevante Entscheidung -> Client sollte nicht wissen, wie die DB-Einträge aussehen
+                cb(ApiError.internal());
+            }
+        } catch (error) {
+            cb(error)
         }
     },
     filename: function (req, file, cb) {
-        const timestamp = Date.now();
-        const randomSuffix = Math.round(Math.random() * 1E9);
-        const uniqueSuffix = `${timestamp}_${randomSuffix}`;
-        console.log("Unique suffix: ", uniqueSuffix);
-        cb(null, `${file.originalname}-${uniqueSuffix}`);
+        try {
+            const timestamp = Date.now();
+            const randomSuffix = Math.round(Math.random() * 1E9);
+            const uniqueSuffix = `${timestamp}_${randomSuffix}`;
+            console.log("Unique suffix: ", uniqueSuffix);
+            cb(null, `${file.originalname}-${uniqueSuffix}`);
+        } catch (error) {
+            cb(ApiError.internal());
+        }
     }
 });
 
@@ -52,24 +60,20 @@ const fileFilter = (req, file, cb) => {
         if (acceptedMimeTypes.includes(file.mimetype)) {
             cb(null, true);
         } else {
-            cb(null, false);
+            cb(ApiError.badRequest("File type not accepted"), false);   // In diesem Falle werden alle Dateien abgelehnt
         }
     } catch (error) {
-        cb(error, false);
+        cb(ApiError.internal(), false);
     }
 };
-
-// TODO: Dateien mit nicht validem oder fehlendem Dateityp sollen abgelehnt werden. -> DONE: Prüfung anhand des Mime-Types
-// TODO: Dateien, die das Credit-Limit übersteigen, sollen abgelehnt werden. -> DONE: Passiert im Frontend
 // TODO: Uploads, die das Storage-Limit übersteigen, sollen abgelehnt werden.
+
 //  -> Prüfung nicht bei jedem Upload, sondern regelmäßige Checks und benachrichtigen des Content Managers, wenn ein bestimmter Wert unterschritten ist
 const upload = multer({
     storage: storage,
     fileFilter: fileFilter
 });
 
-// TODO: Sollen einzelne und mehrere Dateien hochgeladen werden? Sollen diese unterschiedlich behandelt werden? Done: Nein.
-// TODO: Der Ordner uploaded sollte nach der Optimierung geleert werden. -> Done.
 // TODO: Fehlerbehandlung von Multer Errors in /uploaded
 app.post('/:userId/upload', upload.array('images'), async (req, res, next) => {
 
@@ -78,46 +82,49 @@ app.post('/:userId/upload', upload.array('images'), async (req, res, next) => {
 
     try {
         if (!req.files) {
-            return res.status(400).send('No file uploaded.');
+            next(ApiError.badRequest("No files sent"));
         }
 
         console.log(req.files);
 
-        res.status(204).send('File uploaded successfully.');
         userId = req.params.userId;
-
         console.log('User ID:', userId);
-        fileNames = req.files.map(file => file.filename);
 
+        fileNames = req.files.map(file => file.filename);
         console.log('File names:', fileNames);
 
         // TODO: XMLs löschen.
+        // TODO: Error handling inside Functions with new Error handling class (after server.js is done), also test for async Errors!
         await processAllFiles(userId, fileNames)
-
         await deleteFiles(userId, fileNames);
 
+        // TODO: Remove, not needed!!!
         uploadedFilesToDelete.push({
             userId: userId,
             fileNames: fileNames
         });
+
         console.log("In uploadedFilesToDelete: " + uploadedFilesToDelete.entries().toArray());
+        res.status(204).send('File uploaded successfully.');
     } catch (error) {
-        console.log(error);
+        console.error(error);
+        next(error);
     }
 });
 
 async function deleteFiles(userId, fileNames) {
+
     try {
         for (const fileName of fileNames) {
             await fs.promises.unlink(`customers/${userId}/uploaded/${fileName}`);
             console.log(`customers/${userId}/uploaded/${fileName}`);
         }
     } catch (error) {
-        console.error("Fehler beim Löschen der Dateien: ", error);
+        throw error;
     }
 }
 
-app.get('/:userId/progress', async (req, res) => {
+app.get('/:userId/progress', async (req, res, next) => {
 
     try {
         res.setHeader('Content-Type', 'text/event-stream');
@@ -130,27 +137,27 @@ app.get('/:userId/progress', async (req, res) => {
         const userId = req.params.userId;
 
         const result = await pool.query('SELECT credits FROM customer WHERE customer_id = $1', [userId]);
-        const credits = result.rows[0]?.credits; // Optional-Chaining, um null/undefined zu vermeiden
-        console.log('Credits:', credits);
+        if (result.rows.length > 0) {
+            const credits = result.rows[0]?.credits;
+            console.log('Credits:', credits);
 
-        // TODO: Der Listener sollte mit einer Nutzer-ID verknüpft sein.
-        const sendProgress = (status, fileName) => {
-            const data = JSON.stringify({status, fileName, credits});
-            res.write(`data: ${data}\n\n`);
-        };
+            // TODO: Der Listener sollte mit einer Nutzer-ID verknüpft sein.
+            const sendProgress = (status, fileName) => {
+                const data = JSON.stringify({status, fileName, credits});
+                res.write(`data: ${data}\n\n`);
+            };
 
-        optimizationEventEmitter.on('progress', sendProgress);
+            optimizationEventEmitter.on('progress', sendProgress);
 
-        const handleClosingConnection = async () => {
-            console.log('Connection closed');
-            optimizationEventEmitter.removeListener('progress', sendProgress);
-        };
+            const handleClosingConnection = async () => {
+                console.log('Connection closed');
+                optimizationEventEmitter.removeListener('progress', sendProgress);
+            };
 
-        req.on('close', handleClosingConnection);
-
+            req.on('close', handleClosingConnection);
+        }
     } catch (error) {
-        console.error('Error reading credits:', error);
-        res.status(500).send('Error reading credits');
+        next(error);
     }
 });
 
@@ -166,48 +173,58 @@ app.get('/:userId/download/:imageName', (req, res, next) => {
 
         handleImageRequest(imageName, res, contentDispositionType);
     } catch (error) {
-
+        next(error);
     }
 });
 
-app.get('/:userId/optimized-images', async (req, res) => {
+app.get('/:userId/optimized-images', async (req, res, next) => {
     const userId = req.params.userId;
 
     try {
+        // TODO: Update datatypes -> Create separate util file to manage allowed datatypes/ mime-types
+        // TODO: Update optimized path -> user specific
         const files = (await fs.promises.readdir(OPTIMIZED_DIR)).filter(file =>
             /\.(jpg|jpeg|png)/i.test(file)
         );
-        res.json(files);
+        if (files.length > 0) {
+            res.json(files);
+        } else {
+            res.status(200).send("No images found");
+        }
     } catch (error) {
-        console.error('Error reading optimized directory:', error);
-        res.status(500).send('Error reading optimized directory');
+        next(error);
     }
 });
 
-app.get('/:userId/credits', async (req, res) => {
+app.get('/:userId/credits', async (req, res, next) => {
     const userId = req.params.userId;
     console.log(`Displaying credits for user:${userId}-`);
     try {
         const result = await pool.query('SELECT credits FROM customer WHERE customer_id = $1', [userId]);
-        const credits = result.rows[0]?.credits; // Optional-Chaining, um null/undefined zu vermeiden
-        res.json({credits});
+        if (result.rows.length > 0) {
+            const credits = result.rows[0]?.credits; // Optional-Chaining, um null/undefined zu vermeiden
+            res.json({credits});
+        } else {
+            throw new ApiError.internal();
+        }
     } catch (error) {
-        console.error('Error reading credits:', error);
-        res.status(500).send('Error reading credits');
+        next(error)
     }
 });
 
-app.get('/load-customers', async (req, res) => {
+// TODO: Endpoint should be secured -> Auth
+app.get('/load-customers', async (req, res, next) => {
     try {
         const result = await pool.query('SELECT * FROM customer');
-        res.json(result.rows);
+        if (result.rows.length > 0) {
+            res.json(result.rows);
+        }
     } catch (error) {
-        console.error('Error reading from database:', error);
-        res.status(500).send('Error reading from database');
+        next(error);
     }
 });
 
-app.post('/create-customer', async (req, res) => {
+app.post('/create-customer', async (req, res, next) => {
     // TODO: Bezeichnungen sollten im Front- und Backend vereinheitlicht werden!!!
     try {
         const result = await pool.query(
@@ -234,57 +251,45 @@ app.post('/create-customer', async (req, res) => {
         await fs.promises.mkdir(customerUploadsDir, {recursive: true});
         await fs.promises.mkdir(customerOptimizedDir, {recursive: true});
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 });
 
-
-app.post('/createCustomer', async (req, res) => {
-    const { customer_name, email, expiration_date, credits, img_url, max_file_size_kb, max_file_width_px } = req.body;
+app.delete('/customers/:id/delete', async (req, res, next) => {
     try {
-        await pool.query('INSERT INTO customer (customer_name, email, expiration_date, credits, img_url, max_file_size_kb, max_file_width_px) VALUES ($1, $2, $3, $4, $5, $6, $7)', [customer_name, email, expiration_date, credits, img_url, max_file_size_kb, max_file_width_px]);
-        res.status(201).send('Kunde erfolgreich erstellt');
+        const {id} = req.params;
+        const result = await pool.query('DELETE FROM customer WHERE customer_id = $1', [id]);
+        if (result.rowCount > 0) {
+            res.status(200).send('Kunde erfolgreich gelöscht');
+        } else {
+            throw ApiError.internal();
+        }
     } catch (error) {
-        console.error('Fehler beim Erstellen des Kunden:', error);
-        res.status(500).send('Fehler beim Erstellen des Kunden');
-    }
-});
-
-
-app.delete('/customers/:id/delete', async (req, res) => {
-    const {id} = req.params;  // Hole die Kunden-ID aus den URL-Parametern
-    try {
-        // Lösche den Kunden aus der Datenbank anhand der customer_id
-        await pool.query('DELETE FROM customer WHERE customer_id = $1', [id]);
-        res.status(200).send('Kunde erfolgreich gelöscht');
-    } catch (error) {
-        console.error('Fehler beim Löschen des Kunden:', error);
-        res.status(500).send('Fehler beim Löschen des Kunden');
+        next(error);
     }
 });
 
 async function findImage(imageName) {
+
     try {
         const files = await fs.promises.readdir(OPTIMIZED_DIR);
         const image = files.find(file => file.includes(imageName));
         return image;
     } catch (error) {
-        console.error(error);
         return null;
     }
 }
 
 // TODO: Suffix sollte wieder entfernt werden.
-async function sendImage(imageName, res, contentDispositionType) {
 
+async function sendImage(imageName, res, contentDispositionType) {
     try {
         const filePath = `${OPTIMIZED_DIR}/${imageName}`;
         const fileStream = fs.createReadStream(filePath);
 
         fs.stat(filePath, (error, stats) => {
             if (error) {
-                res.status(404).send('File not found');
-                return;
+                throw ApiError.internal();
             }
 
             res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');  //Very important!
@@ -297,44 +302,35 @@ async function sendImage(imageName, res, contentDispositionType) {
 
         fileStream.on('error', error => {
             console.log(error);
-            res.status(500).send('Error downloading file');
+            throw ApiError.internal();
         });
     } catch (error) {
-        console.log(error);
+        throw error;
     }
 }
 
 async function handleImageRequest(imageName, res, contentDispositionType) {
-
+    // TODO: Should error be handled here or propagated
     try {
         let image = await findImage(imageName);
         console.log("Gefunden Bild: ", image);
         if (image) {
             await sendImage(image, res, contentDispositionType);
         } else {
-            res.status(404).send('Image not found');
+            throw ApiError.internal();
         }
     } catch (error) {
-        console.log(error);
+        throw error;
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
 // JWT Code
+
+
 dotenv.config();
 // require('dotenv').config()
-
 // const jwt = require('jsonwebtoken');
+
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 // import { title } from 'process';
@@ -358,24 +354,26 @@ app.get('/customers', authenticateToken, (req, res) =>{
 //     const username = req.body.username
 //     const user = {name: username}
 
+
 //     const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
 //     res.json({accessToken: accessToken})
 // })
 
-function authenticateToken(req, res, next){
+function authenticateToken(req, res, next) {
+
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
-    if(token == null){
+    if (token == null) {
         return res.sendStatus(401)
     }
-
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) =>{
-        if(err){
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+        if (err) {
             return res.sendStatus(403)
         }
         req.user = user
         next()
     })
+
 }
 
 app.get('/verify-token', authenticateToken, (req, res) => {
@@ -429,16 +427,7 @@ function generateAccessToken(user){
     return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '3s'})
 }
 
-
-
-
-
-
-
-
-
-
-
 app.listen(PORT, () =>
     console.log(`Server listening on port ${PORT}`)
 );
+
