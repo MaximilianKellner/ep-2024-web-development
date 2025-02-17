@@ -14,7 +14,6 @@ import ApiError from './ApiError.js';
 const app = express();
 const PORT = 5000;
 
-const OPTIMIZED_DIR = './customers/debug-kunde-1/optimized';
 const uploadedFilesToDelete = [];
 // TODO: Ablaufender Kundenlink -> u.a. Kunde benachrichtigen mit neuem Kundenlink !!!
 
@@ -161,7 +160,7 @@ app.get('/:userId/progress', async (req, res, next) => {
     }
 });
 
-app.get('/:userId/download/:imageName', (req, res, next) => {
+app.get('/:userId/download/:imageName', async (req, res, next) => {
 
     try {
         const contentDispositionType = req.query.cdtype ? 'inline' : 'attachment';
@@ -171,7 +170,7 @@ app.get('/:userId/download/:imageName', (req, res, next) => {
         const userId = req.params.userId;
         const imageName = req.params.imageName;
 
-        handleImageRequest(imageName, res, contentDispositionType);
+        await handleImageRequest(imageName, userId, res, contentDispositionType);
     } catch (error) {
         next(error);
     }
@@ -183,7 +182,7 @@ app.get('/:userId/optimized-images', async (req, res, next) => {
     try {
         // TODO: Update datatypes -> Create separate util file to manage allowed datatypes/ mime-types
         // TODO: Update optimized path -> user specific
-        const files = (await fs.promises.readdir(OPTIMIZED_DIR)).filter(file =>
+        const files = (await fs.promises.readdir(`customers/${userId}/optimized`)).filter(file =>
             /\.(jpg|jpeg|png)/i.test(file)
         );
         if (files.length > 0) {
@@ -269,27 +268,30 @@ app.delete('/customers/:id/delete', async (req, res, next) => {
     }
 });
 
-async function findImage(imageName) {
+async function findImage(imageName, userId) {
 
     try {
-        const files = await fs.promises.readdir(OPTIMIZED_DIR);
+        const files = await fs.promises.readdir(`customers/${userId}/optimized`);
         const image = files.find(file => file.includes(imageName));
+        if (!image) {
+            throw ApiError.badRequest();
+        }
         return image;
     } catch (error) {
-        return null;
+        throw error;
     }
 }
 
 // TODO: Suffix sollte wieder entfernt werden.
 
-async function sendImage(imageName, res, contentDispositionType) {
+async function sendImage(imageName, userId, res, contentDispositionType) {
     try {
-        const filePath = `${OPTIMIZED_DIR}/${imageName}`;
+        const filePath = `customers/${userId}/optimized/${imageName}`;
         const fileStream = fs.createReadStream(filePath);
 
         fs.stat(filePath, (error, stats) => {
             if (error) {
-                throw ApiError.internal();
+                throw ApiError.internal("Fehler beim Lesen aus dem Dateisystem")
             }
 
             res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');  //Very important!
@@ -302,23 +304,18 @@ async function sendImage(imageName, res, contentDispositionType) {
 
         fileStream.on('error', error => {
             console.log(error);
-            throw ApiError.internal();
+            throw ApiError.internal("Fehler beim Übertragen der Datei")
         });
     } catch (error) {
         throw error;
     }
 }
 
-async function handleImageRequest(imageName, res, contentDispositionType) {
-    // TODO: Should error be handled here or propagated
+async function handleImageRequest(imageName, userId, res, contentDispositionType) {
+
     try {
-        let image = await findImage(imageName);
-        console.log("Gefunden Bild: ", image);
-        if (image) {
-            await sendImage(image, res, contentDispositionType);
-        } else {
-            throw ApiError.internal();
-        }
+        const image = await findImage(imageName, userId);
+        await sendImage(image, userId, res, contentDispositionType);
     } catch (error) {
         throw error;
     }
