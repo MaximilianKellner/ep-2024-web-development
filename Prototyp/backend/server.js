@@ -27,9 +27,9 @@ app.use(express.urlencoded({extended: false}));
 const storage = multer.diskStorage({
     destination: async function (req, file, cb) {
         try {
-            const customer = await pool.query('SELECT * FROM customer WHERE customer_id = $1', [req.params.userId]);
+            const customer = await pool.query('SELECT * FROM customer WHERE link_token = $1', [req.params.linkToken]);
             if (customer.rows.length > 0) {
-                const customerUploadsDir = `customers/${req.params.userId}/uploaded`;
+                const customerUploadsDir = `customers/${req.params.linkToken}/uploaded`;
                 cb(null, customerUploadsDir);
             } else {
                 // Sicherheitsrelevante Entscheidung -> Client sollte nicht wissen, wie die DB-Einträge aussehen
@@ -74,10 +74,10 @@ const upload = multer({
 });
 
 // TODO: Fehlerbehandlung von Multer Errors in /uploaded
-app.post('/:userId/upload', upload.array('images'), async (req, res, next) => {
+app.post('/:linkToken/upload', upload.array('images'), async (req, res, next) => {
 
     let fileNames;
-    let userId;
+    let linkToken;
 
     try {
         if (!req.files) {
@@ -86,20 +86,20 @@ app.post('/:userId/upload', upload.array('images'), async (req, res, next) => {
 
         console.log(req.files);
 
-        userId = req.params.userId;
-        console.log('User ID:', userId);
+        linkToken = req.params.linkToken;
+        console.log('Link token:', linkToken);
 
         fileNames = req.files.map(file => file.filename);
         console.log('File names:', fileNames);
 
         // TODO: XMLs löschen.
         // TODO: Error handling inside Functions with new Error handling class (after server.js is done), also test for async Errors!
-        await processAllFiles(userId, fileNames)
-        await deleteFiles(userId, fileNames);
+        await processAllFiles(linkToken, fileNames)
+        await deleteFiles(linkToken, fileNames);
 
         // TODO: Remove, not needed!!!
         uploadedFilesToDelete.push({
-            userId: userId,
+            linkToken: linkToken,
             fileNames: fileNames
         });
 
@@ -111,19 +111,19 @@ app.post('/:userId/upload', upload.array('images'), async (req, res, next) => {
     }
 });
 
-async function deleteFiles(userId, fileNames) {
+async function deleteFiles(linkToken, fileNames) {
 
     try {
         for (const fileName of fileNames) {
-            await fs.promises.unlink(`customers/${userId}/uploaded/${fileName}`);
-            console.log(`customers/${userId}/uploaded/${fileName}`);
+            await fs.promises.unlink(`customers/${linkToken}/uploaded/${fileName}`);
+            console.log(`customers/${linkToken}/uploaded/${fileName}`);
         }
     } catch (error) {
         throw error;
     }
 }
 
-app.get('/:userId/progress', async (req, res, next) => {
+app.get('/:linkToken/progress', async (req, res, next) => {
 
     try {
         res.setHeader('Content-Type', 'text/event-stream');
@@ -133,9 +133,9 @@ app.get('/:userId/progress', async (req, res, next) => {
         // TODO: Add error handling with callback
         res.write('');
 
-        const userId = req.params.userId;
+        const linkToken = req.params.linkToken;
 
-        const result = await pool.query('SELECT credits FROM customer WHERE customer_id = $1', [userId]);
+        const result = await pool.query('SELECT credits FROM customer WHERE link_token = $1', [linkToken]);
         if (result.rows.length > 0) {
             const credits = result.rows[0]?.credits;
             console.log('Credits:', credits);
@@ -160,29 +160,28 @@ app.get('/:userId/progress', async (req, res, next) => {
     }
 });
 
-app.get('/:userId/download/:imageName', async (req, res, next) => {
+app.get('/:linkToken/download/:imageName', async (req, res, next) => {
 
     try {
         const contentDispositionType = req.query.cdtype ? 'inline' : 'attachment';
 
         // TODO: Mehrere Dateien könnten den gleichen Namen haben und sollten unterschieden werden.
-        // TODO: Nutzer-ID einsetzen.
-        const userId = req.params.userId;
+        const linkToken = req.params.linkToken;
         const imageName = req.params.imageName;
 
-        await handleImageRequest(imageName, userId, res, contentDispositionType);
+        await handleImageRequest(imageName, linkToken, res, contentDispositionType);
     } catch (error) {
         next(error);
     }
 });
 
-app.get('/:userId/optimized-images', async (req, res, next) => {
-    const userId = req.params.userId;
+app.get('/:linkToken/optimized-images', async (req, res, next) => {
+    const linkToken = req.params.linkToken;
 
     try {
         // TODO: Update datatypes -> Create separate util file to manage allowed datatypes/ mime-types
         // TODO: Update optimized path -> user specific
-        const files = (await fs.promises.readdir(`customers/${userId}/optimized`)).filter(file =>
+        const files = (await fs.promises.readdir(`customers/${linkToken}/optimized`)).filter(file =>
             /\.(jpg|jpeg|png)/i.test(file)
         );
         if (files.length > 0) {
@@ -195,11 +194,11 @@ app.get('/:userId/optimized-images', async (req, res, next) => {
     }
 });
 
-app.get('/:userId/credits', async (req, res, next) => {
-    const userId = req.params.userId;
-    console.log(`Displaying credits for user:${userId}-`);
+app.get('/:linkToken/credits', async (req, res, next) => {
+    const linkToken = req.params.linkToken;
+    console.log(`Displaying credits for user:${linkToken}-`);
     try {
-        const result = await pool.query('SELECT credits FROM customer WHERE customer_id = $1', [userId]);
+        const result = await pool.query('SELECT credits FROM customer WHERE link_token = $1', [linkToken]);
         if (result.rows.length > 0) {
             const credits = result.rows[0]?.credits; // Optional-Chaining, um null/undefined zu vermeiden
             res.json({credits});
@@ -229,7 +228,7 @@ app.post('/create-customer', async (req, res, next) => {
         const result = await pool.query(
             `INSERT INTO customer (customer_name, email, expiration_date, credits, img_url, max_file_size_kb,
                                    max_file_width_px)
-             VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING customer_id`,
+             VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING link_token`,
             [
                 req.body.customerName,
                 req.body.customerEmail,
@@ -241,11 +240,11 @@ app.post('/create-customer', async (req, res, next) => {
             ]
         );
 
-        const customerId = result.rows[0].customer_id;
-        console.log("Customer id: " + customerId);
+        const linkToken = result.rows[0].link_token;
+        console.log("Customer id: " + linkToken);
 
-        const customerUploadsDir = `customers/${customerId}/uploaded`;
-        const customerOptimizedDir = `customers/${customerId}/optimized`;
+        const customerUploadsDir = `customers/${linkToken}/uploaded`;
+        const customerOptimizedDir = `customers/${linkToken}/optimized`;
 
         await fs.promises.mkdir(customerUploadsDir, {recursive: true});
         await fs.promises.mkdir(customerOptimizedDir, {recursive: true});
@@ -254,10 +253,10 @@ app.post('/create-customer', async (req, res, next) => {
     }
 });
 
-app.delete('/customers/:id/delete', async (req, res, next) => {
+app.delete('/customers/:customerId/delete', async (req, res, next) => {
     try {
-        const {id} = req.params;
-        const result = await pool.query('DELETE FROM customer WHERE customer_id = $1', [id]);
+        const {customerId} = req.params;
+        const result = await pool.query('DELETE FROM customer WHERE customer_id = $1', [customerId]);
         if (result.rowCount > 0) {
             res.status(200).send('Kunde erfolgreich gelöscht');
         } else {
@@ -268,10 +267,10 @@ app.delete('/customers/:id/delete', async (req, res, next) => {
     }
 });
 
-async function findImage(imageName, userId) {
+async function findImage(imageName, linkToken) {
 
     try {
-        const files = await fs.promises.readdir(`customers/${userId}/optimized`);
+        const files = await fs.promises.readdir(`customers/${linkToken}/optimized`);
         const image = files.find(file => file.includes(imageName));
         if (!image) {
             throw ApiError.badRequest();
@@ -284,9 +283,9 @@ async function findImage(imageName, userId) {
 
 // TODO: Suffix sollte wieder entfernt werden.
 
-async function sendImage(imageName, userId, res, contentDispositionType) {
+async function sendImage(imageName, linkToken, res, contentDispositionType) {
     try {
-        const filePath = `customers/${userId}/optimized/${imageName}`;
+        const filePath = `customers/${linkToken}/optimized/${imageName}`;
         const fileStream = fs.createReadStream(filePath);
 
         fs.stat(filePath, (error, stats) => {
@@ -311,11 +310,11 @@ async function sendImage(imageName, userId, res, contentDispositionType) {
     }
 }
 
-async function handleImageRequest(imageName, userId, res, contentDispositionType) {
+async function handleImageRequest(imageName, linkToken, res, contentDispositionType) {
 
     try {
-        const image = await findImage(imageName, userId);
-        await sendImage(image, userId, res, contentDispositionType);
+        const image = await findImage(imageName, linkToken);
+        await sendImage(image, linkToken, res, contentDispositionType);
     } catch (error) {
         throw error;
     }

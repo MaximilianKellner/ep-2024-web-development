@@ -10,10 +10,10 @@ import { pool } from './db.js';
 
 sharp.cache(false);
 
-async function getCustomerData(userId, optimizationParameter = 'max_file_size_kb') {
+async function getCustomerData(linkToken, optimizationParameter = 'max_file_size_kb') {
 
     try {
-        const data = await pool.query(`SELECT ${[optimizationParameter]} FROM customer WHERE customer_id = $1`, [userId]);
+        const data = await pool.query(`SELECT ${[optimizationParameter]} FROM customer WHERE link_token = $1`, [linkToken]);
         console.log('Customer Data: ', data.rows[0]?.[optimizationParameter]);
         return data.rows[0]?.[optimizationParameter];
     } catch (error) {
@@ -23,12 +23,12 @@ async function getCustomerData(userId, optimizationParameter = 'max_file_size_kb
 
 
 // TODO: Originale der bereits optimierten Dateien entfernen.
-async function processAllFiles(customerID, fileNames) {
+async function processAllFiles(linkToken, fileNames) {
 
     try {
         const __dirname = dirname(fileURLToPath(import.meta.url));
-        const uploadDir = path.join(__dirname, 'customers', customerID, 'uploaded');
-        const optimizedDir = path.join(__dirname, 'customers', customerID, 'optimized');
+        const uploadDir = path.join(__dirname, 'customers', linkToken, 'uploaded');
+        const optimizedDir = path.join(__dirname, 'customers', linkToken, 'optimized');
 
         // Ensure optimized directory exists
         if (!fs.existsSync(optimizedDir)) {
@@ -45,10 +45,10 @@ async function processAllFiles(customerID, fileNames) {
             const outputPath = path.join(optimizedDir, file);
 
            try {
-                const done = await compressToSize(inputPath, outputPath, file, customerID);
+                const done = await compressToSize(inputPath, outputPath, file, linkToken);
                 if (done) {
                     console.log(`Successfully processed: ${file}`);
-                    await pool.query('UPDATE customer SET credits = credits - 1 WHERE customer_id = $1', [customerID]);
+                    await pool.query('UPDATE customer SET credits = credits - 1 WHERE link_token = $1', [linkToken]);
                 }
             } catch (error) {
                 console.error(`Error processing ${file}:`, error);
