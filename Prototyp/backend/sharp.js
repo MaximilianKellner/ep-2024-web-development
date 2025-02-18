@@ -13,12 +13,11 @@ sharp.cache(false);
 async function getCustomerData(userId, optimizationParameter = 'max_file_size_kb') {
 
     try {
-        // TODO: Should DB store size in B, KB, MB?
         const data = await pool.query(`SELECT ${[optimizationParameter]} FROM customer WHERE customer_id = $1`, [userId]);
         console.log('Customer Data: ', data.rows[0]?.[optimizationParameter]);
         return data.rows[0]?.[optimizationParameter];
     } catch (error) {
-        console.error('Error:', error);
+        throw error;
     }
 }
 
