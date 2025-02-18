@@ -238,9 +238,18 @@ app.get('/:userId/credits', async (req, res, next) => {
 // TODO: Endpoint should be secured -> Auth
 app.get('/load-customers', async (req, res, next) => {
     try {
-        const result = await pool.query('SELECT * FROM customer');
+        const result = await pool.query('SELECT customer_name, customer_id, expiration_date, credits, email, img_url  FROM customer');
+
         if (result.rows.length > 0) {
-            res.json(result.rows);
+            const customers = result.rows.map(customer => ({
+                customerName: customer.customer_name,
+                customerId: customer.customer_id,
+                expirationDate: customer.expiration_date,
+                credits: customer.credits,
+                email: customer.email,
+                imgUrl: customer.img_url
+            }));
+            res.json({customers});
         }
     } catch (error) {
         next(error);
@@ -248,7 +257,6 @@ app.get('/load-customers', async (req, res, next) => {
 });
 
 app.post('/create-customer', async (req, res, next) => {
-    // TODO: Bezeichnungen sollten im Front- und Backend vereinheitlicht werden!!!
     try {
         const result = await pool.query(
             `INSERT INTO customer (customer_name, email, expiration_date, credits, img_url, max_file_size_kb,
@@ -256,10 +264,10 @@ app.post('/create-customer', async (req, res, next) => {
              VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING customer_id`,
             [
                 req.body.customerName,
-                req.body.customerEmail,
+                req.body.email,
                 req.body.expirationDate,
                 req.body.credits,
-                req.body.pictureUrl,
+                req.body.imgUrl,
                 req.body.maxFileInKB,
                 req.body.maxWidthInPX
             ]
@@ -273,24 +281,15 @@ app.post('/create-customer', async (req, res, next) => {
 
         await fs.promises.mkdir(customerUploadsDir, {recursive: true});
         await fs.promises.mkdir(customerOptimizedDir, {recursive: true});
+
+        res.status(200).json(`Kunde erfolgreich erstellt: ${customerId}`);
+
     } catch (error) {
         next(error);
     }
 });
 
-// TODO: Test and merge with above & Rename --> Prob delete
-app.post('/createCustomer', async (req, res) => {
-    const { customer_name, email, expiration_date, credits, img_url, max_file_size_kb, max_file_width_px } = req.body;
-    try {
-        await pool.query('INSERT INTO customer (customer_name, email, expiration_date, credits, img_url, max_file_size_kb, max_file_width_px) VALUES ($1, $2, $3, $4, $5, $6, $7)', [customer_name, email, expiration_date, credits, img_url, max_file_size_kb, max_file_width_px]);
-        res.status(201).send('Kunde erfolgreich erstellt');
-    } catch (error) {
-        console.error('Fehler beim Erstellen des Kunden:', error);
-        res.status(500).send('Fehler beim Erstellen des Kunden');
-    }
-});
-
-app.get('/getCustomer', async (req, res) => {
+app.get('/get-customer', async (req, res) => {
     const { id } = req.query;
 
     // Überprüfen ob die ID vorhanden und eine Zahl ist
@@ -305,16 +304,29 @@ app.get('/getCustomer', async (req, res) => {
             return res.status(404).json({ error:`Kunde ${id} nicht gefunden` });
         }
 
-        res.json(result.rows[0]);
+        if (result.rows.length === 1) {
+
+            const customer = {
+                customerName: result.rows[0].customer_name,
+                customerId: result.rows[0].customer_id,
+                expirationDate: result.rows[0].expiration_date,
+                credits: result.rows[0].credits,
+                email: result.rows[0].email,
+                imgUrl: result.rows[0].img_url,
+                maxFileInKB: result.rows[0].max_file_size_kb,
+                maxWidthInPX: result.rows[0].max_file_width_px
+            };
+
+            res.json(customer);
+        }
     } catch (error) {
         console.error('Fehler beim Laden des Kunden:', error);
         res.status(500).json({ error: 'Interner Serverfehler' });
     }
 });
 
-app.put('/updateCustomer', async (req, res) => {
-
-    const { id, customer_name, email, expiration_date, credits, img_url, max_file_size_kb, max_file_width_px } = req.body;
+app.put('/update-customer', async (req, res) => {
+    const id = req.body.customerId;
 
     // Überprüfen ob die ID vorhanden und eine Zahl ist
     if (!id || isNaN(id)) {
@@ -322,7 +334,21 @@ app.put('/updateCustomer', async (req, res) => {
     }
 
     try {
-        const result = await pool.query('UPDATE customer SET customer_name = $1, email = $2, expiration_date = $3, credits = $4, img_url = $5, max_file_size_kb = $6, max_file_width_px = $7 WHERE customer_id = $8', [customer_name, email, expiration_date, credits, img_url, max_file_size_kb, max_file_width_px, id]);
+        const result = await pool.query(
+            `UPDATE customer 
+             SET customer_name = $1, email = $2, expiration_date = $3, credits = $4, img_url = $5, max_file_size_kb = $6, max_file_width_px = $7
+             WHERE customer_id = $8 RETURNING customer_id`,
+            [
+                req.body.customerName,
+                req.body.email,
+                req.body.expirationDate,
+                req.body.credits,
+                req.body.imgUrl,
+                req.body.maxFileInKB,
+                req.body.maxWidthInPX,
+                req.body.customerId // Hier wird die Kunden-ID hinzugefügt, um den richtigen Datensatz zu aktualisieren
+            ]
+        );
         res.status(200).send('Kunde erfolgreich aktualisiert');
     } catch (error) {
         console.error('Fehler beim Aktualisieren des Kunden:', error);

@@ -5,13 +5,16 @@ window.onload = function() {
     fetch('/load-customers')
         .then(response => response.json())
         .then(data => {
+            console.log('Kundendaten:', data);
             const customerTable = document.querySelector('.admin-table tbody');
-            data.forEach(customer => {
-                const row = document.createElement('tr');
+            data.customers.forEach(customer => {
 
+                console.log('Kunde:', customer);
+                const row = document.createElement('tr');
+                
                 // farmat exp date and color code
-                const expirationDate = customer.expiration_date ? new Date(customer.expiration_date).toLocaleDateString('de-DE') : 'N/A';
-                const expirationDateObj = new Date(customer.expiration_date );
+                const expirationDate = customer.expirationDate ? new Date(customer.expirationDate).toLocaleDateString('de-DE') : 'N/A';
+                const expirationDateObj = new Date(customer.expirationDate );
                 const currentDate = new Date();
                 const timeDiff = expirationDateObj - currentDate;
                 const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
@@ -25,10 +28,10 @@ window.onload = function() {
 
                 row.innerHTML = `
                     <td class="customer-row">
-                        <img src="${customer.img_url}" alt="Kundenbild" onerror="this.onerror=null;this.src='img/icon/user.svg';" />
-                        <a href="#">${customer.customer_name}</a>
+                        <img src="${customer.imgUrl}" alt="Kundenbild" onerror="this.onerror=null;this.src='img/icon/user.svg';" />
+                        <a href="#">${customer.customerName}</a>
                     </td>
-                    <td>${customer.customer_id}</td>
+                    <td>${customer.customerId}</td>
                     <td class="${dateClass}">${expirationDate || 'N/A'}</td>
                     <td>${customer.credits}</td>
                     <td>
@@ -38,7 +41,7 @@ window.onload = function() {
                         <button class="icon-btn" title="E-Mail an ${customer.email}" onclick="location.href='mailto:${customer.email}'">
                             <img src="img/icon/mail.svg" alt="Kontaktieren" />
                         </button>
-                        <button class="icon-btn" title="Bearbeiten" onclick="location.href='/update-customer?id=${customer.customer_id}'">
+                        <button class="icon-btn" title="Bearbeiten" onclick="location.href='/update-customer?id=${customer.customerId}'">
                             <img src="img/icon/edit.svg" alt="Bearbeiten" />
                         </button>
                     </td>

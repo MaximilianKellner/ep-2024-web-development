@@ -32,7 +32,7 @@ if (customerId) {
 
 //Kundendaten für das Formular laden
 function loadCustomerData(customerId) {
-    fetch(`/getCustomer?id=${customerId}`)
+    fetch(`/get-customer?id=${customerId}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Der Kunde mit der ID ${customerId} existiert noch nicht, kann aber erstellt werden.`);
@@ -40,21 +40,22 @@ function loadCustomerData(customerId) {
             return response.json();
         })
         .then(data => {
+            console.log('Kundendatennn:', data);
             if (data) {
                 customerIdField.textContent = `ID: ${customerId}`;
 
-                document.getElementById('customerName').value = data.customer_name || '';
+                document.getElementById('customerName').value = data.customerName || '';
                 document.getElementById('email').value = data.email || '';
 
                 // Formatieren des Ablaufdatums
-                const expirationDate = new Date(data.expiration_date);
+                const expirationDate = new Date(data.expirationDate);
                 const formattedDate = expirationDate.toISOString().split('T')[0];
                 document.getElementById('expirationDate').value = formattedDate || '';
 
                 document.getElementById('credits').value = data.credits || '';
-                document.getElementById('pictureUrl').value = data.img_url || '';
-                document.getElementById('maxFileInKB').value = data.max_file_size_kb || '';
-                document.getElementById('maxWidthInPX').value = data.max_file_width_px || '';
+                document.getElementById('imgUrl').value = data.imgUrl || '';
+                document.getElementById('maxFileInKB').value = data.maxFileInKB || '';
+                document.getElementById('maxWidthInPX').value = data.maxWidthInPX || '';
             }
         })
         .catch(error => {
@@ -75,17 +76,25 @@ form.addEventListener('submit', function(event) {
     formData.forEach((value, key) => data[key] = value);
 
     if (customerId) {
-        data.id = customerId; // Kunden-ID zum Datenobjekt hinzufügen
+        formData.append('customerId', customerId); // Kunden-ID zum Datenobjekt hinzufügen
     }
 
     const method = customerId ? 'PUT' : 'POST';
-    const url = customerId ? `/updateCustomer` : '/createCustomer';
+    const url = customerId ? `/update-customer` : '/create-customer';
+
+    const urlEncoded = new URLSearchParams(formData).toString();
+
+    console.log('------------------------------');
+    console.log(urlEncoded)
+    console.log('------------------------------');
 
     fetch(url, {
         method: method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    })
+        body: urlEncoded,
+        headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+        }
+        })
     .then(response => {
         if (response.ok) {
             messageDiv.classList.remove('error');
