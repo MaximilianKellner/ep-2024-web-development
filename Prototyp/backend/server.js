@@ -7,6 +7,7 @@ import multer from 'multer';
 import {processAllFiles} from './sharp.js';
 import optimizationEventEmitter from './optimizationEventEmitter.js';
 import fs from 'fs';
+import path from 'path';
 import {pool} from './db.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -277,7 +278,7 @@ app.post('/create-customer', async (req, res, next) => {
     }
 });
 
-// TODO: Test and merge with above
+// TODO: Test and merge with above & Rename --> Prob delete
 app.post('/createCustomer', async (req, res) => {
     const { customer_name, email, expiration_date, credits, img_url, max_file_size_kb, max_file_width_px } = req.body;
     try {
