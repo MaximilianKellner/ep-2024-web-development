@@ -188,8 +188,8 @@ app.get('/:userId/credits', async (req, res) => {
     const userId = req.params.userId;
     console.log(`Displaying credits for user:${userId}-`);
     try {
-        const result = await pool.query('SELECT credits FROM customer WHERE customer_id = $1', [userId]);
-        const credits = result.rows[0]?.credits; // Optional-Chaining, um null/undefined zu vermeiden
+        // const result = await pool.query('SELECT credits FROM customer WHERE customer_id = $1', [userId]);
+        const credits = 1; // Optional-Chaining, um null/undefined zu vermeiden
         res.json({credits});
     } catch (error) {
         console.error('Error reading credits:', error);
@@ -408,10 +408,18 @@ app.post('/token', (req, res) =>{
     })
 })
 
-app.delete('/logout', (req, res) =>{
-    refreshTokens = refreshTokens.filter(token => token !== req.body.token)
-    res.sendStatus(204)
-})
+// app.delete('/logout', (req, res) =>{
+//     refreshTokens = refreshTokens.filter(token => token !== req.body.token)
+//     res.sendStatus(204)
+// })
+
+app.delete('/logout', authenticateToken, (req, res) => {
+    const token = req.headers['authorization'].split(' ')[1];
+    refreshTokens = refreshTokens.filter(refreshToken => refreshToken !== req.body.token);
+    // Invalidate the access token by adding it to a blacklist or similar mechanism
+    // For simplicity, we are just sending a response here
+    res.sendStatus(204);
+});
 
 app.post('/login', (req, res) =>{
     //Authenticate User
@@ -426,7 +434,7 @@ app.post('/login', (req, res) =>{
 })
 
 function generateAccessToken(user){
-    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '3s'})
+    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '10s'})
 }
 
 
