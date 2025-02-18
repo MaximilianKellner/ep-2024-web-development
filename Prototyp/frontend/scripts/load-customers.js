@@ -38,7 +38,7 @@ window.onload = function() {
                         <button class="icon-btn" title="E-Mail an ${customer.email}" onclick="location.href='mailto:${customer.email}'">
                             <img src="img/icon/mail.svg" alt="Kontaktieren" />
                         </button>
-                        <button class="icon-btn" title="Bearbeiten">
+                        <button class="icon-btn" title="Bearbeiten" onclick="location.href='/update-customer?id=${customer.customer_id}'">
                             <img src="img/icon/edit.svg" alt="Bearbeiten" />
                         </button>
                     </td>

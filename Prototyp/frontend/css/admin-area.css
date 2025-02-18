@@ -136,7 +136,7 @@
     background-color: var(--c-red);
 }
 
-/* --------------------- Create Customer --------------------- */
+/* --------------------- Handle Customer (create/edit)--------------------- */
 
 label {
   display: inline-block;
@@ -155,7 +155,7 @@ input {
   box-sizing: border-box;
 }
 
-#createCustomerForm input{
+#customerForm input{
   max-height: 47px;
 }
 
@@ -179,4 +179,8 @@ input {
   justify-content: space-between;
   align-items: center;
   margin-top: var(--m);
+}
+
+#customerId {
+  display: none;
 }
