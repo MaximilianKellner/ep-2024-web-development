@@ -248,6 +248,7 @@ app.post('/create-customer', async (req, res, next) => {
 
         await fs.promises.mkdir(customerUploadsDir, {recursive: true});
         await fs.promises.mkdir(customerOptimizedDir, {recursive: true});
+        res.status(201).send("Customer created")
     } catch (error) {
         next(error);
     }
