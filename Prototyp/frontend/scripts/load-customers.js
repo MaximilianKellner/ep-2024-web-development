@@ -29,7 +29,7 @@ window.onload = function() {
                 row.innerHTML = `
                     <td class="customer-row">
                         <img src="${customer.imgUrl}" alt="Kundenbild" onerror="this.onerror=null;this.src='img/icon/user.svg';" />
-                        <a href="#">${customer.customerName}</a>
+                        <p>${customer.customerName}</p>
                     </td>
                     <td>${customer.customerId}</td>
                     <td class="${dateClass}">${expirationDate || 'N/A'}</td>

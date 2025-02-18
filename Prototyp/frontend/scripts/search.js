@@ -10,7 +10,7 @@ searchInput.addEventListener("input", function () {
   const rows = customerTable.querySelectorAll("tr");
   rows.forEach((row) => {
     const customerName = row
-      .querySelector(".customer-row a")
+      .querySelector(".customer-row p")
       .textContent.toLowerCase();
     if (customerName.includes(searchTerm)) {
       row.style.display = "";
