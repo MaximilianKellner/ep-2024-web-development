@@ -1,15 +1,12 @@
 // fill customer table with data from database
 window.onload = function() {
-    console.log('loading customers');
 
     fetch('/load-customers')
         .then(response => response.json())
         .then(data => {
-            console.log('Kundendaten:', data);
             const customerTable = document.querySelector('.admin-table tbody');
             data.customers.forEach(customer => {
 
-                console.log('Kunde:', customer);
                 const row = document.createElement('tr');
                 
                 // farmat exp date and color code
