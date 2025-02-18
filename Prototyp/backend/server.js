@@ -10,6 +10,7 @@ import fs from 'fs';
 import {pool} from './db.js';
 import apiErrorHandler from "./apiErrorHandler.js";
 import ApiError from './ApiError.js';
+import {checkTokenExpired} from "./tokenExpiration.js";
 
 const app = express();
 const PORT = 5000;
@@ -320,6 +321,9 @@ async function handleImageRequest(imageName, linkToken, res, contentDispositionT
         throw error;
     }
 }
+
+await checkTokenExpired();
+
 
 // JWT Code
 

@@ -160,6 +160,7 @@ async function compressToSize(inputPath, outputPath, fileName, userId) {
         while (minQuality <= maxQuality) {
             quality = Math.floor((minQuality + maxQuality) / 2);
             // TODO: Handle error "Error: Expected integer between 1 and 100 for quality but received 0 of type number"
+            // TODO: Algorithmus, der die Validität des gesetzten Wertes für maxFileSizeInKB prüft -> darf nicth unterschritten werden
             buffer = await image
                 .jpeg({ quality: quality })
                 .toBuffer();
