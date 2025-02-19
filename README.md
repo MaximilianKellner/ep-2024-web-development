@@ -13,7 +13,7 @@ Im Rahmen des Entwicklungsprojekts soll eine Web Applikation erstellt werden, di
 - NPM
 - PostgreSQL
 - SMTP-Relay Service (z.B. Mailersend)
-- .env Datei:
+- .env Datei in /backend:
 ```
 # SMTP-Server credetials
 SMTP_HOST=
@@ -44,7 +44,7 @@ git clone git@github.com:MaximilianKellner/ep-2024-web-development.git
 2)
 Zum Projektverzeichnis wechseln
 ```
-cd [Pfad zum Projektverzeichnis]/ep-2024-web-development/Prototyp/backend
+cd [Pfad bis zum Projektverzeichnis]/ep-2024-web-development/Prototyp/backend
 ```
 3)
 ```
