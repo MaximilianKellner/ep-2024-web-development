@@ -434,6 +434,7 @@ app.post('/login', (req, res) =>{
 })
 
 function generateAccessToken(user){
+    //Session-Wert in auf 10s gesetzt. Zu empfehlenist höherer Wert :)
     return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '10s'})
 }
 
