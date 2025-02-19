@@ -19,7 +19,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
-const PORT = 5000;
 
 const uploadedFilesToDelete = [];
 // TODO: Ablaufender Kundenlink -> u.a. Kunde benachrichtigen mit neuem Kundenlink !!!
@@ -227,7 +226,7 @@ app.get('/:linkToken/credits', async (req, res, next) => {
             const credits = result.rows[0]?.credits; // Optional-Chaining, um null/undefined zu vermeiden
             res.json({credits});
         } else {
-            throw new ApiError.internal();
+            throw ApiError.internal();
         }
     } catch (error) {
         next(error)
@@ -472,6 +471,6 @@ function authenticateToken(req, res, next) {
 }
 
 app.use(apiErrorHandler);
-app.listen(PORT, () =>
-    console.log(`Server listening on port ${PORT}`),
+app.listen(process.env.DEV_PORT, () =>
+    console.log(`Server listening on port ${process.env.DEV_PORT}`),
 );
