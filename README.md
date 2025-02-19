@@ -42,7 +42,7 @@ DEV_PORT=
 git clone git@github.com:MaximilianKellner/ep-2024-web-development.git
 ```
 2)
-Zum Projektverzeichnis wechseln
+Zum Backend im Projektverzeichnis wechseln:
 ```
 cd [Pfad bis zum Projektverzeichnis]/ep-2024-web-development/Prototyp/backend
 ```
