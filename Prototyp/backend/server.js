@@ -226,7 +226,7 @@ app.get('/:linkToken/credits', async (req, res, next) => {
             const credits = result.rows[0]?.credits; // Optional-Chaining, um null/undefined zu vermeiden
             res.json({credits});
         } else {
-            throw new ApiError.internal();
+            throw ApiError.internal();
         }
     } catch (error) {
         next(error)
