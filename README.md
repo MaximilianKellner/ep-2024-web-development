@@ -9,7 +9,7 @@ Im Rahmen des Entwicklungsprojekts soll eine Web Applikation erstellt werden, di
     - PNG
     - SVG
 ## Voraussetzungen
-- Node.js (22.11.0 oder )
+- Node.js (20.12.2 zum Zeitpunkt der Entwicklung)
 - PostgreSQL
 - SMPT-Relay Service (z.B. Mailersend)
 - .env Datei:
