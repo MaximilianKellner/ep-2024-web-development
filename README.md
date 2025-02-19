@@ -19,7 +19,7 @@ Im Rahmen des Entwicklungsprojekts soll eine Web Applikation erstellt werden, di
 SMTP_HOST=
 SMTP_PORT=
 SMTP_USER=
-SMTP_PASS=
+SMTP_PASSWORD=
 
 # E-mail recipient
 RECIPIENT=
