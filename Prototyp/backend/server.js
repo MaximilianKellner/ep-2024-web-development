@@ -7,10 +7,16 @@ import multer from 'multer';
 import {processAllFiles} from './sharp.js';
 import optimizationEventEmitter from './optimizationEventEmitter.js';
 import fs from 'fs';
+import path from 'path';
 import {pool} from './db.js';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import apiErrorHandler from "./apiErrorHandler.js";
 import ApiError from './ApiError.js';
 import {checkTokenExpired} from "./tokenExpiration.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 const PORT = 5000;
@@ -72,6 +78,23 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
     storage: storage,
     fileFilter: fileFilter
+});
+
+// TODO: Serve all Web Pages
+
+//serve Admin Panel
+app.get('/admin-panel', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/admin-panel.html'));
+});
+
+// Serve Create customer page
+app.get('/create-customer', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/handle-customer.html'));
+});
+
+//serve Update Customer page
+app.get('/update-customer', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/handle-customer.html'));
 });
 
 // TODO: Fehlerbehandlung von Multer Errors in /uploaded
@@ -214,9 +237,18 @@ app.get('/:linkToken/credits', async (req, res, next) => {
 // TODO: Endpoint should be secured -> Auth
 app.get('/load-customers', async (req, res, next) => {
     try {
-        const result = await pool.query('SELECT * FROM customer');
+        const result = await pool.query('SELECT customer_name, customer_id, expiration_date, credits, email, img_url  FROM customer');
+
         if (result.rows.length > 0) {
-            res.json(result.rows);
+            const customers = result.rows.map(customer => ({
+                customerName: customer.customer_name,
+                customerId: customer.customer_id,
+                expirationDate: customer.expiration_date,
+                credits: customer.credits,
+                email: customer.email,
+                imgUrl: customer.img_url
+            }));
+            res.json({customers});
         }
     } catch (error) {
         next(error);
@@ -224,7 +256,6 @@ app.get('/load-customers', async (req, res, next) => {
 });
 
 app.post('/create-customer', async (req, res, next) => {
-    // TODO: Bezeichnungen sollten im Front- und Backend vereinheitlicht werden!!!
     try {
         const result = await pool.query(
             `INSERT INTO customer (customer_name, email, expiration_date, credits, img_url, max_file_size_kb,
@@ -232,10 +263,10 @@ app.post('/create-customer', async (req, res, next) => {
              VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING link_token`,
             [
                 req.body.customerName,
-                req.body.customerEmail,
+                req.body.email,
                 req.body.expirationDate,
                 req.body.credits,
-                req.body.pictureUrl,
+                req.body.imgUrl,
                 req.body.maxFileInKB,
                 req.body.maxWidthInPX
             ]
@@ -255,7 +286,74 @@ app.post('/create-customer', async (req, res, next) => {
     }
 });
 
-app.delete('/customers/:customerId/delete', async (req, res, next) => {
+app.get('/get-customer', async (req, res) => {
+    const { id } = req.query;
+
+    // Überprüfen ob die ID vorhanden und eine Zahl ist
+    if (!id || isNaN(id)) {
+        return res.status(400).json({ error: "Ungültige Kunden-ID" });
+    }
+
+    try {
+        const result = await pool.query('SELECT * FROM customer WHERE customer_id = $1', [id]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error:`Kunde ${id} nicht gefunden` });
+        }
+
+        if (result.rows.length === 1) {
+
+            const customer = {
+                customerName: result.rows[0].customer_name,
+                customerId: result.rows[0].customer_id,
+                expirationDate: result.rows[0].expiration_date,
+                credits: result.rows[0].credits,
+                email: result.rows[0].email,
+                imgUrl: result.rows[0].img_url,
+                maxFileInKB: result.rows[0].max_file_size_kb,
+                maxWidthInPX: result.rows[0].max_file_width_px
+            };
+
+            res.json(customer);
+        }
+    } catch (error) {
+        console.error('Fehler beim Laden des Kunden:', error);
+        res.status(500).json({ error: 'Interner Serverfehler' });
+    }
+});
+
+app.put('/update-customer', async (req, res) => {
+    const id = req.body.customerId;
+
+    // Überprüfen ob die ID vorhanden und eine Zahl ist
+    if (!id || isNaN(id)) {
+        return res.status(400).json({ error: "Ungültige Kunden-ID" });
+    }
+
+    try {
+        const result = await pool.query(
+            `UPDATE customer 
+             SET customer_name = $1, email = $2, expiration_date = $3, credits = $4, img_url = $5, max_file_size_kb = $6, max_file_width_px = $7
+             WHERE customer_id = $8 RETURNING customer_id`,
+            [
+                req.body.customerName,
+                req.body.email,
+                req.body.expirationDate,
+                req.body.credits,
+                req.body.imgUrl,
+                req.body.maxFileInKB,
+                req.body.maxWidthInPX,
+                req.body.customerId // Hier wird die Kunden-ID hinzugefügt, um den richtigen Datensatz zu aktualisieren
+            ]
+        );
+        res.status(200).send('Kunde erfolgreich aktualisiert');
+    } catch (error) {
+        console.error('Fehler beim Aktualisieren des Kunden:', error);
+        res.status(500).send('Fehler beim Aktualisieren des Kunden');
+    }
+});
+
+app.delete('/customers/:id/delete', async (req, res, next) => {
     try {
         const {customerId} = req.params;
         const result = await pool.query('DELETE FROM customer WHERE customer_id = $1', [customerId]);

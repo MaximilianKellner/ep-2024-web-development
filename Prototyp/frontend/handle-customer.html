@@ -11,24 +11,24 @@
       href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
       rel="stylesheet"
     />
-    <link rel="icon" href="img/icon/admin.svg" />
+    <link rel="icon" href="./img/icon/admin.svg" />
 
-    <link rel="stylesheet" href="css/main.css" />
-    <link rel="stylesheet" href="css/admin-area.css" />
+    <link rel="stylesheet" href="./css/main.css" />
+    <link rel="stylesheet" href="./css/admin-area.css" />
 
-    <script defer src="scripts/create-customer.js"></script>
+    <script defer src="./scripts/handle-customer.js"></script>
   </head>
   <body>
     <header>
-      <a href="admin-panel.html"
-        ><h1 class="hover-light-blue">OmniMize - Kunden erstellen</h1></a
-      >
+      <a href="/admin-panel">
+        <h1 class="hover-light-blue">OmniMize - Kunden erstellen</h1>
+      </a>
     </header>
     <main>
-      <h2>Neuen Kunden erstellen</h2>
-      <form id="createCustomerForm">
+      <h2>Neuen Kunden erstellen </h2> <span id="customerId" class="sublabel"></span>
+      <form id="customerForm">
         <label for="customerName">Kundenname *  </label>
-        <input type="text" id="customerName" name="customer_name" required />
+        <input type="text" id="customerName" name="customerName" required />    
 
         <label for="customerName">E-mail *  </label>
         <input type="email" id="email" name="email" required />
@@ -36,7 +36,7 @@
         <div class="form-row">
           <div class="form-group">
               <label for="expirationDate">Ablaufdatum *</label>
-              <input type="date" id="expirationDate" name="expiration_date" required>
+              <input type="date" id="expirationDate" name="expirationDate" required>
           </div>
           <div class="form-group">
               <label for="credits">Credits * <span class="sublabel">0-9999</span></label>
@@ -44,17 +44,17 @@
           </div>
         </div>
 
-        <label for="pictureUrl">Bild-URL  <span class="sublabel">Fügen Sie eine URL für das Kundenbild hinzu.</span></label>
-        <input type="url" id="pictureUrl" name="img_url">
+        <label for="imgUrl">Bild-URL  <span class="sublabel">Fügen Sie eine URL für das Kundenbild hinzu.</span></label>
+        <input type="url" id="imgUrl" name="imgUrl">
         
         <div class="form-row">
           <div class="form-group">
             <label for="maxFileInKB" >Max Dateigröße * <span class="sublabel">(KB)</span></label>
-            <input type="number" id="maxFileInKB" name="max_file_size_kb" min="0" required>
+            <input type="number" id="maxFileInKB" name="maxFileInKB" min="0" required>
           </div>
           <div class="form-group">
             <label for="maxWidthInPX" >Max Breite * <span class="sublabel">(px)</span></label>
-            <input type="number" id="maxWidthInPX" name="max_file_width_px" min="0" required>
+            <input type="number" id="maxWidthInPX" name="maxWidthInPX" min="0" required>
           </div>
         </div>
 
@@ -62,12 +62,11 @@
           <div id="message"></div>
 
           <div>
-            <button type="button" onclick="window.location.href='admin-panel.html'" >Abbrechen</button>
+            <button type="button" onclick="window.location.href='/admin-panel'" >Abbrechen</button>
             <button type="submit" class="fade">Erstellen</button>
           </div>
         </div>
       </form>
     </main>
-    <footer></footer>
   </body>
 </html>

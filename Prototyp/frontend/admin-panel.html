@@ -18,6 +18,7 @@
 
     <script defer src="scripts/modal.js"></script>
     <script defer src="scripts/load-customers.js"></script>
+    <script defer src="scripts/search.js"></script>
 
   </head>
   <body>
@@ -34,7 +35,7 @@
     </header>
     <main>
       <div class="search-container">
-        <button class="light" onclick="window.location.href='create-customer.html'">+ Kunde</button>
+        <button class="light" onclick="window.location.href='/create-customer'">+ Kunde</button>
         <div class="search-right">
           <input
             type="text"
@@ -61,7 +62,7 @@
             <td class="customer-row">
               <!-- Favicon der Kundenseite -->
               <img src="img/icon/user.svg" alt="Kundenbild" />
-              <a href="#">Kundenname</a>
+              <p>Kundenname</p>
             </td>
             <td>11</td>
             <td>01.01.2023</td>
@@ -89,6 +90,5 @@
         </div>
       </div>
     </main>
-    <footer></footer>
   </body>
 </html>
