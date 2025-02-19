@@ -53,6 +53,8 @@ npm install
 ```
 node server.js
 ```
+5)
+Die Anwendung läuft auf localhost:[Ausgewählter Port]
 
 ## Verwendete Technologien
 - Frontend:
