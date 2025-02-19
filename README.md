@@ -10,8 +10,9 @@ Im Rahmen des Entwicklungsprojekts soll eine Web Applikation erstellt werden, di
     - SVG
 ## Voraussetzungen
 - Node.js (20.12.2 zum Zeitpunkt der Entwicklung)
+- NPM
 - PostgreSQL
-- SMPT-Relay Service (z.B. Mailersend)
+- SMTP-Relay Service (z.B. Mailersend)
 - .env Datei:
 ```
 # SMTP-Server credetials
@@ -53,6 +54,8 @@ npm install
 ```
 node server.js
 ```
+5)
+Die Anwendung läuft auf localhost:[Ausgewählter Port]
 
 ## Verwendete Technologien
 - Frontend:
