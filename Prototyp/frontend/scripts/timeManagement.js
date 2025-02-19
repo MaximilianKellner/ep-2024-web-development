@@ -135,6 +135,9 @@ const refreshToken = localStorage.getItem('refreshToken');
 if (!tokenExpiry || !refreshToken) return;
 
 const currentTime = Date.now();
+console.log('Token-Ablaufzeit:', tokenExpiry);
+console.log('Aktuelle Zeit:', currentTime);
+console.log('Zeit bis Ablauf:', tokenExpiry - currentTime);
 const timeUntilExpiry = tokenExpiry - currentTime;
 
 // Token erneuern, wenn er in weniger als 5 Sekunden abläuft
