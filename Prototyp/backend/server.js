@@ -112,7 +112,9 @@ app.post('/:linkToken/upload', upload.array('images'), async (req, res, next) =>
         linkToken = req.params.linkToken;
         console.log('Link token:', linkToken);
 
+        console.log('User ID:', userId);
         fileNames = req.files.map(file => file.filename);
+
         console.log('File names:', fileNames);
 
         // TODO: XMLs löschen.
@@ -423,8 +425,6 @@ await checkTokenExpired();
 
 
 // JWT Code
-
-
 dotenv.config();
 // require('dotenv').config()
 // const jwt = require('jsonwebtoken');
@@ -434,24 +434,21 @@ import jwt from 'jsonwebtoken';
 
 app.use(express.json());
 
-//Sollten am besten in einer Datenbank gespeichert werden.
 
-const posts = [
-    {username: 'Kyle', title: 'Post 1'},
-    {username: 'Jim', title: 'Post 2'}
-]
-app.get('/posts', authenticateToken, (req, res) => {
-    res.json(posts.filter(post => post.username === req.user.name))
+app.get('/customers', authenticateToken, (req, res) =>{
+    // Hier werden customers angezeigt, die alle Admins angelegt haben. Wenn nur bestimmte angezeigt werden sollenn, dann filtern.
+    console.log(res.json(customers))
+
 })
 
-app.post('/login', (req, res) => {
-    //Authenticate User
-    const username = req.body.username
-    const user = {name: username}
+// app.post('/login', (req, res) =>{
+//     //Authenticate User
+//     const username = req.body.username
+//     const user = {name: username}
 
-    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
-    res.json({accessToken: accessToken})
-})
+//     const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
+//     res.json({accessToken: accessToken})
+// })
 
 function authenticateToken(req, res, next) {
 
@@ -467,7 +464,66 @@ function authenticateToken(req, res, next) {
         req.user = user
         next()
     })
+}
 
+app.get('/verify-token', authenticateToken, (req, res) => {
+    // If we get here, the token is valid (authenticateToken middleware passed)
+    res.status(200).json({ valid: true });
+});
+
+
+//Authentifizierung
+
+// import dotenv from 'dotenv';
+// import express from 'express';
+// import jwt from 'jsonwebtoken';
+// import cors from 'cors';  // Füge cors import hinzu
+
+let refreshTokens = [];
+
+// Aktiviere CORS
+app.use(cors());
+app.use(express.json());
+
+app.post('/token', (req, res) =>{
+    const refreshToken = req.body.token
+    if(refreshToken == null) return res.sendStatus(401)
+    if(!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) =>{
+        if(err) return res.sendStatus(403)
+        const accessToken = generateAccessToken({name: user.name})
+        res.json({accessToken: accessToken})
+    })
+})
+
+// app.delete('/logout', (req, res) =>{
+//     refreshTokens = refreshTokens.filter(token => token !== req.body.token)
+//     res.sendStatus(204)
+// })
+
+app.delete('/logout', authenticateToken, (req, res) => {
+    const token = req.headers['authorization'].split(' ')[1];
+    refreshTokens = refreshTokens.filter(refreshToken => refreshToken !== req.body.token);
+    // Invalidate the access token by adding it to a blacklist or similar mechanism
+    // For simplicity, we are just sending a response here
+    res.sendStatus(204);
+});
+
+app.post('/login', (req, res) =>{
+    //Authenticate User
+    const username = req.body.username
+    const user = {name: username}
+    console.log('-------------------------'+user)
+
+    const accessToken = generateAccessToken(user)
+    const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
+    refreshTokens.push(refreshToken)
+    res.json({accessToken: accessToken, refreshToken: refreshToken})
+})
+
+function generateAccessToken(user) {
+    //Session-Wert in auf 10s gesetzt. Zu empfehlenist höherer Wert :)
+    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '10s'})
 }
 
 app.use(apiErrorHandler);
