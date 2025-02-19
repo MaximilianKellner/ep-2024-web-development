@@ -10,37 +10,25 @@ import { pool } from './db.js';
 
 sharp.cache(false);
 
-function getCustomerData(filterworld) {
+async function getCustomerData(linkToken, optimizationParameter = 'max_file_size_kb') {
 
     try {
-        const __dirname = dirname(fileURLToPath(import.meta.url));
-        const filePath = path.join(__dirname, 'customers', 'debug-kunde-1', 'customer-data.json');
-        const data = JSON.parse(fs.readFileSync(filePath));
-        //Es soll nur der Wert des angegebenen Schlüssels zurückgegeben werden
-        if (filterworld === 'name') {
-            console.log('Customer Data: ', data.customerData.name);
-            return data[filterworld];
-        }
-        if (filterworld === 'max-file-size-kb') {
-            console.log('Max Size: ', data.configSettings.maxFileInKB);
-            let maxFileSize = data.configSettings.maxFileInKB;
-            return maxFileSize;
-        }
-        console.log('Customer Data: ', data);
-        return data;
+        const data = await pool.query(`SELECT ${[optimizationParameter]} FROM customer WHERE link_token = $1`, [linkToken]);
+        console.log('Customer Data: ', data.rows[0]?.[optimizationParameter]);
+        return data.rows[0]?.[optimizationParameter];
     } catch (error) {
-        console.error('Error:', error);
+        throw error;
     }
 }
 
 
 // TODO: Originale der bereits optimierten Dateien entfernen.
-async function processAllFiles(customerID, fileNames) {
+async function processAllFiles(linkToken, fileNames) {
 
     try {
         const __dirname = dirname(fileURLToPath(import.meta.url));
-        const uploadDir = path.join(__dirname, 'customers', customerID, 'uploaded');
-        const optimizedDir = path.join(__dirname, 'customers', customerID, 'optimized');
+        const uploadDir = path.join(__dirname, 'customers', linkToken, 'uploaded');
+        const optimizedDir = path.join(__dirname, 'customers', linkToken, 'optimized');
 
         // Ensure optimized directory exists
         if (!fs.existsSync(optimizedDir)) {
@@ -57,10 +45,10 @@ async function processAllFiles(customerID, fileNames) {
             const outputPath = path.join(optimizedDir, file);
 
            try {
-                const done = await compressToSize(inputPath, outputPath, file);
+                const done = await compressToSize(inputPath, outputPath, file, linkToken);
                 if (done) {
                     console.log(`Successfully processed: ${file}`);
-                    await pool.query('UPDATE customer SET credits = credits - 1 WHERE customer_id = $1', [customerID]);
+                    await pool.query('UPDATE customer SET credits = credits - 1 WHERE link_token = $1', [linkToken]);
                 }
             } catch (error) {
                 console.error(`Error processing ${file}:`, error);
@@ -123,9 +111,9 @@ async function processAllFiles(customerID, fileNames) {
 //     }
 // }
 
-async function compressToSize(inputPath, outputPath, fileName) {
+async function compressToSize(inputPath, outputPath, fileName, userId) {
     try {
-        let maxSizeInMB = getCustomerData('max-file-size-kb') / 1024;
+        let maxSizeInMB = await getCustomerData(userId) / 1024;
         if (!maxSizeInMB) {
             throw new Error('Max file size not found');
         }
@@ -171,7 +159,8 @@ async function compressToSize(inputPath, outputPath, fileName) {
         
         while (minQuality <= maxQuality) {
             quality = Math.floor((minQuality + maxQuality) / 2);
-            
+            // TODO: Handle error "Error: Expected integer between 1 and 100 for quality but received 0 of type number"
+            // TODO: Algorithmus, der die Validität des gesetzten Wertes für maxFileSizeInKB prüft -> darf nicth unterschritten werden
             buffer = await image
                 .jpeg({ quality: quality })
                 .toBuffer();
