@@ -10,6 +10,7 @@ import { pool } from './db.js';
 
 sharp.cache(false);
 
+
 async function getCustomerData(linkToken, optimizationParameter = 'max_file_size_kb') {
 
     try {
