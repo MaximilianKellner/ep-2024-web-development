@@ -22,7 +22,7 @@ export function sendDownloadNotification(customerName, customerEmail, downloadLi
         const message = `
 <h1>Dear ${customerName}!</h1>
 <p>Your optimised files are now ready for download!</p>
-<p><a href=${downloadLink}>Go to the downloads page</a></p>
+<p><a href="${downloadLink}">Go to the downloads page</a></p>
 `
         const mailOptions = {
             from: process.env.SMTP_USER,
@@ -50,7 +50,7 @@ export function sendReminderNotification(customerName, customerEmail, renewalLin
     try {
         const message = `
         <h1>Your personal link will expire on the ${expirationDate}</h1>
-        <p><a href=${renewalLink}></a>Renew your personal link</p>
+        <p><a href="${renewalLink}">Renew your personal link</a></p>
         `
         const mailOptions = {
             from: process.env.SMTP_USER,
