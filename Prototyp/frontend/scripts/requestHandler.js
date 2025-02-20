@@ -2,12 +2,14 @@ const loginButton = document.getElementById("login-button");
 const messageObject = document.querySelector("#message");
 
 if(loginButton){
-    loginButton.addEventListener("click", () => {
+    loginButton.addEventListener("click", event => {
+        event.preventDefault();
         let username = document.querySelector(".username").value;
         let password = document.querySelector(".password").value;
         localStorage.setItem('username', username);
         localStorage.setItem('password', password);
-        
+        console.log('Username: '+username);
+
         fetch("/login", {
                 method: "POST",
                 headers: {
@@ -19,13 +21,11 @@ if(loginButton){
                 })
             })
         .then(response => response.json())
-        .then(data => {                    
+        .then(data => {           
             if(data.accessToken && data.refreshToken) {
-                // Speichere die Tokens im localStorage
                 localStorage.setItem('accessToken', data.accessToken);
                 localStorage.setItem('refreshToken', data.refreshToken);
                 console.log('Access Token nach Login: '+localStorage.getItem('accessToken'));
-                // Weiterleitung zum admin-panel
                 window.location.href = "/admin-panel.html";
             } else {
                 messageObject.innerHTML = "Login fehlgeschlagen, auf Grund von internem Fehler. Bitte melden Sie sich bei einem Administrator!";
@@ -33,6 +33,7 @@ if(loginButton){
             }
         })
         .catch(error => {
+            ('Error:', error);
             messageObject.innerHTML = "Login fehlgeschlagen, auf Grund von fehlerhaftem Benutzernamen/Passwort!";
             messageObject.style="color:red";
         });

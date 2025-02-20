@@ -1,6 +1,5 @@
 const logoutButton = document.querySelector('.logoutButton');
 
-
 //Abfangen des Requests um auf diese Seite zu gelangen
 document.addEventListener('DOMContentLoaded', () => {
     const accessToken = localStorage.getItem('accessToken');
@@ -16,14 +15,13 @@ if (!localStorage.getItem('tokenExpiry')) {
     const decodedToken = parseJwt(accessToken);
     const a = decodedToken.exp * 1000;
     localStorage.setItem('tokenExpiry', decodedToken.exp * 1000);
-    console.log('decodedTokenTime: '+a)
 }
 
 // Token-Gültigkeit überprüfen und ggf. erneuern
 checkAndRefreshToken();
     
-    // Verify token with server
-    fetch('http://localhost:5000/verify-token', {
+    // Token verifizieren
+    fetch('/verify-token', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${accessToken}`
@@ -33,7 +31,7 @@ checkAndRefreshToken();
         if (response.status !== 200) {
             // If token is invalid, try refreshing
             if (refreshToken) {
-                return fetch('http://localhost:5000/token', {
+                return fetch('/token', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -74,36 +72,30 @@ if(logoutButton){
     logoutButton.addEventListener('click', () => {
         const accessToken = localStorage.getItem('accessToken');
         const refreshToken = localStorage.getItem('refreshToken');
-        const username = localStorage.getItem('username');
-        const password = localStorage.getItem('password');
         
-        console.log('Logout button clicked');
-        
-        // Only proceed if we have an access token
+        // Nur weitermachen wenn Access Token vorhanden ist
         if (!accessToken) {
             alert('No active session found');
             window.location.href = '/index.html';
             return;
         }
         
-        // Send logout request to server
-        fetch('http://localhost:5000/logout', {
-            method: 'DELETE',  // Note the method is DELETE as per your server endpoint
+        // Logout Request an Server senden
+        fetch('/logout', {
+            method: 'DELETE', 
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${accessToken}`
             },
-            body: JSON.stringify({ token: refreshToken })  // Send refreshToken to be removed
+            body: JSON.stringify({ token: refreshToken })  // Refresh Token soll gelöscht werden
         })
         .then(response => {
-        console.log('Im response angekommen')
             if (response.status === 204) {
-                // Clear tokens from localStorage
+                // Beim Logout sollen alle Tokens aus dem Local Storage gelöscht werden
                 localStorage.removeItem('accessToken');
                 localStorage.removeItem('refreshToken');
                 localStorage.removeItem('username');
                 localStorage.removeItem('password');
-                // Könnte man schöner designen
                 alert('Benutzer wurde abgemeldet und Access Token erfolgreich gelöscht');
                 window.location.href = '/login.html';
             } else {
@@ -117,7 +109,7 @@ if(logoutButton){
     });
 }
 
-// Token dekodieren (ohne Signaturprüfung)
+// Token dekodieren um Zeitangabe für seine Gültigkeit zu erhalten
 function parseJwt(token) {
     const base64Url = token.split('.')[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -131,7 +123,7 @@ function parseJwt(token) {
 
 
 function checkAndRefreshToken() {
-    const tokenExpiry = parseInt(localStorage.getItem('tokenExpiry')); // Parse als Integer
+    const tokenExpiry = parseInt(localStorage.getItem('tokenExpiry')); // Parse Zeit zu einem Integer
     const refreshToken = localStorage.getItem('refreshToken');
 
     if (!tokenExpiry || !refreshToken) return;
@@ -139,41 +131,13 @@ function checkAndRefreshToken() {
     const currentTime = Date.now();
     const timeUntilExpiry = tokenExpiry - currentTime;
 
-    console.log('Debug Info:');
-    console.log('Token Expiry:', new Date(tokenExpiry).toISOString());
-    console.log('Current Time:', new Date(currentTime).toISOString());
-    console.log('Time until expiry (ms):', timeUntilExpiry);
-
-    // Token erneuern wenn er in weniger als 5 Sekunden abläuft
-    // if (timeUntilExpiry > 0 && timeUntilExpiry < 5000) {
-    //     console.log('Token läuft bald ab, erneuere...');
-    //     fetch('http://localhost:5000/token', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify({ token: refreshToken })
-    //     })
-    //     .then(response => response.json())
-    //     .then(data => {
-    //         const decodedToken = parseJwt(data.accessToken);
-    //         const newExpiryTime = decodedToken.exp * 1000;
-    //         localStorage.setItem('accessToken', data.accessToken);
-    //         localStorage.setItem('tokenExpiry', newExpiryTime);
-    //         console.log('Token erneuert, neue Ablaufzeit:', new Date(newExpiryTime).toISOString());
-    //     })
-    //     .catch(error => console.error('Token-Erneuerung fehlgeschlagen:', error));
-    // }
-
-    // Nur zur Login-Seite weiterleiten wenn Token wirklich abgelaufen ist
     if (timeUntilExpiry < 0) {
         console.log('Token ist abgelaufen, lösche...');
-        localStorage.clear(); // Alle localStorage Einträge löschen
+        localStorage.clear();
         window.location.href = '/login.html';
     }
 }
 
-// Die Prüfung regelmäßig durchführen (alle 2 Sekunden)
 const intervalId = setInterval(checkAndRefreshToken, 1000);
 
 // Intervall stoppen, wenn die Seite verlassen wird

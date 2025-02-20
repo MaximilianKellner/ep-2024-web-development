@@ -39,7 +39,7 @@ app.use(express.static(path.join(__dirname, '../frontend')));
 
 let refreshTokens = [];
 const admins = [
-    {name: "admin", password: "admin1"}
+    {username: "admin", password: "admin1"}
 ]
 
 app.post('/token', (req, res) => {
@@ -61,13 +61,13 @@ app.delete('/logout', authenticateToken, (req, res) => {
 
 
 app.post('/login', (req, res) => {
-    //Authenticate User
     const username = req.body.username
     const password = req.body.password
+    console.log('' + username + ' ' + password)
     for(let i = 0; i < admins.length; i++){
-        if(username === admins[i].name && password === admins[i].password){
+        if(username === admins[i].username && password === admins[i].password){
             console.log("Login successful");
-            const user = {name: username, password: password}
+            const user = {username: username, password: password}
             const accessToken = generateAccessToken(user)
             const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
             refreshTokens.push(refreshToken)
