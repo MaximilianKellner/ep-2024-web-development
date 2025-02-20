@@ -59,7 +59,7 @@
       border-radius: 50%;
       width: var(--xl);
       height: var(--xl);
-      padding: calc(var(--xs)/2);
+      padding: calc(var(--xs) / 2);
       background-color: rgba(240, 248, 255, 0.5);
       object-fit: cover;
     }
@@ -133,29 +133,12 @@
 }
 
 .confirm-btn:hover {
-    background-color: var(--c-red);
+  background-color: var(--c-red);
 }
 
 /* --------------------- Handle Customer (create/edit)--------------------- */
 
-label {
-  display: inline-block;
-  margin-top: var(--l);
-  margin-bottom: var(--xs);
-}
-
-input {
-  width: 100%;
-  padding: var(--s);
-  border: none;
-  border-radius: var(--border-radius-small);
-  font-size: var(--m);
-  color: var(--c-base);
-  background-color: var(--c-lighter);
-  box-sizing: border-box;
-}
-
-#customerForm input{
+#customerForm input {
   max-height: 47px;
 }
 
@@ -174,7 +157,7 @@ input {
   flex: 1;
 }
 
-.message-container{
+.message-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -183,4 +166,21 @@ input {
 
 #customerId {
   display: none;
+}
+
+.login-area {
+  padding: var(--l);
+  width: 80%;
+  max-width: 350px;
+  margin: auto;
+  background-color: var(--c-background-dark);
+  border-radius: var(--border-radius-base);
+
+  p {
+    margin: var(--xs) 0;
+  }
+}
+
+.password {
+  margin: var(--m) 0;
 }

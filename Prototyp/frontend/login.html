@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login with Tokens</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -15,30 +15,27 @@
     <link rel="icon" href="img/icon/admin.svg" />
 
     <script src="./scripts/requestHandler.js" defer></script>
-    <link rel="stylesheet" href="./css/main.css">
-</head>
-<body>
+
+    <link rel="stylesheet" href="./css/main.css" />
+    <link rel="stylesheet" href="./css/admin-area.css" />
+  </head>
+  <body>
     <header>
-        <h1 class="hover-light-blue">OmniMize</h1>
+      <a href="/login.html">
+        <h1 class="hover-light-blue">OmniMize - Login</h1>
+      </a>
     </header>
     <main>
-        <h2>Login</h2>
+      <form class="login-area">
         <p>Bitte loggen Sie sich ein</p>
-        <div class = "login-area">
-            <div class="login-container">
-                <input type="text" class="username" placeholder="Username">
-                <br>
-                <input type="password" class="password" placeholder="Password">
-                <br>
-                <button id="login-button">Login</button>
-            </div>
-            <div id="message"></div>
+        <div class="login-container">
+          <input type="text" class="username" placeholder="Username" />
+          <input type="password" class="password" placeholder="Password" />
+
+          <button id="login-button" class="fade">Login</button>
         </div>
+        <div id="message"></div>
+      </form>
     </main>
-    <footer></footer>
-<script>
-
-
-</script>
-</body>
+  </body>
 </html>
