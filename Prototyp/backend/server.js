@@ -38,6 +38,9 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 let refreshTokens = [];
+const admins = [
+    {name: "admin", password: "admin1"}
+]
 
 app.post('/token', (req, res) => {
     const refreshToken = req.body.token
@@ -50,35 +53,34 @@ app.post('/token', (req, res) => {
     })
 })
 
-// app.delete('/logout', (req, res) =>{
-//     refreshTokens = refreshTokens.filter(token => token !== req.body.token)
-//     res.sendStatus(204)
-// })
-
 app.delete('/logout', authenticateToken, (req, res) => {
-    const token = req.headers['authorization'].split(' ')[1];
     refreshTokens = refreshTokens.filter(refreshToken => refreshToken !== req.body.token);
-    // Invalidate the access token by adding it to a blacklist or similar mechanism
-    // For simplicity, we are just sending a response here
     res.sendStatus(204);
 });
+
+
 
 app.post('/login', (req, res) => {
     //Authenticate User
     const username = req.body.username
     const password = req.body.password
-    const user = {username: username, password: password}
-    console.log('-------------------------' + user.name)
-
-    const accessToken = generateAccessToken(user)
-    const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
-    refreshTokens.push(refreshToken)
-    res.json({accessToken: accessToken, refreshToken: refreshToken})
+    for(let i = 0; i < admins.length; i++){
+        if(username === admins[i].name && password === admins[i].password){
+            console.log("Login successful");
+            const user = {name: username, password: password}
+            const accessToken = generateAccessToken(user)
+            const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
+            refreshTokens.push(refreshToken)
+            res.json({accessToken: accessToken, refreshToken: refreshToken})
+            return
+        }
+    }
+    res.status(403).send("Username or password incorrect")
 })
 
 function generateAccessToken(user) {
     //Session-Wert in auf 10s gesetzt. Zu empfehlenist höherer Wert :)
-    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '20s'})
+    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '10s'})
 }
 
 app.get('/verify-token', authenticateToken, (req, res) => {
