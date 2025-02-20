@@ -1,58 +1,56 @@
 document.getElementById('uploadForm').addEventListener('submit', async (event) => {
-    event.preventDefault();
+    try {
+        event.preventDefault();
 
-    const linkToken = window.location.pathname.replace("/", ""); // Entfernt das "/"
-    console.log("Aktueller linkToken create image:", linkToken);
+        const linkToken = window.location.pathname.replace("/", ""); // Entfernt das "/"
+        console.log("Aktueller linkToken create image:", linkToken);
 
 
-    const fileInput = document.getElementById('fileInput');
-    const messageDiv = document.getElementById('message');
-    const fileList = document.getElementById('file-list');
-    const uploadStatusList = document.querySelector('.upload-status-list');
-    const files = fileInput.files;
-    console.log("Files: " + files);
+        const fileInput = document.getElementById('fileInput');
+        const messageDiv = document.getElementById('message');
+        const fileList = document.getElementById('file-list');
+        const uploadStatusList = document.querySelector('.upload-status-list');
+        const files = fileInput.files;
+        console.log("Files: " + files);
 
-    if (files.length <= 0) {
+        console.log("File input: " + fileInput.value)
 
-        //clear classlist
-        messageDiv.textContent = 'Bitte mindestens eine Datei auswählen.';
-        messageDiv.classList.add('error');
-        return;
-    }
-
-    //Upload Limitationen
-    if (files.length > MAX_FILE_COUNT) {
-        messageDiv.textContent = `Maximal ${MAX_FILE_COUNT} Dateien auswählen.`;
-        messageDiv.classList.add('error');
-        return;
-    }
-
-    for (let i = 0; i < files.length; i++) {
-        if (files[i].size > MAX_FILE_SIZE) {
-            messageDiv.textContent = `Die Datei ${files[i].name} überschreitet die maximale Größe von ${MAX_FILE_SIZE / 1024 / 1024} MB.`;
+        if (files.length <= 0) {
+            //clear classlist
+            messageDiv.textContent = 'Bitte mindestens eine Datei auswählen.';
             messageDiv.classList.add('error');
             return;
+
         }
-    }
+        //Upload Limitationen
+        if (files.length > MAX_FILE_COUNT) {
+            messageDiv.textContent = `Maximal ${MAX_FILE_COUNT} Dateien auswählen.`;
+            messageDiv.classList.add('error');
+            return;
+
+        }
+        for (let i = 0; i < files.length; i++) {
+            if (files[i].size > MAX_FILE_SIZE) {
+                messageDiv.textContent = `Die Datei ${files[i].name} überschreitet die maximale Größe von ${MAX_FILE_SIZE / 1024 / 1024} MB.`;
+                messageDiv.classList.add('error');
+                return;
+            }
+        }
 
 
-    const MAX_BATCH_SIZE = 6; // Maximal 6 Dateien pro Upload
-    const fileBatches = [];
+        const MAX_BATCH_SIZE = 6; // Maximal 6 Dateien pro Upload
+        const fileBatches = [];
 
-    // Dateien in 6er-Chunks aufteilen
-    const filesArr = Array.from(files);
-    for (let i = 0; i < files.length; i += MAX_BATCH_SIZE) {
-        fileBatches.push(filesArr.slice(i, i + MAX_BATCH_SIZE));
-    }
+        // Dateien in 6er-Chunks aufteilen
+        const filesArr = Array.from(files);
+        for (let i = 0; i < files.length; i += MAX_BATCH_SIZE) {
+            fileBatches.push(filesArr.slice(i, i + MAX_BATCH_SIZE));
+        }
 
-    console.log("Dateien in Batches aufgeteilt:", fileBatches);
+        console.log("Dateien in Batches aufgeteilt:", fileBatches);
 
+        // Upload-Request
 
-    const progressBarContainers = document.querySelectorAll('.progress-bar-container');
-    const progressLabels = document.querySelectorAll('.circle-label');
-    const progressCircles = document.querySelectorAll('#progress-circle circle:nth-child(2)');
-    // Upload-Request
-    try {
         for (let batchIndex = 0; batchIndex < fileBatches.length; batchIndex++) {
             const batch = fileBatches[batchIndex];
 
@@ -128,15 +126,13 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
                         if (status === 'error') {
                             console.log('Optimization error');
                             uploadStatusList.innerHTML += `<li class="error">${fileNameNoSuffix} error</li>`;
-                        }
-                        else if (status === 'close') {
+                        } else if (status === 'close') {
                             messageDiv.textContent = 'Vorgang abgeschlossen';
                             messageDiv.classList.remove('error');
 
                             loadOptimizedTable();
                             console.log('Connection closed');
                             eventSource.close();
-                            resetFiles();
                         }
                     };
                 }
@@ -146,6 +142,8 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
         console.error('Fehler beim Hochladen:', error);
         messageDiv.textContent = `Fehler beim Hochladen: ${error.message}`;
         messageDiv.classList.add('error');
+    } finally {
+        resetFiles();
     }
 });
 
