@@ -56,7 +56,7 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
                 },
             });
 
-            console.log("Status" + response.status);
+            console.log("Status: " + response.status);
 
             if (response.status === 204) {
                 messageDiv.textContent = 'Upload erfolgreich!';
@@ -85,10 +85,10 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
                         }
 
                         let fileNameNoSuffix;
-                        console.log("Filename suffix: " + fileNameNoSuffix);
                         // rm suffix
                         const suffixIndex = fileName.lastIndexOf('-');
                         if (suffixIndex !== -1) {
+                            console.log("Filename suffix: " + fileNameNoSuffix);
                             fileNameNoSuffix = fileName.substring(0, suffixIndex);
                         }
 
@@ -100,6 +100,7 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
                         }
                         */
 
+                        // TODO: Status is not being sent
                         if (status === 'error') {
                             console.log('Optimization error');
                             uploadStatusList.innerHTML += `<li class="error">${fileNameNoSuffix} error</li>`;
