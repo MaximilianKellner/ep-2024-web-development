@@ -88,7 +88,7 @@ function loadOptimizedTable() {
         }
     });
 
-    axios.get(`http://localhost:5000/${linkToken}/credits`)
+    axios.get(`http://localhost:5000/${linkToken}/optimized-images`)
         .then((response) => {
             const fileNames = response.data;
 
