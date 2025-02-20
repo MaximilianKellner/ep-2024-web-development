@@ -56,11 +56,15 @@ async function processAllFiles(linkToken, fileNames) {
                 }
             } catch (error) {
                 console.error(`Error processing ${file}:`, error);
+                optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Error);
             }
         }
     } catch (error) {
         console.error('Error reading directory:', error);
+        optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Error)
         throw error;
+    } finally {
+        optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Close);
     }
 }
 

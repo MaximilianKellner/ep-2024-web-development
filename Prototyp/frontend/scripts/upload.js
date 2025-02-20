@@ -84,58 +84,6 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
             if (response.status === 204) {
                 messageDiv.textContent = 'Upload erfolgreich!';
                 messageDiv.classList.remove('error');
-                fileInput.value = '';
-
-                //SSE Handling
-                // Optimierungsüberwachung mit EventSource (Server-Sent Events)
-                const eventSource = new EventSource(`http://localhost:5000/${linkToken}/progress`);
-
-                if (eventSource) {
-                    eventSource.onmessage = (event) => {
-
-                        const eventObject = JSON.parse(event.data);
-                        const status = eventObject.status;
-                        const fileName = eventObject.fileName;
-                        const credits = eventObject.credits;
-
-                        console.log(eventObject);
-
-                        // Set Credit Banner
-                        if (credits >= 0) {
-                            document.getElementById('credits-current').textContent = `${credits} Credits`;
-                        } else {
-                            document.getElementById('credits-current').textContent = `-1 Credits`;
-                        }
-
-                        let fileNameNoSuffix;
-                        // rm suffix
-                        const suffixIndex = fileName.lastIndexOf('-');
-                        if (suffixIndex !== -1) {
-                            console.log("Filename suffix: " + fileNameNoSuffix);
-                            fileNameNoSuffix = fileName.substring(0, suffixIndex);
-                        }
-
-                        messageDiv.innerHTML = `${fileNameNoSuffix} status: ${status}`;
-
-                        /*
-                        if (status === 'complete') {
-                            uploadStatusList.innerHTML += `<li>${fileNameNoSuffix} optimiert</li>`;
-                        }
-                        */
-
-                        if (status === 'error') {
-                            console.log('Optimization error');
-                            uploadStatusList.innerHTML += `<li class="error">${fileNameNoSuffix} error</li>`;
-                        } else if (status === 'close') {
-                            messageDiv.textContent = 'Vorgang abgeschlossen';
-                            messageDiv.classList.remove('error');
-
-                            loadOptimizedTable();
-                            console.log('Connection closed');
-                            eventSource.close();
-                        }
-                    };
-                }
             }
         }
     } catch (error) {
