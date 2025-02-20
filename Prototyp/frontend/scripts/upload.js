@@ -1,6 +1,10 @@
 document.getElementById('uploadForm').addEventListener('submit', async (event) => {
     event.preventDefault();
 
+    const linkToken = window.location.pathname.replace("/", ""); // Entfernt das "/"
+    console.log("Aktueller linkToken create image:", linkToken);
+
+
     const fileInput = document.getElementById('fileInput');
     const messageDiv = document.getElementById('message');
     const fileList = document.getElementById('file-list');
@@ -40,7 +44,7 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
             const progressLabels = document.querySelectorAll('.circle-label');
             const progressCircles = document.querySelectorAll('#progress-circle circle:nth-child(2)');
 
-            const response = await axios.post('http://localhost:5000/debug-kunde-1/upload', singleFormData, {
+            const response = await axios.post(`http://localhost:5000/${linkToken}/upload`, singleFormData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -59,7 +63,7 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
 
                 //SSE Handling
                 // Optimierungsüberwachung mit EventSource (Server-Sent Events)
-                const eventSource = new EventSource('http://localhost:5000/debug-kunde-1/progress');
+                const eventSource = new EventSource(`http://localhost:5000/${linkToken}/progress`);
 
                 if (eventSource) {     
                     eventSource.onmessage = (event) => {
@@ -117,7 +121,10 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
 //Check Credits on load
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        const response = await axios.get('http://localhost:5000/debug-kunde-1/credits');
+        const linkToken = window.location.pathname.replace("/", ""); // Entfernt das "/"
+        console.log("Aktueller linkToken create image:", linkToken);
+
+        const response = await axios.get(`http://localhost:5000/${linkToken}/credits`);
         const credits = response.data.credits;
         console.log('Credits on Load:', credits);
         document.getElementById('credits-current').textContent = `${credits} Credits`;
