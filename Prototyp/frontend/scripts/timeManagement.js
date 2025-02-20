@@ -178,5 +178,5 @@ const intervalId = setInterval(checkAndRefreshToken, 1000);
 
 // Intervall stoppen, wenn die Seite verlassen wird
 window.addEventListener('beforeunload', () => {
-clearInterval(intervalId);
+    clearInterval(intervalId);
 });

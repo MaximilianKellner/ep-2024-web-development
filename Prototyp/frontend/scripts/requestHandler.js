@@ -1,4 +1,5 @@
 const loginButton = document.querySelector(".login-button");
+const messageObject = document.querySelector("#message");
 
 const admins = [
     {name : "admin", password : "admin1"}
@@ -40,17 +41,18 @@ if(loginButton){
                                 // Weiterleitung zum admin-panel
                                 window.location.href = "http://127.0.0.1:5000/admin-panel.html";
                             } else {
-                                alert("Login failed - No tokens received");
+                                messageObject.innerHTML = "Login failed due to wrong Tokens. Try again or reach out to the administrator!";
+                                messageObject.style="color:red";
                             }
                         })
                         .catch(error => {
-                            console.error('Login Error:', error);
-                            alert("Login failed");
-                        });
-                        
+                            messageObject.innerHTML = "Login failed. Please try again!";
+                            messageObject.style="color:red";
+                        });  
             }
             else{
-                alert("Login failed");
+                messageObject.innerHTML = "Login failed due to wrong credentials. Please try again!";
+                messageObject.style="color:red";
             }
         }
     });
