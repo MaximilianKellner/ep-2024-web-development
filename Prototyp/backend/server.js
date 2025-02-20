@@ -12,6 +12,15 @@ import {dirname} from 'path';
 import apiErrorHandler from "./apiErrorHandler.js";
 import ApiError from './ApiError.js';
 import {checkTokenExpired} from "./tokenExpiration.js";
+import dotenv from 'dotenv';
+import jwt from 'jsonwebtoken';
+// JWT Code
+dotenv.config();
+// require('dotenv').config()
+// const jwt = require('jsonwebtoken');
+
+
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -27,6 +36,55 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 app.use(express.static(path.join(__dirname, '../frontend')));
+
+let refreshTokens = [];
+
+app.post('/token', (req, res) => {
+    const refreshToken = req.body.token
+    if (refreshToken == null) return res.sendStatus(401)
+    if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+        if (err) return res.sendStatus(403)
+        const accessToken = generateAccessToken({name: user.name})
+        res.json({accessToken: accessToken})
+    })
+})
+
+// app.delete('/logout', (req, res) =>{
+//     refreshTokens = refreshTokens.filter(token => token !== req.body.token)
+//     res.sendStatus(204)
+// })
+
+app.delete('/logout', authenticateToken, (req, res) => {
+    const token = req.headers['authorization'].split(' ')[1];
+    refreshTokens = refreshTokens.filter(refreshToken => refreshToken !== req.body.token);
+    // Invalidate the access token by adding it to a blacklist or similar mechanism
+    // For simplicity, we are just sending a response here
+    res.sendStatus(204);
+});
+
+app.post('/login', (req, res) => {
+    //Authenticate User
+    const username = req.body.username
+    const password = req.body.password
+    const user = {username: username, password: password}
+    console.log('-------------------------' + user.name)
+
+    const accessToken = generateAccessToken(user)
+    const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
+    refreshTokens.push(refreshToken)
+    res.json({accessToken: accessToken, refreshToken: refreshToken})
+})
+
+function generateAccessToken(user) {
+    //Session-Wert in auf 10s gesetzt. Zu empfehlenist höherer Wert :)
+    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '20s'})
+}
+
+app.get('/verify-token', authenticateToken, (req, res) => {
+    // If we get here, the token is valid (authenticateToken middleware passed)
+    res.status(200).json({valid: true});
+});
 
 app.get('/:linkToken', async (req, res, next) => {
     try {
@@ -145,7 +203,7 @@ app.post('/:linkToken/upload', upload.array('images'), async (req, res, next) =>
             fileNames: fileNames
         });
 
-        console.log("In uploadedFilesToDelete: " + uploadedFilesToDelete.entries().toArray());
+        // console.log("In uploadedFilesToDelete: " + uploadedFilesToDelete.entries().toArray());
         res.status(204).send('File uploaded successfully.');
     } catch (error) {
         console.error(error);
@@ -248,7 +306,6 @@ app.get('/:linkToken/credits', async (req, res, next) => {
     }
 });
 
-// TODO: Endpoint should be secured -> Auth
 app.get('/load-customers', async (req, res, next) => {
     try {
         const result = await pool.query('SELECT customer_name, customer_id, expiration_date, credits, email, img_url  FROM customer');
@@ -443,15 +500,7 @@ async function handleImageRequest(imageName, linkToken, res, contentDispositionT
 //await checkTokenExpired();
 
 
-// JWT Code
-dotenv.config();
-// require('dotenv').config()
-// const jwt = require('jsonwebtoken');
 
-import dotenv from 'dotenv';
-import jwt from 'jsonwebtoken';
-
-app.use(express.json());
 
 
 app.get('/customers', authenticateToken, (req, res) => {
@@ -485,10 +534,7 @@ function authenticateToken(req, res, next) {
     })
 }
 
-app.get('/verify-token', authenticateToken, (req, res) => {
-    // If we get here, the token is valid (authenticateToken middleware passed)
-    res.status(200).json({valid: true});
-});
+
 
 
 //Authentifizierung
@@ -498,52 +544,8 @@ app.get('/verify-token', authenticateToken, (req, res) => {
 // import jwt from 'jsonwebtoken';
 // import cors from 'cors';  // Füge cors import hinzu
 
-let refreshTokens = [];
 
-// Aktiviere CORS
-app.use(cors());
-app.use(express.json());
 
-app.post('/token', (req, res) => {
-    const refreshToken = req.body.token
-    if (refreshToken == null) return res.sendStatus(401)
-    if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
-    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403)
-        const accessToken = generateAccessToken({name: user.name})
-        res.json({accessToken: accessToken})
-    })
-})
-
-// app.delete('/logout', (req, res) =>{
-//     refreshTokens = refreshTokens.filter(token => token !== req.body.token)
-//     res.sendStatus(204)
-// })
-
-app.delete('/logout', authenticateToken, (req, res) => {
-    const token = req.headers['authorization'].split(' ')[1];
-    refreshTokens = refreshTokens.filter(refreshToken => refreshToken !== req.body.token);
-    // Invalidate the access token by adding it to a blacklist or similar mechanism
-    // For simplicity, we are just sending a response here
-    res.sendStatus(204);
-});
-
-app.post('/login', (req, res) => {
-    //Authenticate User
-    const username = req.body.username
-    const user = {name: username}
-    console.log('-------------------------' + user)
-
-    const accessToken = generateAccessToken(user)
-    const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
-    refreshTokens.push(refreshToken)
-    res.json({accessToken: accessToken, refreshToken: refreshToken})
-})
-
-function generateAccessToken(user) {
-    //Session-Wert in auf 10s gesetzt. Zu empfehlenist höherer Wert :)
-    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '10s'})
-}
 
 app.use(apiErrorHandler);
 app.listen(process.env.DEV_PORT, () =>

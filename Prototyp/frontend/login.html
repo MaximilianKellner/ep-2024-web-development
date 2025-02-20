@@ -30,52 +30,7 @@
     <footer></footer>
 <script>
 
-    // Event-Listener für den Login-Button
-    document.querySelector('.login-button').addEventListener('click', () => {
-        const username = document.querySelector('.username').value;
-        const password = document.querySelector('.password').value;
-        
-        // Login-Request an den Server
-        fetch('http://localhost:5000/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ username, password })
-        })
-        .then(response => {
-            if (response.ok) return response.json();
-            throw new Error('Login fehlgeschlagen');
-        })
-        .then(data => {
-            // Token-Informationen speichern
-            localStorage.setItem('accessToken', data.accessToken);
-            localStorage.setItem('refreshToken', data.refreshToken);
-            localStorage.setItem('username', username);
-            
-            // Token-Ablaufzeit berechnen und speichern
-            const decodedToken = parseJwt(data.accessToken);
-            localStorage.setItem('tokenExpiry', decodedToken.exp * 1000);
-            
-            // Weiterleitung zum Admin-Panel
-            window.location.href = '/admin-panel.html';
-        })
-        .catch(error => {
-            console.error('Login-Fehler:', error);
-            alert('Login fehlgeschlagen. Bitte überprüfen Sie Ihre Zugangsdaten.');
-        });
-    });
 
-// Token dekodieren (ohne Signaturprüfung)
-function parseJwt(token) {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-
-    return JSON.parse(jsonPayload);
-}
 </script>
 </body>
 </html>
