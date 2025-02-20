@@ -1,5 +1,7 @@
 function createImageRequest(image) {
-    return axios.get(`http://localhost:5000/debug-kunde-1/download/${image}`, {
+    const linkToken = window.location.pathname.replace("/", ""); // Entfernt das "/"
+    console.log("Aktueller linkToken create image:", linkToken);
+    return axios.get(`http://localhost:5000/${linkToken}/download/${image}`, {
         responseType: 'blob',
     });
 }
@@ -65,15 +67,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function loadOptimizedTable() {
 
+    const linkToken = window.location.pathname.replace("/", ""); // Entfernt das "/"
+    console.log("Aktueller linkToken:", linkToken);
+
     const tbody = document.getElementById('image-table-body');
     const table = document.getElementById('image-table');
     const downloadButton = document.getElementById('download-selected-btn');
-
-    if (fileNames.length === 0) {
-        table.classList.add('hidden');
-        downloadButton.classList.add('hidden');
-        return;
-    }
 
     // Event Delegation für Download Buttons
     tbody.addEventListener('click', (e) => {
@@ -89,9 +88,18 @@ function loadOptimizedTable() {
         }
     });
 
-    axios.get('http://localhost:5000/debug-kunde-1/optimized-images')
+    axios.get(`http://localhost:5000/${linkToken}/credits`)
         .then((response) => {
             const fileNames = response.data;
+
+            console.log("Aktueller link token credits: " + linkToken);
+
+            // TODO: Wrong position?
+            if (fileNames.length === 0) {
+                table.classList.add('hidden');
+                downloadButton.classList.add('hidden');
+                return;
+            }
 
             const imageRequests = fileNames.map(fileName => createImageRequest(fileName));
             const fileNamesWithoutSuffix = fileNames.map(getFileNameWithoutSuffix);
