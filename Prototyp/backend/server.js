@@ -1,5 +1,3 @@
-'use strict';
-
 // TODO: Was soll getCustomerData() machen, wenn das codeword name ist??
 import express from 'express';
 import cors from 'cors';
