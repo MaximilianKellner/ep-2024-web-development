@@ -130,7 +130,6 @@ app.post('/:linkToken/upload', upload.array('images'), async (req, res, next) =>
         linkToken = req.params.linkToken;
         console.log('Link token:', linkToken);
 
-        console.log('User ID:', userId);
         fileNames = req.files.map(file => file.filename);
 
         console.log('File names:', fileNames);
