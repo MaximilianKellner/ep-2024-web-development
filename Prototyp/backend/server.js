@@ -177,26 +177,22 @@ app.get('/:linkToken/progress', async (req, res, next) => {
 
         const linkToken = req.params.linkToken;
 
-        const result = await pool.query('SELECT credits FROM customer WHERE link_token = $1', [linkToken]);
-        if (result.rows.length > 0) {
-            const credits = result.rows[0]?.credits;
-            console.log('Credits:', credits);
+        // TODO: Der Listener sollte mit einer Nutzer-ID verknüpft sein.
+        const sendProgress = (status, fileName, credits) => {
+            const data = JSON.stringify({status, fileName, credits});
+            console.log("Send progress data: " + data);
+            res.write(`data: ${data}\n\n`);
+        };
 
-            // TODO: Der Listener sollte mit einer Nutzer-ID verknüpft sein.
-            const sendProgress = (status, fileName) => {
-                const data = JSON.stringify({status, fileName, credits});
-                res.write(`data: ${data}\n\n`);
-            };
+        optimizationEventEmitter.on('progress', sendProgress);
 
-            optimizationEventEmitter.on('progress', sendProgress);
+        const handleClosingConnection = async () => {
+            console.log('Connection closed');
+            optimizationEventEmitter.removeListener('progress', sendProgress);
+        };
 
-            const handleClosingConnection = async () => {
-                console.log('Connection closed');
-                optimizationEventEmitter.removeListener('progress', sendProgress);
-            };
+        req.on('close', handleClosingConnection);
 
-            req.on('close', handleClosingConnection);
-        }
     } catch (error) {
         next(error);
     }

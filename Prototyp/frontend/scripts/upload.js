@@ -10,6 +10,7 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
     const fileList = document.getElementById('file-list');
     const uploadStatusList = document.querySelector('.upload-status-list');
     const files = fileInput.files;
+    console.log("Files: " + files);
 
     if (files.length <= 0) {
 
@@ -34,29 +35,53 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
         }
     }
 
+
+    const MAX_BATCH_SIZE = 6; // Maximal 6 Dateien pro Upload
+    const fileBatches = [];
+
+    // Dateien in 6er-Chunks aufteilen
+    const filesArr = Array.from(files);
+    for (let i = 0; i < files.length; i += MAX_BATCH_SIZE) {
+        fileBatches.push(filesArr.slice(i, i + MAX_BATCH_SIZE));
+    }
+
+    console.log("Dateien in Batches aufgeteilt:", fileBatches);
+
+
+    const progressBarContainers = document.querySelectorAll('.progress-bar-container');
+    const progressLabels = document.querySelectorAll('.circle-label');
+    const progressCircles = document.querySelectorAll('#progress-circle circle:nth-child(2)');
     // Upload-Request
     try {
-        for (let i = 0; i < files.length; i++) {
-            const singleFormData = new FormData();
-            singleFormData.append('images', files[i]);
+        for (let batchIndex = 0; batchIndex < fileBatches.length; batchIndex++) {
+            const batch = fileBatches[batchIndex];
 
-            const progressBarContainers = document.querySelectorAll('.progress-bar-container');
-            const progressLabels = document.querySelectorAll('.circle-label');
-            const progressCircles = document.querySelectorAll('#progress-circle circle:nth-child(2)');
+            const singleFormData = new FormData();
+            batch.forEach(file => singleFormData.append('images', file));
 
             const response = await axios.post(`http://localhost:5000/${linkToken}/upload`, singleFormData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
                 onUploadProgress: function (progressEvent) {
-                    progressBarContainers[i].classList.remove('hidden');
                     const percentCompleted = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-                    progressLabels[i].textContent = `${percentCompleted}%`;
-                    progressCircles[i].style.strokeDashoffset = 282.6 - (282.6 * percentCompleted / 100);
+
+                    batch.forEach((file, fileIndex) => {
+                        const globalIndex = batchIndex * MAX_BATCH_SIZE + fileIndex; // Korrekte Indexierung
+                        const progressBarContainers = document.querySelectorAll('.progress-bar-container');
+                        const progressLabels = document.querySelectorAll('.circle-label');
+                        const progressCircles = document.querySelectorAll('#progress-circle circle:nth-child(2)');
+
+                        if (progressBarContainers[globalIndex]) {
+                            progressBarContainers[globalIndex].classList.remove('hidden');
+                            progressLabels[globalIndex].textContent = `${percentCompleted}%`;
+                            progressCircles[globalIndex].style.strokeDashoffset = 282.6 - (282.6 * percentCompleted / 100);
+                        }
+                    });
                 },
             });
 
-            console.log("Status" + response.status);
+            console.log("Status: " + response.status);
 
             if (response.status === 204) {
                 messageDiv.textContent = 'Upload erfolgreich!';
@@ -85,10 +110,10 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
                         }
 
                         let fileNameNoSuffix;
-                        console.log("Filename suffix: " + fileNameNoSuffix);
                         // rm suffix
                         const suffixIndex = fileName.lastIndexOf('-');
                         if (suffixIndex !== -1) {
+                            console.log("Filename suffix: " + fileNameNoSuffix);
                             fileNameNoSuffix = fileName.substring(0, suffixIndex);
                         }
 

@@ -40,7 +40,7 @@ async function processAllFiles(linkToken, fileNames) {
             /\.(jpg|jpeg|png|svg)/i.test(file)
         );
 
-
+        // TODO: Check all naming -> for example file should be fileName
         for (const file of fileNames) {
             const inputPath = path.join(uploadDir, file);
             const outputPath = path.join(optimizedDir, file);
@@ -49,7 +49,10 @@ async function processAllFiles(linkToken, fileNames) {
                 const done = await compressToSize(inputPath, outputPath, file, linkToken);
                 if (done) {
                     console.log(`Successfully processed: ${file}`);
-                    await pool.query('UPDATE customer SET credits = credits - 1 WHERE link_token = $1', [linkToken]);
+                    const result = await pool.query('UPDATE customer SET credits = credits - 1 WHERE link_token = $1 RETURNING credits', [linkToken]);
+                    const remainingCredits = result.rows[0]?.credits;
+                    optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Complete, file, remainingCredits);
+                    console.log('Verbleibende Credits:', remainingCredits);
                 }
             } catch (error) {
                 console.error(`Error processing ${file}:`, error);
@@ -146,7 +149,7 @@ async function compressToSize(inputPath, outputPath, fileName, userId) {
                 .rotate()
                 .toFile(outputPath);
             console.log(`File already within size limit, copying to optimized folder`);
-            optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Complete, fileName);
+            //optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Complete, fileName);
             return outputPath;
         }
 
@@ -184,7 +187,7 @@ async function compressToSize(inputPath, outputPath, fileName, userId) {
         if (currentSize <= maxSizeInMB) {
             await fs.promises.writeFile(outputPath, buffer);
             console.log(`Erfolgreich zu folgender Größe komprimiert: ${currentSize.toFixed(3)} MB! Die Qualität beträgt: ${quality}/100!`);
-            optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Complete, fileName);
+            //optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Complete, fileName);
             return outputPath;
         } else {
             optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Error, fileName);

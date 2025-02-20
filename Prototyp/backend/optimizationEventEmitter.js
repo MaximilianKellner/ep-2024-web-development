@@ -8,9 +8,9 @@ class OptimizationEventEmitter extends events.EventEmitter {
         super();
     }
 
-    sendProgressStatus(status, fileName) {
-        console.log("Progress status: ", status, fileName);
-        this.emit('progress', status, fileName);
+    sendProgressStatus(status, fileName, credits) {
+        console.log("Progress status: ", status, fileName, credits);
+        this.emit('progress', status, fileName, credits);
     }
 
     resetProgress() {
