@@ -47,10 +47,6 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
 
     console.log("Dateien in Batches aufgeteilt:", fileBatches);
 
-
-    const progressBarContainers = document.querySelectorAll('.progress-bar-container');
-    const progressLabels = document.querySelectorAll('.circle-label');
-    const progressCircles = document.querySelectorAll('#progress-circle circle:nth-child(2)');
     // Upload-Request
     try {
         for (let batchIndex = 0; batchIndex < fileBatches.length; batchIndex++) {
