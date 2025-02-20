@@ -3,12 +3,11 @@ const messageObject = document.querySelector("#message");
 
 if(loginButton){
     loginButton.addEventListener("click", event => {
-        event.preventDefault();
+        event.preventDefault(); // Ohne diese Zeile wird die Seite neu geladen, obwohl die Credentials richtig sein könnten, da es sich um ein form-Element handelt
         let username = document.querySelector(".username").value;
         let password = document.querySelector(".password").value;
         localStorage.setItem('username', username);
         localStorage.setItem('password', password);
-        console.log('Username: '+username);
 
         fetch("/login", {
                 method: "POST",
@@ -25,7 +24,6 @@ if(loginButton){
             if(data.accessToken && data.refreshToken) {
                 localStorage.setItem('accessToken', data.accessToken);
                 localStorage.setItem('refreshToken', data.refreshToken);
-                console.log('Access Token nach Login: '+localStorage.getItem('accessToken'));
                 window.location.href = "/admin-panel.html";
             } else {
                 messageObject.innerHTML = "Login fehlgeschlagen, auf Grund von internem Fehler. Bitte melden Sie sich bei einem Administrator!";
