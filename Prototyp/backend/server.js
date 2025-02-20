@@ -7,8 +7,8 @@ import optimizationEventEmitter from './optimizationEventEmitter.js';
 import fs from 'fs';
 import path from 'path';
 import {pool} from './db.js';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import {fileURLToPath} from 'url';
+import {dirname} from 'path';
 import apiErrorHandler from "./apiErrorHandler.js";
 import ApiError from './ApiError.js';
 import {checkTokenExpired} from "./tokenExpiration.js";
@@ -24,9 +24,29 @@ const uploadedFilesToDelete = [];
 // TODO: Auf verschieden Browsern testen -> Multiple download funktioniert nicht auf Chrome
 // TODO: Definiere erlaubte Origins und weitere Spezifikationen, wenn der Service bereit für Auslieferung ist.
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(cors());
-app.use(express.static('../frontend'));
-app.use(express.urlencoded({extended: false}));
+app.use(express.static(path.join(__dirname, '../frontend')));
+
+app.get('/:linkToken', async (req, res, next) => {
+    try {
+        const { linkToken } = req.params;
+
+        const result = await pool.query('SELECT link_token FROM customer WHERE link_token = $1', [linkToken]);
+
+        if (result.rows.length > 0) {
+            console.log('Link token:', linkToken);
+
+            // Sende die HTML-Seite (danach lädt der Client die statischen Dateien selbst)
+            res.sendFile(path.join(__dirname, '../frontend/index.html'));
+        } else {
+            res.status(404).send("Ungültiger Token");
+        }
+    } catch (error) {
+        next(error);
+    }
+});
+
 // TODO: Regeln, was passiert, wenn durch Abbruch des Uploads/ Downloads ein Fehler auftritt.
 const storage = multer.diskStorage({
     destination: async function (req, file, cb) {
@@ -286,18 +306,18 @@ app.post('/create-customer', async (req, res, next) => {
 });
 
 app.get('/get-customer', async (req, res) => {
-    const { id } = req.query;
+    const {id} = req.query;
 
     // Überprüfen ob die ID vorhanden und eine Zahl ist
     if (!id || isNaN(id)) {
-        return res.status(400).json({ error: "Ungültige Kunden-ID" });
+        return res.status(400).json({error: "Ungültige Kunden-ID"});
     }
 
     try {
         const result = await pool.query('SELECT * FROM customer WHERE customer_id = $1', [id]);
 
         if (result.rows.length === 0) {
-            return res.status(404).json({ error:`Kunde ${id} nicht gefunden` });
+            return res.status(404).json({error: `Kunde ${id} nicht gefunden`});
         }
 
         if (result.rows.length === 1) {
@@ -317,7 +337,7 @@ app.get('/get-customer', async (req, res) => {
         }
     } catch (error) {
         console.error('Fehler beim Laden des Kunden:', error);
-        res.status(500).json({ error: 'Interner Serverfehler' });
+        res.status(500).json({error: 'Interner Serverfehler'});
     }
 });
 
@@ -326,13 +346,19 @@ app.put('/update-customer', async (req, res) => {
 
     // Überprüfen ob die ID vorhanden und eine Zahl ist
     if (!id || isNaN(id)) {
-        return res.status(400).json({ error: "Ungültige Kunden-ID" });
+        return res.status(400).json({error: "Ungültige Kunden-ID"});
     }
 
     try {
         const result = await pool.query(
-            `UPDATE customer 
-             SET customer_name = $1, email = $2, expiration_date = $3, credits = $4, img_url = $5, max_file_size_kb = $6, max_file_width_px = $7
+            `UPDATE customer
+             SET customer_name = $1,
+                 email = $2,
+                 expiration_date = $3,
+                 credits = $4,
+                 img_url = $5,
+                 max_file_size_kb = $6,
+                 max_file_width_px = $7
              WHERE customer_id = $8 RETURNING customer_id`,
             [
                 req.body.customerName,
@@ -419,7 +445,7 @@ async function handleImageRequest(imageName, linkToken, res, contentDispositionT
     }
 }
 
-await checkTokenExpired();
+//await checkTokenExpired();
 
 
 // JWT Code
@@ -433,7 +459,7 @@ import jwt from 'jsonwebtoken';
 app.use(express.json());
 
 
-app.get('/customers', authenticateToken, (req, res) =>{
+app.get('/customers', authenticateToken, (req, res) => {
     // Hier werden customers angezeigt, die alle Admins angelegt haben. Wenn nur bestimmte angezeigt werden sollenn, dann filtern.
     console.log(res.json(customers))
 
@@ -466,7 +492,7 @@ function authenticateToken(req, res, next) {
 
 app.get('/verify-token', authenticateToken, (req, res) => {
     // If we get here, the token is valid (authenticateToken middleware passed)
-    res.status(200).json({ valid: true });
+    res.status(200).json({valid: true});
 });
 
 
@@ -483,12 +509,12 @@ let refreshTokens = [];
 app.use(cors());
 app.use(express.json());
 
-app.post('/token', (req, res) =>{
+app.post('/token', (req, res) => {
     const refreshToken = req.body.token
-    if(refreshToken == null) return res.sendStatus(401)
-    if(!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
-    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) =>{
-        if(err) return res.sendStatus(403)
+    if (refreshToken == null) return res.sendStatus(401)
+    if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+        if (err) return res.sendStatus(403)
         const accessToken = generateAccessToken({name: user.name})
         res.json({accessToken: accessToken})
     })
@@ -507,11 +533,11 @@ app.delete('/logout', authenticateToken, (req, res) => {
     res.sendStatus(204);
 });
 
-app.post('/login', (req, res) =>{
+app.post('/login', (req, res) => {
     //Authenticate User
     const username = req.body.username
     const user = {name: username}
-    console.log('-------------------------'+user)
+    console.log('-------------------------' + user)
 
     const accessToken = generateAccessToken(user)
     const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
