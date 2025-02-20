@@ -5,7 +5,6 @@ const urlParams = new URLSearchParams(window.location.search);
 const customerId = urlParams.get('id');
 const customerIdField = document.getElementById('customerId');
 
-
 messageDiv.style.margin = '0px';
 
 //exp date > Current date
@@ -40,7 +39,6 @@ function loadCustomerData(customerId) {
             return response.json();
         })
         .then(data => {
-            console.log('Kundendatennn:', data);
             if (data) {
                 customerIdField.textContent = `ID: ${customerId}`;
 
@@ -83,10 +81,6 @@ form.addEventListener('submit', function(event) {
     const url = customerId ? `/update-customer` : '/create-customer';
 
     const urlEncoded = new URLSearchParams(formData).toString();
-
-    console.log('------------------------------');
-    console.log(urlEncoded)
-    console.log('------------------------------');
 
     fetch(url, {
         method: method,

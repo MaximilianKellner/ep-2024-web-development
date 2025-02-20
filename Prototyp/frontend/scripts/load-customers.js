@@ -53,7 +53,6 @@ window.onload = function() {
                 btn.onclick = function () {
                     window.customerIdToDelete = this.closest('tr').querySelector('td:nth-child(2)').textContent;
                     modal.style.display = "block";
-                    console.log('Kunden-ID zum Löschen:', window.customerIdToDelete);
                 };
             });
         })

@@ -97,3 +97,20 @@ header {
 .hover-light-blue:hover {
   color: var(--c-lighter);
 }
+
+label {
+  display: inline-block;
+  margin-top: var(--l);
+  margin-bottom: var(--xs);
+}
+
+input {
+  width: 100%;
+  padding: var(--s);
+  border: none;
+  border-radius: var(--border-radius-small);
+  font-size: var(--m);
+  color: var(--c-base);
+  background-color: var(--c-lighter);
+  box-sizing: border-box;
+}
