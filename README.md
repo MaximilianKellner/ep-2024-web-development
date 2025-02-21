@@ -15,6 +15,10 @@ Im Rahmen des Entwicklungsprojekts soll eine Web Applikation erstellt werden, di
 - SMTP-Relay Service (z.B. Mailersend)
 - .env Datei in /backend:
 ```
+#Tokens für die Authentifizierung
+ACCESS_TOKEN_SECRET=
+REFRESH_TOKEN_SECRET=
+
 # SMTP-Server credetials
 SMTP_HOST=
 SMTP_PORT=
