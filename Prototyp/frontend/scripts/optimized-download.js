@@ -63,15 +63,8 @@ function createTableRow(fileData) {
 
 document.addEventListener('DOMContentLoaded', () => {
     loadOptimizedTable();
-});
-
-function loadOptimizedTable() {
-
-    const linkToken = window.location.pathname.replace("/", ""); // Entfernt das "/"
-    console.log("Aktueller linkToken:", linkToken);
 
     const tbody = document.getElementById('image-table-body');
-    const table = document.getElementById('image-table');
     const downloadButton = document.getElementById('download-selected-btn');
 
     // Event Delegation für Download Buttons
@@ -88,13 +81,30 @@ function loadOptimizedTable() {
         }
     });
 
+    // ------ checkbox selection ------
+    document.getElementById('select-all').addEventListener('change', function() {
+        const checkboxes = document.getElementsByName('selector');
+        checkboxes.forEach(checkbox => checkbox.checked = this.checked);
+    });
+
+    // ------ download selected ------
+    downloadButton.addEventListener('click', downloadSelectedFiles);
+});
+
+function loadOptimizedTable() {
+    const linkToken = window.location.pathname.replace("/", ""); // Entfernt das "/"
+    console.log("Aktueller linkToken:", linkToken);
+
+    const tbody = document.getElementById('image-table-body');
+    const table = document.getElementById('image-table');
+    const downloadButton = document.getElementById('download-selected-btn');
+
     axios.get(`http://localhost:5000/${linkToken}/optimized-images`)
         .then((response) => {
             const fileNames = response.data;
 
             console.log("Aktueller link token credits: " + linkToken);
 
-            // TODO: Wrong position?
             if (fileNames.length === 0) {
                 table.classList.add('hidden');
                 downloadButton.classList.add('hidden');
@@ -134,15 +144,6 @@ function loadOptimizedTable() {
         })
         .catch(err => console.error('Fehler beim Abrufen der Dateiliste:', err));
 }
-
-// ------ checkbox selection ------
-document.getElementById('select-all').addEventListener('change', function() {
-    const checkboxes = document.getElementsByName('selector');
-    checkboxes.forEach(checkbox => checkbox.checked = this.checked);
-});
-
-// ------ download selected ------
-document.getElementById('download-selected-btn').addEventListener('click', downloadSelectedFiles);
 
 function downloadSelectedFiles() {
     const checkboxes = document.querySelectorAll('input[name="selector"]:checked');
