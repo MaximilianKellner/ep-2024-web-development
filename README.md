@@ -3,6 +3,25 @@
 ## Einführung
 
 Im Rahmen des Entwicklungsprojekts soll eine Web Applikation erstellt werden, die einen Upload von zu großen Bilddateien erlaubt. Die Applikation ermöglicht es Nutzern, übergroße Bilddateien hochzuladen, die anschließend komprimiert und dem Kunden zum Download zur Verfügung gestellt werden. Ein Punktesystem reguliert den Upload, sodass nicht unbegrenzt viele Dateien hochgeladen werden können.
+
+## Dateiübersicht
+
+Hier kommt ein Text hin der noch geschrieben werden muss
+* ADR: 14 md.-Dateien 
+* POCs: Die einzelnen Umsetzungen der POCs, die nicht miteinander zusammenhängen
+* Prototy: Source Ordner
+    assets: Logos (Dropox, Google Drive etc.)
+    fonts: Einbindung der Schriftarten
+    scripts: Skripte für JavaScript
+        assetowner.js: Clientseitiger Code für die Asset Owner Seite - Up- und Download der Dateien
+        createNewCustomer.js: Clientseitiger Code für die Content Manager Seite - Erstellung und Verwaltung der Customers(Asset Owner)
+        createNewCustomerLinks.js: Clientseitiger Code für die Content Manager Seite - Erstellung und Verwaltung der Cards(Projekte) und personalisierten Links
+    styles: CSS Dateien für das Frontend
+    assetowner.html: HTML Code für das Frontend der Asset Owner Seite
+    contentmanager.html: HTML Code für das Frontend der Content Manager Seite
+    index.html: HTML Code für die Landing Page
+index.js: Serverseitiger Code
+
 ## Was kann unsere Applikation?
 - Unterstützte Formate:
     - JPG/ JPEG
