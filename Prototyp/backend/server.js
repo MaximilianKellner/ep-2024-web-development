@@ -7,7 +7,6 @@ import apiErrorHandler from "./apiErrorHandler.js";
 import adminRoutes from "./routes/admin/admin.js";
 import customerRoutes from "./routes/customers/customers.js";
 import dotenv from 'dotenv';
-
 import jwt from 'jsonwebtoken';
 dotenv.config();
 
