@@ -25,7 +25,7 @@ th, td {
 
 td {
   padding: var(--s);
-  text-align: center; /* Inhalte zentrieren */
+  text-align: center;
 
   img {
     height: auto;
@@ -39,12 +39,12 @@ td {
 
 .limited-text {
   position: relative;
-  max-width: 150px; /* Maximale Breite der Zelle */
-  max-height: 130px; /* Maximale Höhe der Zelle */
+  max-width: 150px;
+  max-height: 130px;
   white-space: normal;
   overflow: hidden;
   text-overflow: ellipsis;
-  word-wrap: break-word; /* Zeilenumbruch bei langen Wörtern */
+  word-wrap: break-word;
 }
 
 /* Checkbox */
@@ -78,7 +78,6 @@ input[type="checkbox"]:checked::after {
 }
 
 /* download Selected Button */
-
 #download-selected-btn {
   padding: calc(var(--xs)/2) var(--xs);
   margin-top: var(--s);

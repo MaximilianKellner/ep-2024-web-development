@@ -26,6 +26,7 @@
     <script defer src="scripts/sse.js"></script>
 
     <script defer src="scripts/menu.js"></script>
+    <script defer src="scripts/sort-table.js"></script>
 
   </head>
   <body>
@@ -108,15 +109,15 @@
         und werden danach automatisch gelöscht.
       </p>
 
-      <table class="hidden" id="image-table">
+      <table class="hidden " id="image-table">
         <thead>
           <tr>
             <th><input type="checkbox" name="select-all" id="select-all" /></th>
             <th>Vorschau</th>
-            <th>Name</th>
-            <th>Größe</th>
-            <th>Upload</th>
-            <th>verbleibende Zeit</th>
+            <th onclick="sortTable(2)" >Name</th>
+            <th onclick="sortTable(3)" >Größe</th>
+            <th onclick="sortTable(5)" >Upload</th>
+            <th onclick="sortTable(5)" >verbleibende Zeit</th>
             <th>Download</th>
           </tr>
         </thead>
