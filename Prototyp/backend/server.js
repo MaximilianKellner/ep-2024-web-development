@@ -37,7 +37,6 @@ const app = express();
 
 
 
-const uploadedFilesToDelete = [];
 // TODO: Ablaufender Kundenlink -> u.a. Kunde benachrichtigen mit neuem Kundenlink !!!
 
 // TODO: Auf verschieden Browsern testen -> Multiple download funktioniert nicht auf Chrome
@@ -208,12 +207,6 @@ app.post('/:linkToken/upload', upload.array('images'), async (req, res, next) =>
         // TODO: Error handling inside Functions with new Error handling class (after server.js is done), also test for async Errors!
         await processAllFiles(linkToken, fileNames)
         await deleteFiles(linkToken, fileNames);
-
-        // TODO: Remove, not needed!!!
-        uploadedFilesToDelete.push({
-            linkToken: linkToken,
-            fileNames: fileNames
-        });
 
         // console.log("In uploadedFilesToDelete: " + uploadedFilesToDelete.entries().toArray());
         res.status(204).send('File uploaded successfully.');
@@ -543,19 +536,6 @@ function authenticateToken(req, res, next) {
         next()
     })
 }
-
-
-
-
-//Authentifizierung
-
-// import dotenv from 'dotenv';
-// import express from 'express';
-// import jwt from 'jsonwebtoken';
-// import cors from 'cors';  // Füge cors import hinzu
-
-
-
 
 app.use(apiErrorHandler);
 app.listen(process.env.DEV_PORT, () =>
