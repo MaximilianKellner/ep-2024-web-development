@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
       })
       .then(response => {
         if (response.ok) {
-          console.log('Kunde erfolgreich gelöscht');
           location.reload(); // reload page
         } else {
           console.error('Fehler beim Löschen des Kunden');
