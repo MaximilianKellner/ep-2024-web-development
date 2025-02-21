@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import multer from 'multer';
 import path from 'path';
 import {fileURLToPath} from 'url';
 import {dirname} from 'path';
@@ -26,9 +27,6 @@ app.use("/customers", express.static(path.join(__dirname, '../frontend')));
 app.use('/customers', customerRoutes);
 app.use("/", express.static(path.join(__dirname, '../frontend')));
 app.use('/', adminRoutes);
-
-//await checkTokenExpired();
-
 
 let refreshTokens = [];
 // Temporäre Lösung aus Demozwecken. Normalerweise sollten Nutzername und Passwort in einer Datenbank gespeichert werden
@@ -486,6 +484,8 @@ async function handleImageRequest(imageName, linkToken, res, contentDispositionT
         throw error;
     }
 }
+
+//await checkTokenExpired();
 
 function authenticateToken(req, res, next) {
 

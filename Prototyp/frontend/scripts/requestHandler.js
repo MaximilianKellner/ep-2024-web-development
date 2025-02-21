@@ -20,7 +20,7 @@ if(loginButton){
                 })
             })
         .then(response => response.json())
-        .then(data => {           
+        .then(data => {
             if(data.accessToken && data.refreshToken) {
                 localStorage.setItem('accessToken', data.accessToken);
                 localStorage.setItem('refreshToken', data.refreshToken);
