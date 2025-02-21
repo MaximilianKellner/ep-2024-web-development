@@ -175,6 +175,7 @@
   margin: auto;
   background-color: var(--c-background-dark);
   border-radius: var(--border-radius-base);
+  margin-top: var(--xxxl);
 
   p {
     margin: var(--xs) 0;
