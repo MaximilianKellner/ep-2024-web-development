@@ -6,7 +6,7 @@ Im Rahmen des Entwicklungsprojekts soll eine Web Applikation erstellt werden, di
 
 ## Dateiübersicht - Auszug
 
-
+Hier ein Auszug über den Aufbau unseres Verzeichnisses. Es werden bewusst nicht alle Dateien aufgezählt, da ein paar Dateinamen bereits ihre eigentliche Funktion verraten. Die unten aufgeführten sind mit einer kurzen Erklärung zu ihrer Aufgabe versehen.
 
 * ADR: 14 md.-Dateien 
 * POCs: Die einzelnen Umsetzungen der POCs, die nicht miteinander zusammenhängen
