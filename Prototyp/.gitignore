@@ -1,7 +1,7 @@
 # Ignore contents of upload and optimized folders
 backend/customers/debug-kunde-1/uploaded/*
 backend/customers/debug-kunde-1/optimized/*
-
+backend/customers/*
 
 
 # Common files to ignore

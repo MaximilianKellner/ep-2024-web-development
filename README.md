@@ -3,9 +3,36 @@
 ## Einführung
 
 Im Rahmen des Entwicklungsprojekts soll eine Web Applikation erstellt werden, die einen Upload von zu großen Bilddateien erlaubt. Die Applikation ermöglicht es Nutzern, übergroße Bilddateien hochzuladen, die anschließend komprimiert und dem Kunden zum Download zur Verfügung gestellt werden. Ein Punktesystem reguliert den Upload, sodass nicht unbegrenzt viele Dateien hochgeladen werden können.
+
+## Dateiübersicht - Auszug
+
+Hier ein Auszug über den Aufbau unseres Verzeichnisses. Es werden bewusst nicht alle Dateien aufgezählt, da ein paar Dateinamen bereits ihre eigentliche Funktion verraten. Die unten aufgeführten sind mit einer kurzen Erklärung zu ihrer Aufgabe versehen.
+
+* ADR: 14 md.-Dateien 
+* POCs: Die einzelnen Umsetzungen der POCs, die nicht miteinander zusammenhängen
+* Prototyp: Enthält laufende Anwendung
+    * backend:
+        * /customers: enthält Unterordner der personalisierte Customer-ID beihaltet. Der sind die Ordner uploaded und optimized untergestellt, in die Bilddateien reingeladen bzw. rausgelesen werden
+        * .env: Environment-Datei, die neben Access- und Refresh-Tokens für JWT Authetifikation, auch Anmeldeinformationen für den E-Mail-Client und die Datenbank speichert
+        * optimizationEventEmitter.js: Senden von Fortschrittsstatus-Updates (progress-Events) mit Status, Dateinamen und Credits an Clients
+        * server.js: Anwednungslogik für alle server-seitigen Berechnungen (Login-Verfahren, Datenbankzugriffe, Bildverarbeitung, ...)
+        * sharp.js: Anwendungslogik für Bildverarbeitung inkl. Komprimierung und Konvertierung
+        * tokenExpiration.js: Wenn der Link eines Kunden innerhalb der nächsten drei Tage abläuft, sorgt dies Datei dafür, dass eine E-Mail versendet wird
+    * frontend:
+      * scripts:
+         * config.js: definieren von häufig genutzten Variablen
+         * handle-customer.js: 
+         * load-customer.js:
+         * menu.js: Sidemenu für Mobile-Ansicht
+         * modal.js: Kreiert Pop-Up, dass Löschen eines Kunden ermöglicht
+         * optimized-download.js: Erstellen eines Eintrags in der Tabelle (s. index.html), wenn ein Bild erfolgreich optimiert wurde.
+         * sse.js: Handeln von Server-Sent-Events, aslo Senden von Echtzeit-Updates an den Client, die server-seitig passieren (z.B. momentane Credits, welche Datei komrpimiert wurde, ...)
+         * timeManagement.js: Handeln der Ablaufzeit, bis Admin wieder aus Sitzung geworfen wird. Zeit wird in server.js festgelegt
+         * upload.js: Code ermöglicht Hochladen von Dateien (u.a. Dateibeschränkungen, Upload-Fortschritt, Abrufen von Credits von Server)
+
 ## Was kann unsere Applikation?
 - Unterstützte Formate:
-    - JPG/ JPEG
+    - JPG/JPEG
     - PNG
     - SVG
 ## Voraussetzungen
@@ -15,6 +42,10 @@ Im Rahmen des Entwicklungsprojekts soll eine Web Applikation erstellt werden, di
 - SMTP-Relay Service (z.B. Mailersend)
 - .env Datei in /backend:
 ```
+#Tokens für die Authentifizierung
+ACCESS_TOKEN_SECRET=
+REFRESH_TOKEN_SECRET=
+
 # SMTP-Server credetials
 SMTP_HOST=
 SMTP_PORT=
