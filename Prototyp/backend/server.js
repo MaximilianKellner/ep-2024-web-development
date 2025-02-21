@@ -14,13 +14,7 @@ import ApiError from './ApiError.js';
 import {checkTokenExpired} from "./tokenExpiration.js";
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
-// JWT Code
 dotenv.config();
-// require('dotenv').config()
-// const jwt = require('jsonwebtoken');
-
-
-
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -38,8 +32,9 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 let refreshTokens = [];
+// Temporäre Lösung aus Demozwecken. Normalerweise sollten Nutzername und Passwort in einer Datenbank gespeichert werden
 const admins = [
-    {name: "admin", password: "admin1"}
+    {username: "admin", password: "admin1"}
 ]
 
 app.post('/token', (req, res) => {
@@ -54,20 +49,18 @@ app.post('/token', (req, res) => {
 })
 
 app.delete('/logout', authenticateToken, (req, res) => {
+    // Extrahieren des refreshTokens aus dem Body (siehe Anfrage)und entfernen des Tokens aus dem Array
     refreshTokens = refreshTokens.filter(refreshToken => refreshToken !== req.body.token);
     res.sendStatus(204);
 });
 
-
-
 app.post('/login', (req, res) => {
-    //Authenticate User
     const username = req.body.username
     const password = req.body.password
     for(let i = 0; i < admins.length; i++){
-        if(username === admins[i].name && password === admins[i].password){
-            console.log("Login successful");
-            const user = {name: username, password: password}
+        if(username === admins[i].username && password === admins[i].password){
+            // Erstellen eines Nutzerobjekts, das in den Token eingebettet wird
+            const user = {username: username, password: password}
             const accessToken = generateAccessToken(user)
             const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
             refreshTokens.push(refreshToken)
@@ -79,12 +72,12 @@ app.post('/login', (req, res) => {
 })
 
 function generateAccessToken(user) {
-    //Session-Wert in auf 10s gesetzt. Zu empfehlenist höherer Wert :)
+    //Session-Wert aus Demozwecken auf 10s gesetzt. Zu empfehlen ist höherer Wert :)
     return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '10s'})
 }
 
 app.get('/verify-token', authenticateToken, (req, res) => {
-    // If we get here, the token is valid (authenticateToken middleware passed)
+    //Wenn die Überprüfung (authenticateToken) erfolgreich ist, wird ein Status 200 zurückgegeben und der Token ist gültig
     res.status(200).json({valid: true});
 });
 
@@ -176,10 +169,8 @@ app.get('/update-customer', (req, res) => {
 
 // TODO: Fehlerbehandlung von Multer Errors in /uploaded
 app.post('/:linkToken/upload', upload.array('images'), async (req, res, next) => {
-
     let fileNames;
     let linkToken;
-
     try {
         if (!req.files) {
             next(ApiError.badRequest("No files sent"));
@@ -214,7 +205,6 @@ app.post('/:linkToken/upload', upload.array('images'), async (req, res, next) =>
 });
 
 async function deleteFiles(linkToken, fileNames) {
-
     try {
         for (const fileName of fileNames) {
             await fs.promises.unlink(`customers/${linkToken}/uploaded/${fileName}`);
@@ -490,7 +480,6 @@ async function sendImage(imageName, linkToken, res, contentDispositionType) {
 }
 
 async function handleImageRequest(imageName, linkToken, res, contentDispositionType) {
-
     try {
         const image = await findImage(imageName, linkToken);
         await sendImage(image, linkToken, res, contentDispositionType);
@@ -498,27 +487,6 @@ async function handleImageRequest(imageName, linkToken, res, contentDispositionT
         throw error;
     }
 }
-
-//await checkTokenExpired();
-
-
-
-
-
-app.get('/customers', authenticateToken, (req, res) => {
-    // Hier werden customers angezeigt, die alle Admins angelegt haben. Wenn nur bestimmte angezeigt werden sollenn, dann filtern.
-    console.log(res.json(customers))
-
-})
-
-// app.post('/login', (req, res) =>{
-//     //Authenticate User
-//     const username = req.body.username
-//     const user = {name: username}
-
-//     const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
-//     res.json({accessToken: accessToken})
-// })
 
 function authenticateToken(req, res, next) {
 
@@ -535,19 +503,6 @@ function authenticateToken(req, res, next) {
         next()
     })
 }
-
-
-
-
-//Authentifizierung
-
-// import dotenv from 'dotenv';
-// import express from 'express';
-// import jwt from 'jsonwebtoken';
-// import cors from 'cors';  // Füge cors import hinzu
-
-
-
 
 app.use(apiErrorHandler);
 app.listen(process.env.DEV_PORT, () =>
