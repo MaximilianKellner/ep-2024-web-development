@@ -1,4 +1,3 @@
-// TODO: Was soll getCustomerData() machen, wenn das codeword name ist??
 import express from 'express';
 import cors from 'cors';
 import multer from 'multer';
@@ -27,6 +26,17 @@ const __dirname = dirname(__filename);
 
 const app = express();
 
+
+
+
+
+
+//await checkTokenExpired();
+
+
+
+
+
 const uploadedFilesToDelete = [];
 // TODO: Ablaufender Kundenlink -> u.a. Kunde benachrichtigen mit neuem Kundenlink !!!
 
@@ -36,6 +46,57 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 app.use(express.static(path.join(__dirname, '../frontend')));
+
+// TODO: Regeln, was passiert, wenn durch Abbruch des Uploads/ Downloads ein Fehler auftritt.
+const storage = multer.diskStorage({
+    destination: async function (req, file, cb) {
+        try {
+            const customer = await pool.query('SELECT * FROM customer WHERE link_token = $1', [req.params.linkToken]);
+            if (customer.rows.length > 0) {
+                const customerUploadsDir = `customers/${req.params.linkToken}/uploaded`;
+                cb(null, customerUploadsDir);
+            } else {
+                // Sicherheitsrelevante Entscheidung -> Client sollte nicht wissen, wie die DB-Einträge aussehen
+                cb(ApiError.internal());
+            }
+        } catch (error) {
+            cb(error)
+        }
+    },
+    filename: function (req, file, cb) {
+        try {
+            const timestamp = Date.now();
+            const randomSuffix = Math.round(Math.random() * 1E9);
+            const uniqueSuffix = `${timestamp}_${randomSuffix}`;
+            console.log("Unique suffix: ", uniqueSuffix);
+            cb(null, `${file.originalname}-${uniqueSuffix}`);
+        } catch (error) {
+            cb(ApiError.internal());
+        }
+    }
+});
+
+const fileFilter = (req, file, cb) => {
+    try {
+        const acceptedMimeTypes = ["image/png", "image/jpeg", "image/jpg", "image/svg+xml"];
+        console.log("Mime type: " + file.mimetype);
+        if (acceptedMimeTypes.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(ApiError.badRequest("File type not accepted"), false);   // In diesem Falle werden alle Dateien abgelehnt
+        }
+    } catch (error) {
+        cb(ApiError.internal(), false);
+    }
+};
+// TODO: Uploads, die das Storage-Limit übersteigen, sollen abgelehnt werden.
+
+//  -> Prüfung nicht bei jedem Upload, sondern regelmäßige Checks und benachrichtigen des Content Managers, wenn ein bestimmter Wert unterschritten ist
+const upload = multer({
+    storage: storage,
+    fileFilter: fileFilter
+});
+
 
 let refreshTokens = [];
 
@@ -105,55 +166,6 @@ app.get('/:linkToken', async (req, res, next) => {
     }
 });
 
-// TODO: Regeln, was passiert, wenn durch Abbruch des Uploads/ Downloads ein Fehler auftritt.
-const storage = multer.diskStorage({
-    destination: async function (req, file, cb) {
-        try {
-            const customer = await pool.query('SELECT * FROM customer WHERE link_token = $1', [req.params.linkToken]);
-            if (customer.rows.length > 0) {
-                const customerUploadsDir = `customers/${req.params.linkToken}/uploaded`;
-                cb(null, customerUploadsDir);
-            } else {
-                // Sicherheitsrelevante Entscheidung -> Client sollte nicht wissen, wie die DB-Einträge aussehen
-                cb(ApiError.internal());
-            }
-        } catch (error) {
-            cb(error)
-        }
-    },
-    filename: function (req, file, cb) {
-        try {
-            const timestamp = Date.now();
-            const randomSuffix = Math.round(Math.random() * 1E9);
-            const uniqueSuffix = `${timestamp}_${randomSuffix}`;
-            console.log("Unique suffix: ", uniqueSuffix);
-            cb(null, `${file.originalname}-${uniqueSuffix}`);
-        } catch (error) {
-            cb(ApiError.internal());
-        }
-    }
-});
-
-const fileFilter = (req, file, cb) => {
-    try {
-        const acceptedMimeTypes = ["image/png", "image/jpeg", "image/jpg", "image/svg+xml"];
-        console.log("Mime type: " + file.mimetype);
-        if (acceptedMimeTypes.includes(file.mimetype)) {
-            cb(null, true);
-        } else {
-            cb(ApiError.badRequest("File type not accepted"), false);   // In diesem Falle werden alle Dateien abgelehnt
-        }
-    } catch (error) {
-        cb(ApiError.internal(), false);
-    }
-};
-// TODO: Uploads, die das Storage-Limit übersteigen, sollen abgelehnt werden.
-
-//  -> Prüfung nicht bei jedem Upload, sondern regelmäßige Checks und benachrichtigen des Content Managers, wenn ein bestimmter Wert unterschritten ist
-const upload = multer({
-    storage: storage,
-    fileFilter: fileFilter
-});
 
 // TODO: Serve all Web Pages
 
@@ -496,8 +508,6 @@ async function handleImageRequest(imageName, linkToken, res, contentDispositionT
         throw error;
     }
 }
-
-//await checkTokenExpired();
 
 
 
