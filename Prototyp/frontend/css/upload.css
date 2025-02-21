@@ -81,10 +81,12 @@
 .file-upload-container {
   display: flex;
   align-items: center;
+  justify-content: center;
   padding: var(--m);
 
   .select-btn {
     display: inline-block;
+    margin: 0;
     margin-left: 5px;
     text-decoration: underline;
     cursor: pointer;

@@ -16,18 +16,24 @@
 
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/admin-table.css" />
-    
+
+    <link rel="icon" type="image/png" href="OmniMize.png">
+
     <script defer src="scripts/drag-drop.js"></script>
     <script defer src="scripts/upload.js"></script>
     <script defer src="scripts/config.js"></script>
     <script defer src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script defer src="scripts/optimized-download.js"></script>
     <script defer src="scripts/sse.js"></script>
+
+    <script defer src="scripts/menu.js"></script>
+
   </head>
   <body>
     <header>
       <a href="#"><h1 class="hover-light-blue">OmniMize</h1></a>
-      
+      <img src="./img/icon/menu.svg" alt="menu-icon" id="menu-icon" />
+
       <nav class="nav-links">
         <ul>
           <li><a href="#"> <h2 class="hover-light-blue">Credits anfragen</h2> </a></li>
@@ -35,6 +41,14 @@
           <li><a href="login.html"> <h2 class="hover-light-blue">Admin</h2></a></li>
         </ul>
       </nav>
+
+      <div class="side-menu" id="side-menu">
+        <ul>
+          <li><a href="#">Credits anfragen</a></li>
+          <li><a href="#">Kontakt</a></li>
+          <li><a href="login.html">Admin</a></li>
+        </ul>
+      </div>
     </header>
 
     <main>
@@ -59,7 +73,6 @@
             </div>
           </div>
 
-          <!-- TODO: Add allowed inputs.-->
           <input
             type="file"
             id="fileInput"
