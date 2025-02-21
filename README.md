@@ -24,12 +24,17 @@ Hier kommt ein Text hin der noch geschrieben werden muss
       * css:
       * img:
       * scripts:
-            * 
+        * config.js:
+        * drag-drop.js:
+        * handle-customer.js:
+        * load-customer.js:
+        * menu.js:
+        * modal.js:
+        * optimized-download.js:
       * admin-panel.html
       * handle-customers.html
       * index.html
       * login.html
-      * 
 
 ## Was kann unsere Applikation?
 - Unterstützte Formate:
