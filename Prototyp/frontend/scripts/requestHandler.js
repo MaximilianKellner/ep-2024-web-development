@@ -39,7 +39,7 @@ if(loginButton){
                                 localStorage.setItem('refreshToken', data.refreshToken);
                                 console.log('Access Token nach Login: '+localStorage.getItem('accessToken'));
                                 // Weiterleitung zum admin-panel
-                                window.location.href = "http://127.0.0.1:5000/admin-panel.html";
+                                window.location.href = "/admin-panel.html";
                             } else {
                                 messageObject.innerHTML = "Login failed due to wrong Tokens. Try again or reach out to the administrator!";
                                 messageObject.style="color:red";
