@@ -1,17 +1,11 @@
-// TODO: Was soll getCustomerData() machen, wenn das codeword name ist??
 import express from 'express';
 import cors from 'cors';
-import multer from 'multer';
-import {processAllFiles} from './sharp.js';
-import optimizationEventEmitter from './optimizationEventEmitter.js';
-import fs from 'fs';
 import path from 'path';
-import {pool} from './db.js';
 import {fileURLToPath} from 'url';
 import {dirname} from 'path';
 import apiErrorHandler from "./apiErrorHandler.js";
-import ApiError from './ApiError.js';
-import {checkTokenExpired} from "./tokenExpiration.js";
+import adminRoutes from "./routes/admin/admin.js";
+import customerRoutes from "./routes/customers/customers.js";
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 dotenv.config();
@@ -21,15 +15,20 @@ const __dirname = dirname(__filename);
 
 const app = express();
 
-const uploadedFilesToDelete = [];
 // TODO: Ablaufender Kundenlink -> u.a. Kunde benachrichtigen mit neuem Kundenlink !!!
-
 // TODO: Auf verschieden Browsern testen -> Multiple download funktioniert nicht auf Chrome
 // TODO: Definiere erlaubte Origins und weitere Spezifikationen, wenn der Service bereit für Auslieferung ist.
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({extended: false}));
 app.use(cors());
 app.use(express.static(path.join(__dirname, '../frontend')));
+app.use("/customers", express.static(path.join(__dirname, '../frontend')));
+app.use('/customers', customerRoutes);
+app.use("/", express.static(path.join(__dirname, '../frontend')));
+app.use('/', adminRoutes);
+
+//await checkTokenExpired();
+
 
 let refreshTokens = [];
 // Temporäre Lösung aus Demozwecken. Normalerweise sollten Nutzername und Passwort in einer Datenbank gespeichert werden
