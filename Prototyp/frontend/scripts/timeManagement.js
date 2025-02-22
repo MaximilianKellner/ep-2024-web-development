@@ -1,5 +1,7 @@
 const logoutButton = document.querySelector('.logoutButton');
 
+const twentyFiveMinutes = 1000 * 60 * 25;
+
 //Abfangen des Requests um auf diese Seite zu gelangen
 document.addEventListener('DOMContentLoaded', () => {
     const accessToken = localStorage.getItem('accessToken');
@@ -138,7 +140,7 @@ function checkAndRefreshToken() {
     }
 }
 
-const intervalId = setInterval(checkAndRefreshToken, 1000);
+const intervalId = setInterval(checkAndRefreshToken, twentyFiveMinutes);
 
 // Intervall stoppen, wenn die Seite verlassen wird
 window.addEventListener('beforeunload', () => {
