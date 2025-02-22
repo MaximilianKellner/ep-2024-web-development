@@ -57,7 +57,7 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
             const singleFormData = new FormData();
             batch.forEach(file => singleFormData.append('images', file));
 
-            const response = await axios.post(`http://localhost:5000/${linkToken}/upload`, singleFormData, {
+            const response = await axios.post(`/${linkToken}/upload`, singleFormData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const linkToken = window.location.pathname.replace("/", ""); // Entfernt das "/"
         console.log("Aktueller linkToken create image:", linkToken);
 
-        const response = await axios.get(`http://localhost:5000/${linkToken}/credits`);
+        const response = await axios.get(`/${linkToken}/credits`);
         const credits = response.data.credits;
         console.log('Credits on Load:', credits);
         document.getElementById('credits-current').textContent = `${credits} Credits`;

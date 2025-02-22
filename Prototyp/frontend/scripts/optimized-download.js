@@ -1,7 +1,7 @@
 function createImageRequest(image) {
     const linkToken = window.location.pathname.replace("/", ""); // Entfernt das "/"
     console.log("Aktueller linkToken create image:", linkToken);
-    return axios.get(`http://localhost:5000/${linkToken}/download/${image}`, {
+    return axios.get(`/${linkToken}/download/${image}`, {
         responseType: 'blob',
     });
 }
@@ -117,7 +117,8 @@ function loadOptimizedContent() {
     const downloadButton = document.getElementById('download-selected-btn');
     const mobileCardList = document.getElementById('mobile-card-list');
 
-    axios.get(`http://localhost:5000/${linkToken}/optimized-images`)
+    axios.get(`/${linkToken}/optimized-images`)
+
         .then((response) => {
             const fileNames = response.data;
 
