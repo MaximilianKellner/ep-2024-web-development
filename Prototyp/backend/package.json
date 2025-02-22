@@ -4,8 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.js --ignore *.json",
-    "devStartAuth": "nodemon authServer.js --ignore *.json"
+    "dev": "nodemon server.js --ignore *.json"
   },
   "dependencies": {
     "async": "^3.2.6",
