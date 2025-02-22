@@ -51,15 +51,12 @@
     <main>
       <div class="search-container">
         <button class="light" onclick="window.location.href='/create-customer'">+ Kunde</button>
-        <div class="search-right">
           <input
             type="text"
             id="search"
             name="search"
             placeholder="Suche nach Kunden"
           />
-          <button class="light" title="Suchen">Suchen</button>
-        </div>
       </div>
 
       <table class="admin-table">
@@ -75,9 +72,11 @@
         <tbody>
           <!-- debug data for showcase
           <tr>
-            <td class="customer-row">
-              <img src="img/icon/user.svg" alt="Kundenbild" />
-              <p>Kundenname</p>
+            <td>
+              <div class="customer-row">
+                <img src="img/icon/user.svg" alt="Kundenbild" />
+                <p>Kundenname</p>
+              </div>
             </td>
             <td>11</td>
             <td>01.01.2023</td>

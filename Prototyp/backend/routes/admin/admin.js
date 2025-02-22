@@ -64,7 +64,7 @@ router.post('/login', (req, res) => {
 
 function generateAccessToken(user) {
     //Session-Wert aus Demozwecken auf 10s gesetzt. Zu empfehlen ist höherer Wert :)
-    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '10s'})
+    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '25m'})
 }
 
 router.get('/verify-token', authenticateToken, (req, res) => {
