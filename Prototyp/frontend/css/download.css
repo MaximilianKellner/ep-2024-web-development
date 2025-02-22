@@ -107,6 +107,9 @@ input[type="checkbox"]:checked::after {
   }
 }
 
+#mobile-card-list{
+  display: none;
+}
 
 /* Hide Table and download-selected-btn on Mobile */
 
@@ -117,6 +120,12 @@ input[type="checkbox"]:checked::after {
 
   #download-selected-btn {
     display: none;
+  }
+
+  #mobile-card-list{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 }
 
@@ -136,7 +145,7 @@ input[type="checkbox"]:checked::after {
   img {
     height: auto;
     width: auto;
-    max-height: 200px;
+    max-height: 300px;
     max-width: 100%;
     border-radius: var(--border-radius-small);
     box-shadow: var(--shadow);
@@ -170,7 +179,7 @@ input[type="checkbox"]:checked::after {
     padding: 0;
     height: fit-content;
     width: fit-content;
-
+    min-width: var(--xxl);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -180,7 +189,6 @@ input[type="checkbox"]:checked::after {
       height: var(--xxl);
     }
   }
-
 }
 
 .download-row{
