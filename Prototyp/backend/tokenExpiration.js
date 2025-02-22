@@ -1,7 +1,7 @@
 import {pool} from './db.js';
 import {sendReminderNotification} from "./email-notification.js";
 
-const oneDay = 1000 * 60 * 60 * 24;
+const ONE_DAY_IN_MS = 1000 * 60 * 60 * 24;
 const THREE_DAYS = 3;
 const ZERO_DAYS = 0;
 
@@ -18,7 +18,7 @@ export async function checkTokenExpired() {
                 expirationDate.setUTCDate(expirationDate.getUTCDate())
                 const differenceInMs = expirationDate.getTime() - now;
                 const msToDays = (ms) => {
-                    return ms / oneDay;
+                    return ms / ONE_DAY_IN_MS;
                 };
                 return msToDays(differenceInMs) <= THREE_DAYS && msToDays(differenceInMs) >= ZERO_DAYS;
             };
@@ -31,7 +31,7 @@ export async function checkTokenExpired() {
                 sendReminderNotification(name, email, renewalLink, expirationDate);
             }
         })
-        setTimeout(checkTokenExpired, oneDay);
+        setTimeout(checkTokenExpired, ONE_DAY_IN_MS);
     } catch (error) {
         console.error(error);
     }
