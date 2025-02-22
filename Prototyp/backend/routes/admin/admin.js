@@ -37,8 +37,8 @@ router.post('/token', (req, res) => {
         res.json({accessToken: accessToken})
     })
 })
-
-router.post('/logout', authenticateToken, (req, res) => {
+//Hier stand post
+router.delete('/logout', authenticateToken, (req, res) => {
     // Extrahieren des refreshTokens aus dem Body (siehe Anfrage)und entfernen des Tokens aus dem Array
     refreshTokens = refreshTokens.filter(refreshToken => refreshToken !== req.body.token);
     console.log("refreshTokens: " + refreshTokens);
