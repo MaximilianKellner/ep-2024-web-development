@@ -94,7 +94,7 @@ form.addEventListener('submit', function(event) {
             messageDiv.classList.remove('error');
             messageDiv.innerHTML = customerId ? 'Kunde erfolgreich aktualisiert.' : 'Kunde erfolgreich erstellt.';
             if (!customerId) form.reset();
-            window.location.href = '/admin-panel';
+            window.location.href = '/admin-panel.html'; // Ohne .html gehts nicht
         } else {
             return response.text().then(err => { throw new Error(err); });
         }
