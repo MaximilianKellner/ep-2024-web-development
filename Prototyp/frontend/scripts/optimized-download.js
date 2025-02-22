@@ -71,7 +71,7 @@ function createMobileCard(fileData){
                         <p>${fileNameWithoutSuffix}</p>
                         <label class="sublabel">${hoursLeft}h verbleibend - ${(blob.size / 1024).toFixed(0)} KB</label>
                     </div>
-                    <button class="download-btn" data-url="${url}" data-filename="${fileNameWithoutSuffix}">
+                    <button class="download-btn" data-url="${url}" data-filename="${fileNameWithoutSuffix}" onclick=console.log("click")">
                         <img src="./img/icon/download.svg" alt="download" onclick="this.parentElement.click()">
                     </button>
                 </div>
