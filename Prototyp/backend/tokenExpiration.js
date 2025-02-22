@@ -1,24 +1,34 @@
 import {pool} from './db.js';
 import {sendReminderNotification} from "./email-notification.js";
 
+const oneDay = 1000 * 60 * 60 * 24;
+const THREE_DAYS = 3;
+const ZERO_DAYS = 0;
+
 export async function checkTokenExpired() {
     try {
-        const oneDay = 1000 * 60 * 60 * 24;
-        const threeDays = oneDay * 3; // Hier vermutlich als Testwert
         const now = Date.now();
 
         const customers = await pool.query('SELECT * FROM customer');
-        customers.rows.filter(customer => {
 
-            console.log(customer.expiration_date);
-            console.log(now + threeDays >= customer.expiration_date);
-            if (now + threeDays >= customer.expiration_date) {
+        customers.rows.filter(customer => {
+            let expirationDate = new Date(customer.expiration_date);  // Datum von der DB
+
+            const expiresWithinThreeDays = (expirationDate) => {
+                expirationDate.setUTCDate(expirationDate.getUTCDate())
+                const differenceInMs = expirationDate.getTime() - now;
+                const msToDays = (ms) => {
+                    return ms / oneDay;
+                };
+                return msToDays(differenceInMs) <= THREE_DAYS && msToDays(differenceInMs) >= ZERO_DAYS;
+            };
+
+            if (expiresWithinThreeDays(expirationDate)) {
                 const name = customer.name;
                 const email = customer.email;
                 const renewalLink = `http://localhost:5000/customers/${customer.link_token}`;
                 const expirationDate = customer.expiration_date;
                 sendReminderNotification(name, email, renewalLink, expirationDate);
-                console.log(customer.customer_name)
             }
         })
         setTimeout(checkTokenExpired, oneDay);
