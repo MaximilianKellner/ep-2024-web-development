@@ -49,6 +49,11 @@
     background-color: #ffffff07;
   }
 
+  /* min width Aktionen --> Buttons shift*/
+  th:nth-child(5),
+  td:nth-child(5) {
+    min-width: 95px;
+  }
 
   .customer-row {
     display: flex;
