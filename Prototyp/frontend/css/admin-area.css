@@ -4,6 +4,7 @@
   align-items: center;
   width: 100%;
   gap: var(--m);
+  margin-top: var(--l);
 
   button {
     white-space: nowrap;
@@ -34,7 +35,6 @@
 .admin-table {
   background-color: #ffffff07;
   border-radius: var(--border-radius-base);
-
   margin-top: var(--l);
 
   th {

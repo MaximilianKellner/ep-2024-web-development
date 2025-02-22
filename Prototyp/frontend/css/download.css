@@ -40,15 +40,15 @@ td {
 
 /* Responsive table for mid sized Screens*/
 @media screen and (max-width: 768px) {
-  table {
+  .image-table {
     display: block;
     overflow-x: auto;
-  }
 
-  td {
-    img {
-      max-width: 100px;
-      max-height: 50px;
+    td {
+      img {
+        max-width: 100px;
+        max-height: 50px;
+      }
     }
   }
 }
