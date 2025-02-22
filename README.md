@@ -12,23 +12,40 @@ Hier ein Auszug über den Aufbau unseres Verzeichnisses. Es werden bewusst nicht
 * POCs: Die einzelnen Umsetzungen der POCs, die nicht miteinander zusammenhängen
 * Prototyp: Enthält laufende Anwendung
     * backend:
-        * /customers: enthält Unterordner der personalisierte Customer-ID beihaltet. Der sind die Ordner uploaded und optimized untergestellt, in die Bilddateien reingeladen bzw. rausgelesen werden
-        * .env: Environment-Datei, die neben Access- und Refresh-Tokens für JWT Authetifikation, auch Anmeldeinformationen für den E-Mail-Client und die Datenbank speichert
-        * optimizationEventEmitter.js: Senden von Fortschrittsstatus-Updates (progress-Events) mit Status, Dateinamen und Credits an Clients
-        * server.js: Anwednungslogik für alle server-seitigen Berechnungen (Login-Verfahren, Datenbankzugriffe, Bildverarbeitung, ...)
-        * sharp.js: Anwendungslogik für Bildverarbeitung inkl. Komprimierung und Konvertierung
-        * tokenExpiration.js: Wenn der Link eines Kunden innerhalb der nächsten drei Tage abläuft, sorgt dies Datei dafür, dass eine E-Mail versendet wird
+        * /customers:
+           * enthält Unterordner der personalisierte Customer-ID beihaltet. Der sind die Ordner uploaded und optimized untergestellt, in die Bilddateien reingeladen bzw. rausgelesen werden
+        * .env:
+           * Environment-Datei, die neben Access- und Refresh-Tokens für JWT Authetifikation, auch Anmeldeinformationen für den E-Mail-Client und die Datenbank speichert
+        * optimizationEventEmitter.js:
+           * Senden von Fortschrittsstatus-Updates (progress-Events) mit Status, Dateinamen und Credits an Clients
+        * server.js:
+           * Middleware für das Routing der Requests
+        * /routes/customers/ducstomers.js:
+           * Kunden-Endpoints (Zugang mittels Link-Token, Upload, Download, Datei-Optimierung, Informationen zum Fortschritt mittels Server-Sent Events)
+        * /routes/admin/admin.js:
+           * Admin-Entpoints (Login, Logout, Authentifizierung, Kunden-Verwaltung) 
+        * sharp.js:
+           * Anwendungslogik für Bildverarbeitung inkl. Komprimierung und Konvertierung
+        * tokenExpiration.js:
+           * Wenn der Link eines Kunden innerhalb der nächsten drei Tage abläuft, sorgt dies Datei dafür, dass eine E-Mail versendet wird
     * frontend:
       * scripts:
-         * config.js: definieren von häufig genutzten Variablen
+         * config.js:
+            * definieren von häufig genutzten Variablen
          * handle-customer.js: 
          * load-customer.js:
-         * menu.js: Sidemenu für Mobile-Ansicht
-         * modal.js: Kreiert Pop-Up, dass Löschen eines Kunden ermöglicht
-         * optimized-download.js: Erstellen eines Eintrags in der Tabelle (s. index.html), wenn ein Bild erfolgreich optimiert wurde.
-         * sse.js: Handeln von Server-Sent-Events, aslo Senden von Echtzeit-Updates an den Client, die server-seitig passieren (z.B. momentane Credits, welche Datei komrpimiert wurde, ...)
-         * timeManagement.js: Handeln der Ablaufzeit, bis Admin wieder aus Sitzung geworfen wird. Zeit wird in server.js festgelegt
-         * upload.js: Code ermöglicht Hochladen von Dateien (u.a. Dateibeschränkungen, Upload-Fortschritt, Abrufen von Credits von Server)
+         * menu.js:
+            * Sidemenu für Mobile-Ansicht
+         * modal.js:
+            * Kreiert Pop-Up, dass Löschen eines Kunden ermöglicht
+         * optimized-download.js:
+            * Erstellen eines Eintrags in der Tabelle (s. index.html), wenn ein Bild erfolgreich optimiert wurde.
+         * sse.js:
+            * Handeln von Server-Sent-Events, aslo Senden von Echtzeit-Updates an den Client, die server-seitig passieren (z.B. momentane Credits, welche Datei komrpimiert wurde, ...)
+         * timeManagement.js:
+            * Handeln der Ablaufzeit, bis Admin wieder aus Sitzung geworfen wird. Zeit wird in server.js festgelegt
+         * upload.js:
+            * Code ermöglicht Hochladen von Dateien (u.a. Dateibeschränkungen, Upload-Fortschritt, Abrufen von Credits von Server)
        
 ## Naming Conventions bei Dateinamen
 - Dateien, die nur eine Funktion enthalten:
@@ -44,7 +61,7 @@ Hier ein Auszug über den Aufbau unseres Verzeichnisses. Es werden bewusst nicht
     - PNG
     - SVG
 ## Voraussetzungen
-- Node.js (20.12.2 zum Zeitpunkt der Entwicklung)
+- Node.js (Version 20.12.2 zum Zeitpunkt der Entwicklung)
 - NPM
 - PostgreSQL
 - SMTP-Relay Service (z.B. Mailersend)
