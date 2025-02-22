@@ -32,8 +32,10 @@ Hier ein Auszug über den Aufbau unseres Verzeichnisses. Es werden bewusst nicht
       * scripts:
          * config.js:
             * definieren von häufig genutzten Variablen
-         * handle-customer.js: 
+         * handle-customer.js:
+            * Erstellen& Bearbeiten von Kunden   
          * load-customer.js:
+            * das labden von Kunden in die admin-table
          * menu.js:
             * Sidemenu für Mobile-Ansicht
          * modal.js:
@@ -42,6 +44,8 @@ Hier ein Auszug über den Aufbau unseres Verzeichnisses. Es werden bewusst nicht
             * Erstellen eines Eintrags in der Tabelle (s. index.html), wenn ein Bild erfolgreich optimiert wurde.
          * sse.js:
             * Handeln von Server-Sent-Events, aslo Senden von Echtzeit-Updates an den Client, die server-seitig passieren (z.B. momentane Credits, welche Datei komrpimiert wurde, ...)
+         * sort-table.js:
+            * Sortieren der Tabelle, wenn eine Spalte angeklickt wird. Hinzufügen von Indikatoren.
          * timeManagement.js:
             * Handeln der Ablaufzeit, bis Admin wieder aus Sitzung geworfen wird. Zeit wird in server.js festgelegt
          * upload.js:
