@@ -29,6 +29,14 @@ Hier ein Auszug über den Aufbau unseres Verzeichnisses. Es werden bewusst nicht
          * sse.js: Handeln von Server-Sent-Events, aslo Senden von Echtzeit-Updates an den Client, die server-seitig passieren (z.B. momentane Credits, welche Datei komrpimiert wurde, ...)
          * timeManagement.js: Handeln der Ablaufzeit, bis Admin wieder aus Sitzung geworfen wird. Zeit wird in server.js festgelegt
          * upload.js: Code ermöglicht Hochladen von Dateien (u.a. Dateibeschränkungen, Upload-Fortschritt, Abrufen von Credits von Server)
+       
+## Naming Conventions bei Dateinamen
+- Dateien, die nur eine Funktion enthalten:
+   - Camel Case, z.B. optimizationEventEmitter.js
+- Dateien, die nur eine Klasse enthalten:
+   - Anfangsbuchstabe groß, z.B. ApiError.js
+- Dateien, die diverse Funktionen/ Klassen/ Definitionen enthalten:
+   - Bindestrich-Trennung, z.B. email-notification.js 
 
 ## Was kann unsere Applikation?
 - Unterstützte Formate:
