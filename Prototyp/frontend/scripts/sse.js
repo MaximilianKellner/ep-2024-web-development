@@ -28,7 +28,7 @@ source.addEventListener('message', (event) => {
     }
 
     messageDiv.innerHTML = `${fileNameNoSuffix} status: ${status}`;
-    loadOptimizedTable();
+    loadOptimizedContent();
 });
 
 source.addEventListener('complete', (event) => {
@@ -48,7 +48,7 @@ source.addEventListener('close', (event) => {
     messageDiv.textContent = 'Vorgang abgeschlossen';
     messageDiv.classList.remove('error');
 
-    loadOptimizedTable();
+    loadOptimizedContent();
     self.console.log('Connection closed');
     eventSource.close();
 });

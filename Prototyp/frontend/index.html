@@ -26,6 +26,7 @@
     <script defer src="scripts/sse.js"></script>
 
     <script defer src="scripts/menu.js"></script>
+    <script defer src="scripts/sort-table.js"></script>
 
   </head>
   <body>
@@ -84,7 +85,6 @@
             <div id="file-list">
 
 
-
             </div>
 
             <div class="card">
@@ -109,15 +109,15 @@
         und werden danach automatisch gelöscht.
       </p>
 
-      <table class="hidden" id="image-table">
+      <table class="hidden " id="image-table">
         <thead>
           <tr>
             <th><input type="checkbox" name="select-all" id="select-all" /></th>
             <th>Vorschau</th>
-            <th>Name</th>
-            <th>Größe</th>
-            <th>Upload</th>
-            <th>verbleibende Zeit</th>
+            <th onclick="sortTable(2)" >Name</th>
+            <th onclick="sortTable(3)" >Größe</th>
+            <th onclick="sortTable(5)" >Upload</th>
+            <th onclick="sortTable(5)" >verbleibende Zeit</th>
             <th>Download</th>
           </tr>
         </thead>
@@ -128,6 +128,26 @@
       </table>
 
       <button class="hidden" id="download-selected-btn">Auswahl herunterladen</button>
+
+      <div id="mobile-card-list">
+
+        <!--
+        <div class="img-card-mobile">
+          <img src="./img/debug.jpg" alt="refresh-icon" id="refresh-icon" />
+          <div class="download-row">
+            <div class="text-group">
+              <p>Mclaren-asdasib-asdasib-asdasib-asdasib-45555x5555.png</p>
+              <label class="sublabel">23h verbleibend - 4231.28 KB</label>
+            </div>
+            <button class="download-btn" data-url="" data-filename="">
+              <img src="./img/icon/download.svg" alt="download" onclick="this.parentElement.click()">
+          </button>
+          </div>
+        </div>
+
+        -->
+
+      </div>
 
     </main>
   </body>

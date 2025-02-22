@@ -61,17 +61,27 @@ function createTableRow(fileData) {
     `;
 }
 
+function createMobileCard(fileData){
+    const { url, fileName, fileNameWithoutSuffix, blob, creationDate, hoursLeft } = fileData;
+
+    return `<div class="img-card-mobile">
+                <img src="${url}" alt="${fileNameWithoutSuffix}"/>
+                <div class="download-row">
+                    <div class="text-group">
+                        <p>${fileNameWithoutSuffix}</p>
+                        <label class="sublabel">${hoursLeft}h verbleibend - ${(blob.size / 1024).toFixed(0)} KB</label>
+                    </div>
+                    <button class="download-btn" data-url="${url}" data-filename="${fileNameWithoutSuffix}">
+                        <img src="./img/icon/download.svg" alt="download" onclick="this.parentElement.click()">
+                    </button>
+                </div>
+            </div>`
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    loadOptimizedTable();
-});
-
-function loadOptimizedTable() {
-
-    const linkToken = window.location.pathname.replace("/", ""); // Entfernt das "/"
-    console.log("Aktueller linkToken:", linkToken);
+    loadOptimizedContent();
 
     const tbody = document.getElementById('image-table-body');
-    const table = document.getElementById('image-table');
     const downloadButton = document.getElementById('download-selected-btn');
 
     // Event Delegation für Download Buttons
@@ -88,13 +98,32 @@ function loadOptimizedTable() {
         }
     });
 
+    // ------ checkbox selection ------
+    document.getElementById('select-all').addEventListener('change', function() {
+        const checkboxes = document.getElementsByName('selector');
+        checkboxes.forEach(checkbox => checkbox.checked = this.checked);
+    });
+
+    // ------ download selected ------
+    downloadButton.addEventListener('click', downloadSelectedFiles);
+});
+
+function loadOptimizedContent() {
+    const linkToken = window.location.pathname.replace("/", ""); // Entfernt das "/"
+    console.log("Aktueller linkToken:", linkToken);
+
+    const tbody = document.getElementById('image-table-body');
+    const table = document.getElementById('image-table');
+    const downloadButton = document.getElementById('download-selected-btn');
+    const mobileCardList = document.getElementById('mobile-card-list');
+
     axios.get(`/${linkToken}/optimized-images`)
+
         .then((response) => {
             const fileNames = response.data;
 
             console.log("Aktueller link token credits: " + linkToken);
 
-            // TODO: Wrong position?
             if (fileNames.length === 0) {
                 table.classList.add('hidden');
                 downloadButton.classList.add('hidden');
@@ -116,17 +145,42 @@ function loadOptimizedTable() {
                         const creationDate = new Date(parseInt(timestamp));
                         const hoursLeft = calculateHoursLeft(fileNames[index]);
 
-                        return createTableRow({
+                        const fileData = {
                             url,
                             fileName: fileNames[index],
                             fileNameWithoutSuffix: fileNamesWithoutSuffix[index],
                             blob,
                             creationDate,
                             hoursLeft
-                        });
+                        };
+
+                        return createTableRow(fileData);
+                    }).join('');
+
+                    const mobileContent = responses.map((response, index) => {
+                        const { data, headers } = response;
+                        const contentType = headers['content-type'];
+                        const blob = new Blob([data], { type: contentType });
+                        const url = URL.createObjectURL(blob);
+                        const uniqueSuffix = fileNames[index].split('-').pop();
+                        const timestamp = uniqueSuffix.split('_')[0];
+                        const creationDate = new Date(parseInt(timestamp));
+                        const hoursLeft = calculateHoursLeft(fileNames[index]);
+
+                        const fileData = {
+                            url,
+                            fileName: fileNames[index],
+                            fileNameWithoutSuffix: fileNamesWithoutSuffix[index],
+                            blob,
+                            creationDate,
+                            hoursLeft
+                        };
+
+                        return createMobileCard(fileData);
                     }).join('');
 
                     tbody.innerHTML = tableContent;
+                    mobileCardList.innerHTML = mobileContent;
                     table.classList.remove('hidden');
                     downloadButton.classList.remove('hidden');
                 })
@@ -134,15 +188,6 @@ function loadOptimizedTable() {
         })
         .catch(err => console.error('Fehler beim Abrufen der Dateiliste:', err));
 }
-
-// ------ checkbox selection ------
-document.getElementById('select-all').addEventListener('change', function() {
-    const checkboxes = document.getElementsByName('selector');
-    checkboxes.forEach(checkbox => checkbox.checked = this.checked);
-});
-
-// ------ download selected ------
-document.getElementById('download-selected-btn').addEventListener('click', downloadSelectedFiles);
 
 function downloadSelectedFiles() {
     const checkboxes = document.querySelectorAll('input[name="selector"]:checked');

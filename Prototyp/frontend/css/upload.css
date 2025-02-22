@@ -195,6 +195,9 @@
         position: absolute;
         font-size: var(--m);
         font-weight: 400;
+
+        margin-top: 0;
+        margin-bottom: 0;
       }
   
       #progress-circle {
