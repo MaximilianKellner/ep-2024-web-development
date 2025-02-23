@@ -27,7 +27,6 @@ if (customerId) {
     loadCustomerData(customerId);
     // Kunden-ID-Feld anzeigen
     customerIdField.style.display = 'inline-block';
-    linkTokenField.style.display = 'inline-block';
 } 
 
 //Kundendaten für das Formular laden
