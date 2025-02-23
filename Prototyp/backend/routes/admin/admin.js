@@ -53,6 +53,7 @@ router.post('/login', async (req, res) => {
             const user = {username: username, password: password}
             const accessToken = generateAccessToken(user)
             const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
+            // Hinzufügen des refreshTokens zum Array, mit Verzögerung, um den Token zu speichern. Ohne Verzögerung wird der Token nicht schnell genug für das admin-panel gespeichert
             await new Promise(resolve => {
                 refreshTokens.push(refreshToken)
                 resolve()
