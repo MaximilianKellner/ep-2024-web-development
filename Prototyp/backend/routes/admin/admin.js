@@ -39,13 +39,12 @@ router.post('/token', (req, res) => {
 })
 //Hier stand post
 router.delete('/logout', authenticateToken, (req, res) => {
-    // Extrahieren des refreshTokens aus dem Body (siehe Anfrage)und entfernen des Tokens aus dem Array
+    // Extrahieren des refreshTokens aus dem Body (siehe Anfrage) und entfernen des Tokens aus dem Array
     refreshTokens = refreshTokens.filter(refreshToken => refreshToken !== req.body.token);
-    console.log("refreshTokens: " + refreshTokens);
     res.sendStatus(204);
 });
 
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
     const username = req.body.username
     const password = req.body.password
     for(let i = 0; i < admins.length; i++){
@@ -54,12 +53,15 @@ router.post('/login', (req, res) => {
             const user = {username: username, password: password}
             const accessToken = generateAccessToken(user)
             const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
-            refreshTokens.push(refreshToken)
+            await new Promise(resolve => {
+                refreshTokens.push(refreshToken)
+                resolve()
+            })
             res.json({accessToken: accessToken, refreshToken: refreshToken})
             return
         }
     }
-    res.status(403).send("Username or password incorrect")
+    res.status(403).send("Benutzername oder Passwort nicht richtig")
 })
 
 function generateAccessToken(user) {

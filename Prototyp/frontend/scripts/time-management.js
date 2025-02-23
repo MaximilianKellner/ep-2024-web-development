@@ -37,7 +37,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ token: refreshToken })
+                    body: JSON.stringify(
+                        { token: refreshToken }
+                    )
                 }).then(refreshResponse => {
                     if (refreshResponse.ok) {
                         return refreshResponse.json();
