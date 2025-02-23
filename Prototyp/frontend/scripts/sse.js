@@ -37,6 +37,7 @@ source.addEventListener('complete', (event) => {
 });
 
 source.addEventListener('error', (event) => {
+    console.log("Error: ", event.data);
     const fileName = JSON.parse(event.data).fileName;
     const fileNameNoSuffix = getFileNameWithoutSuffix(fileName);
     self.console.error("received an error: ", event);

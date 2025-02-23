@@ -8,9 +8,6 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
         const fileInput = document.getElementById('fileInput');
         const messageDiv = document.getElementById('message');
         const files = fileInput.files;
-        console.log("Files: " + files);
-
-        console.log("File input: " + fileInput.value)
 
         // check credits and return if not enough
         const response = await axios.get(`/${linkToken}/credits`);

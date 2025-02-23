@@ -33,7 +33,7 @@ function getFileNameWithoutSuffix(fileName) {
 }
 
 function createTableRow(fileData) {
-    const { url, fileName, fileNameWithoutSuffix, blob, creationDate, hoursLeft } = fileData;
+    const { url, fileNameWithoutSuffix, blob, creationDate, hoursLeft } = fileData;
     
     return `
         <tr>
@@ -57,7 +57,7 @@ function createTableRow(fileData) {
 }
 
 function createMobileCard(fileData){
-    const { url, fileName, fileNameWithoutSuffix, blob, creationDate, hoursLeft } = fileData;
+    const { url, fileNameWithoutSuffix, blob, creationDate, hoursLeft } = fileData;
 
     return `<div class="img-card-mobile">
                 <img src="${url}" alt="${fileNameWithoutSuffix}"/>
@@ -123,7 +123,7 @@ function loadOptimizedContent() {
             }
 
             const imageRequests = fileNames.map(fileName => createImageRequest(fileName));
-            const fileNamesWithoutSuffix = fileNames.map(getFileNameWithoutSuffix);
+            const fileNamesWithoutSuffix = fileNames.map(fileName => getFileNameWithoutSuffix(fileName));
 
             Promise.all(imageRequests)
                 .then(responses => {
