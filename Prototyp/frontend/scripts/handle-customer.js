@@ -26,7 +26,8 @@ if (customerId) {
     document.querySelector("button[type='submit']").textContent = `Speichern`;
     loadCustomerData(customerId);
     // Kunden-ID-Feld anzeigen
-    customerIdField.style.display = 'block';
+    customerIdField.style.display = 'inline-block';
+    linkTokenField.style.display = 'inline-block';
 } 
 
 //Kundendaten für das Formular laden
@@ -40,7 +41,7 @@ function loadCustomerData(customerId) {
         })
         .then(data => {
             if (data) {
-                customerIdField.textContent = `ID: ${customerId}`;
+                customerIdField.textContent = `ID: ${customerId} | Token: ${data.linkToken}`;
 
                 document.getElementById('customerName').value = data.customerName || '';
                 document.getElementById('email').value = data.email || '';

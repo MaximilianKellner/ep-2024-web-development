@@ -9,7 +9,7 @@ import adminRoutes from "./routes/admin/admin.js";
 import customerRoutes from "./routes/customers/customers.js";
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
-import {checkTokenExpired} from "./tokenExpiration.js";
+//import {checkTokenExpired} from "./tokenExpiration.js";
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -29,7 +29,7 @@ app.use('/customers', customerRoutes);
 app.use("/", express.static(path.join(__dirname, '../frontend')));
 app.use('/', adminRoutes);
 
-await checkTokenExpired();
+//await checkTokenExpired();
 
 app.use(apiErrorHandler);
 app.listen(process.env.DEV_PORT, () =>

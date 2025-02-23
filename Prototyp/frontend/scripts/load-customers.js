@@ -30,6 +30,7 @@ window.onload = function() {
                         <p>${customer.customerName}</p>
                     </div>
                     </td>
+                    <td>/${customer.linkToken}</td>
                     <td>${customer.customerId}</td>
                     <td class="${dateClass}">${expirationDate || 'N/A'}</td>
                     <td>${customer.credits}</td>
