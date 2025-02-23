@@ -30,7 +30,7 @@ window.onload = function() {
                         <p>${customer.customerName}</p>
                     </div>
                     </td>
-                    <td>/${customer.linkToken}</td>
+                    <td>${customer.linkToken}</td>
                     <td>${customer.customerId}</td>
                     <td class="${dateClass}">${expirationDate || 'N/A'}</td>
                     <td>${customer.credits}</td>
@@ -54,7 +54,7 @@ window.onload = function() {
             const btns = document.querySelectorAll(".delete-btn");
             btns.forEach((btn) => {
                 btn.onclick = function () {
-                    window.customerIdToDelete = this.closest('tr').querySelector('td:nth-child(2)').textContent;
+                    window.customerIdToDelete = this.closest('tr').querySelector('td:nth-child(3)').textContent;
                     modal.style.display = "block";
                 };
             });
