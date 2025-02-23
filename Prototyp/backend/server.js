@@ -29,7 +29,7 @@ app.use('/customers', customerRoutes);
 app.use("/", express.static(path.join(__dirname, '../frontend')));
 app.use('/', adminRoutes);
 
-await checkTokenExpired();
+//await checkTokenExpired();
 
 app.use(handleApiError);
 app.listen(process.env.DEV_PORT, () =>

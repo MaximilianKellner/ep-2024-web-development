@@ -9,7 +9,7 @@ export async function checkTokenExpired() {
     try {
         const now = Date.now();
 
-        const customers = await pool.query('SELECT * FROM customer');
+        const customers = await pool.query('SELECT * FROM active_customer');
 
         customers.rows.filter(customer => {
             let expirationDate = new Date(customer.expiration_date);  // Datum von der DB

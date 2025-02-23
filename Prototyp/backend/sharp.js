@@ -14,7 +14,7 @@ sharp.cache(false);
 async function getCustomerData(linkToken, optimizationParameter = 'max_file_size_kb') {
 
     try {
-        const data = await pool.query(`SELECT ${[optimizationParameter]} FROM customer WHERE link_token = $1`, [linkToken]);
+        const data = await pool.query(`SELECT ${[optimizationParameter]} FROM active_customer WHERE link_token = $1`, [linkToken]);
         console.log('Customer Data: ', data.rows[0]?.[optimizationParameter]);
         return data.rows[0]?.[optimizationParameter];
     } catch (error) {
