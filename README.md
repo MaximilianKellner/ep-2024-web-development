@@ -69,7 +69,7 @@ Hier ein Auszug über den Aufbau unseres Verzeichnisses. Es werden bewusst nicht
 ## Voraussetzungen
 - Node.js (Version 20.12.2 zum Zeitpunkt der Entwicklung)
 - NPM
-- PostgreSQL
+- PostgreSQL (Extensions: uuid-ossp) 
 - SMTP-Relay Service (z.B. Mailersend)
 - .env Datei in /backend:
 ```
