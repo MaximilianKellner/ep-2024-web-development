@@ -90,7 +90,6 @@ async function compressToSize(inputPath, outputPath, fileName, userId) {
             inputPath = tempPngPath;
         }
 
-        // If file is already small enough, just copy it
         if (currentSizeKB <= maxSizeInKB) {
             await sharp(inputPath)
                 .jpeg({ quality: 100 })
@@ -118,13 +117,13 @@ async function compressToSize(inputPath, outputPath, fileName, userId) {
                 .rotate()
                 .resize(newWidth, newHeight);
 
-            // Binary search für Qualität
+            // Binäre Suche für Qualität
             let minQuality = 1;
             let maxQuality = 100;
-            const MAX_ITERATIONS = 40;
+            const maxIterations = 40;
             let iterations = 0;
 
-            while (minQuality <= maxQuality && iterations < MAX_ITERATIONS) {
+            while (minQuality <= maxQuality && iterations < maxIterations) {
                 iterations++;
                 quality = Math.floor((minQuality + maxQuality) / 2);
                 
@@ -143,11 +142,11 @@ async function compressToSize(inputPath, outputPath, fileName, userId) {
                         // Speichere das Ergebnis
                         await fs.promises.writeFile(outputPath, buffer);
                         console.log(`
-Komprimierung erfolgreich!
-- Finale Größe: ${currentSizeKB.toFixed(2)} KB
-- Qualität: ${quality}/100
-- Dimensionen: ${newWidth}x${newHeight}
-- Original Dimensionen: ${width}x${height}
+                            Komprimierung erfolgreich!
+                            - Finale Größe: ${currentSizeKB.toFixed(2)} KB
+                            - Qualität: ${quality}/100
+                            - Dimensionen: ${newWidth}x${newHeight}
+                            - Original Dimensionen: ${width}x${height}
                         `);
                         return outputPath;
                     }
@@ -175,28 +174,6 @@ Komprimierung erfolgreich!
     }
 }
 
-async function svgtoxml(inputPath, outputPath){
-    try{
-        await sharp(inputPath)
-            .png()
-            .toFile(outputPath)
-
-        return new Promise((resolve, reject) => {
-            potrace.trace('./temp.png', {
-                threshold: 120,
-                color: '#000000'
-            }, (err, svg) => {
-                if(err) reject(err);
-                fs.writeFileSync(outputPath, svg)
-                resolve('Zu SVG komprimiert. Output:' + outputPath)
-            })
-        });
-    } catch (error){
-        console.log('Fehler bei SVG nach XML:' + error)
-        throw error
-    }
-}
-
 async function xmlToPng(inputPath, outputPath){
     try{
         await sharp(inputPath)
@@ -208,12 +185,3 @@ async function xmlToPng(inputPath, outputPath){
     }
 }
 export { getCustomerData, compressToSize, processAllFiles };
-
-
-// Replace the example usage with:
-/*
-processAllFiles('debug-kunde-1')
-    .then(() => console.log('All files processed'))
-    .catch(err => console.error('Error:', err));
-*/
-
