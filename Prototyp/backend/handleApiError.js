@@ -1,6 +1,6 @@
 import ApiError from "./ApiError.js";
 
-function apiErrorHandler(err, req, res, next) {
+function handleApiError(err, req, res, next) {
 
     console.error(err);
 
@@ -12,4 +12,4 @@ function apiErrorHandler(err, req, res, next) {
     res.status(500).json({error: "Something went wrong"});
 }
 
-export default apiErrorHandler;
+export default handleApiError;

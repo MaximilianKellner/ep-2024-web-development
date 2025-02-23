@@ -3,8 +3,8 @@ import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import sharp from 'sharp';
-import optimizationEventEmitter from './optimizationEventEmitter.js';
-import OptimizationEventStatus from './optimizationEventStatus.js';
+import optimizationEventEmitter from './OptimizationEventEmitter.js';
+import OptimizationEventStatus from './OptimizationEventStatus.js';
 import { pool } from './db.js';
 // TODO: Should be inside try-catch
 
