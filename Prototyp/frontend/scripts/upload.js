@@ -1,7 +1,7 @@
 document.getElementById('uploadForm').addEventListener('submit', async (event) => {
     try {
         event.preventDefault();
-
+        loadCredits()
         const linkToken = window.location.pathname.replace("/", ""); // Entfernt das "/"
 
 
@@ -10,12 +10,15 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
         const files = fileInput.files;
 
         // check credits and return if not enough
-        const response = await axios.get(`/${linkToken}/credits`);
+        const response = await axios.get(`customers/${linkToken}/credits`);
         const credits = response.data.credits;
         console.log('Credits:', credits);
+        console.log('Files:', files.length);
 
-        if (credits < files.length) {
+        if (files.length > credits) {
+            console.log('Nicht genug Credits für Upload:', credits);
             messageDiv.textContent = `Für den Upload fehlen ${files.length - credits} Credits.`;
+            console.log('messageDiv:', messageDiv);
             messageDiv.classList.add('error');
             return;
         }
@@ -97,6 +100,7 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
         messageDiv.classList.add('error');
     } finally {
         resetFiles();
+        loadCredits();
     }
 });
 
@@ -110,7 +114,7 @@ async function loadCredits() {
     try {
         const linkToken = window.location.pathname.replace("/", ""); // Entfernt das "/"
 
-        const response = await axios.get(`/${linkToken}/credits`);
+        const response = await axios.get(`customers/${linkToken}/credits`);
         const credits = response.data.credits;
         document.getElementById('credits-current').textContent = `${credits} Credits`;
     } catch (error) {
