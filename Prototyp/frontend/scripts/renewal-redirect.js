@@ -1,9 +1,9 @@
 window.onload = function() {
     const urlParams = new URLSearchParams(window.location.search);
-    const redirectStatus = urlParams.get('redirect');
+    const isRenewalRedirect = urlParams.get('action');
 
-    if (redirectStatus === 'true') {
+    if (isRenewalRedirect==='redirect') {
         // Zeige das Popup an, weil der Nutzer über einen Redirect kam
-        alert("Willkommen, Sie wurden über einen speziellen Link weitergeleitet!");
+        alert("Ihr Zugang wurde um 30 Tage verlängert.");
     }
 };
