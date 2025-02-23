@@ -19,6 +19,7 @@
     <script defer src="scripts/modal.js"></script>
     <script defer src="scripts/load-customers.js"></script>
     <script defer src="scripts/search.js"></script>
+    <script defer src="scripts/sort-table.js"></script>
 
     <script defer src="scripts/request-handler.js"></script>
     <script defer src="./scripts/time-management.js"></script>
@@ -29,12 +30,10 @@
   <body>
     <header>
       <a href="#"><h1 class="hover-light-blue">OmniMize - Admin</h1></a>
+      <img src="./img/icon/menu.svg" alt="menu-icon" id="menu-icon" width="24" height="24" />
 
       <nav class="nav-links">
         <ul>
-          <li>
-            <a href="login.html"> <h2 class="hover-light-blue">Account wechseln</h2> </a>
-          </li>
           <li>
             <a href="#" class = "logoutButton"> <h2 class="hover-light-blue">Logout</h2> </a>
           </li>
@@ -51,33 +50,33 @@
     <main>
       <div class="search-container">
         <button class="light" onclick="window.location.href='/create-customer'">+ Kunde</button>
-        <div class="search-right">
           <input
             type="text"
             id="search"
             name="search"
             placeholder="Suche nach Kunden"
           />
-          <button class="light" title="Suchen">Suchen</button>
-        </div>
       </div>
 
-      <table class="admin-table">
+      <table id="admin-table" class="admin-table">
         <thead>
           <tr>
-            <th>Kundenname</th>
-            <th>ID</th>
-            <th>Ablaufdatum</th>
-            <th>Credits</th>
+            <th onclick="sortTable(0, 'admin-table')" >Kundenname</th>
+            <th>link-token</th>
+            <th onclick="sortTable(2, 'admin-table')" >ID</th>
+            <th onclick="sortTable(3, 'admin-table')" >Ablaufdatum</th>
+            <th onclick="sortTable(4, 'admin-table')" >Credits</th>
             <th>Aktionen</th>
           </tr>
         </thead>
         <tbody>
           <!-- debug data for showcase
           <tr>
-            <td class="customer-row">
-              <img src="img/icon/user.svg" alt="Kundenbild" />
-              <p>Kundenname</p>
+            <td>
+              <div class="customer-row">
+                <img src="img/icon/user.svg" alt="Kundenbild" />
+                <p>Kundenname</p>
+              </div>
             </td>
             <td>11</td>
             <td>01.01.2023</td>

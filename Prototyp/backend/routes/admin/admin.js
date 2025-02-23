@@ -64,7 +64,7 @@ router.post('/login', (req, res) => {
 
 function generateAccessToken(user) {
     //Session-Wert aus Demozwecken auf 10s gesetzt. Zu empfehlen ist höherer Wert :)
-    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '10s'})
+    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '25m'})
 }
 
 router.get('/verify-token', authenticateToken, (req, res) => {
@@ -84,7 +84,7 @@ router.get('/update-customer', (req, res) => {
 
 router.get('/load-customers', async (req, res, next) => {
     try {
-        const result = await pool.query('SELECT customer_name, customer_id, expiration_date, credits, email, img_url  FROM customer');
+        const result = await pool.query('SELECT customer_name, customer_id, expiration_date, credits, email, img_url, link_token  FROM customer');
 
         if (result.rows.length > 0) {
             const customers = result.rows.map(customer => ({
@@ -93,7 +93,8 @@ router.get('/load-customers', async (req, res, next) => {
                 expirationDate: customer.expiration_date,
                 credits: customer.credits,
                 email: customer.email,
-                imgUrl: customer.img_url
+                imgUrl: customer.img_url,
+                linkToken: customer.link_token
             }));
             res.json({customers});
         }
@@ -158,7 +159,8 @@ router.get('/get-customer', async (req, res) => {
                 email: result.rows[0].email,
                 imgUrl: result.rows[0].img_url,
                 maxFileInKB: result.rows[0].max_file_size_kb,
-                maxWidthInPX: result.rows[0].max_file_width_px
+                maxWidthInPX: result.rows[0].max_file_width_px,
+                linkToken: result.rows[0].link_token
             };
 
             res.json(customer);

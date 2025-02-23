@@ -1,9 +1,9 @@
 let sortOrder = 1; // 1 aufsteigend, -1 absteigend
 let currentColumn = -1;
 
-function sortTable(columnIndex) {
+function sortTable(columnIndex, tableId = "image-table") {
   
-  const table = document.querySelector("#image-table");
+  const table = document.querySelector(`#${tableId}`);
   const tbody = table.querySelector("tbody");
   const rows = Array.from(tbody.rows); // Nur tbody
 
@@ -14,8 +14,8 @@ function sortTable(columnIndex) {
   }
 
   const sortedRows = rows.sort((a, b) => {
-    let cellA = a.cells[columnIndex].innerText.toLowerCase();
-    let cellB = b.cells[columnIndex].innerText.toLowerCase();
+    let cellA = a.cells[columnIndex].querySelector('.customer-row p')?.innerText.toLowerCase() || a.cells[columnIndex].innerText.toLowerCase();
+    let cellB = b.cells[columnIndex].querySelector('.customer-row p')?.innerText.toLowerCase() || b.cells[columnIndex].innerText.toLowerCase();
 
     // Versuche, die Zellenwerte als Zahlen zu behandeln
     const numA = parseFloat(cellA.replace(/,/g, ''));

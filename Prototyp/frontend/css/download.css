@@ -7,6 +7,7 @@ table {
   border-collapse: collapse;
   width: 100%;
   margin-top: var(--xxxl);
+  overflow-x: auto;
 }
 
 thead {
@@ -37,6 +38,21 @@ td {
   }
 }
 
+/* Responsive table for mid sized Screens*/
+@media screen and (max-width: 768px) {
+  #image-table {
+    display: block;
+    overflow-x: auto;
+
+    td {
+      img {
+        max-width: 100px;
+        max-height: 50px;
+      }
+    }
+  }
+}
+
 .limited-text {
   position: relative;
   max-width: 150px;
@@ -58,10 +74,12 @@ input[type="checkbox"] {
   cursor: pointer;
   transition: all 0.3s ease-in-out;
   background-color: transparent;
+  transform: scale(0.8); /* Skalierung auf 50% der Originalgröße */
+
 }
 
 input[type="checkbox"]:checked {
-  box-shadow: 0px 0px 20px 0px rgba(238, 244, 255, 0.39);
+  box-shadow: var(--shadow-light);
 }
 
 input[type="checkbox"]:checked::after {
@@ -92,21 +110,6 @@ input[type="checkbox"]:checked::after {
   }
 }
 
-/* Responsive table for mid sized Screens*/
-@media screen and (max-width: 768px) {
-  table {
-    display: block;
-    overflow-x: auto;
-  }
-
-  td {
-    img {
-      max-width: 100px;
-      max-height: 50px;
-    }
-  }
-}
-
 #mobile-card-list{
   display: none;
 }
@@ -114,7 +117,7 @@ input[type="checkbox"]:checked::after {
 /* Hide Table and download-selected-btn on Mobile */
 
 @media screen and (max-width: 500px) {
-  table {
+  #image-table {
     display: none;
   }
 

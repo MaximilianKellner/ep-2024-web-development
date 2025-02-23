@@ -68,7 +68,8 @@ button {
 }
 
 header {
-
+width: 40px;
+height: 40px;
   margin-top: 40px;
   margin-left: 50px;
   margin-right: 50px;
@@ -165,7 +166,8 @@ input {
   width: 60%;
   height: 100%;
   background-color: var(--c-background-dark);
-  box-shadow: -100px 0 5px rgb(0, 0, 0, 0.3);
+  /* shadow instead of new element */
+  box-shadow: -350px 0px 20px rgba(0, 0, 0, 0.5);
   z-index: 1000;
   padding: var(--m);
   background-color: var(--c-background-dark);

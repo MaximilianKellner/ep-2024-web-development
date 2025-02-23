@@ -3,16 +3,17 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-}
+  gap: var(--m);
+  margin-top: var(--l);
 
-.search-right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  button {
+    white-space: nowrap;
+  }
 }
 
 #search {
   width: 100%;
+  max-width: 300px;
   min-width: 100px;
   padding: var(--xs);
   margin-left: var(--xs);
@@ -34,8 +35,6 @@
 .admin-table {
   background-color: #ffffff07;
   border-radius: var(--border-radius-base);
-  overflow: hidden;
-
   margin-top: var(--l);
 
   th {
@@ -48,6 +47,12 @@
   tr:nth-child(even),
   th {
     background-color: #ffffff07;
+  }
+
+  /* min width Aktionen --> Buttons shift*/
+  th:nth-child(5),
+  td:nth-child(5) {
+    min-width: 95px;
   }
 
   .customer-row {
@@ -96,6 +101,14 @@
   .amber {
     color: var(--c-amber);
   }
+}
+
+@media screen and (max-width: 540px) {
+  .admin-table {
+    display: block;
+    overflow-x: auto;
+  }
+  
 }
 
 /*modal for delete confirmation*/
