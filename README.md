@@ -20,13 +20,13 @@ Hier ein Auszug über den Aufbau unseres Verzeichnisses. Es werden bewusst nicht
            * Senden von Fortschrittsstatus-Updates (progress-Events) mit Status, Dateinamen und Credits an Clients
         * server.js:
            * Middleware für das Routing der Requests
-        * /routes/customers/ducstomers.js:
+        * /routes/customers/customers.js:
            * Kunden-Endpoints (Zugang mittels Link-Token, Upload, Download, Datei-Optimierung, Informationen zum Fortschritt mittels Server-Sent Events)
         * /routes/admin/admin.js:
            * Admin-Entpoints (Login, Logout, Authentifizierung, Kunden-Verwaltung) 
         * sharp.js:
            * Anwendungslogik für Bildverarbeitung inkl. Komprimierung und Konvertierung
-        * tokenExpiration.js:
+        * checkTokenExpired.js:
            * Wenn der Link eines Kunden innerhalb der nächsten drei Tage abläuft, sorgt dies Datei dafür, dass eine E-Mail versendet wird
     * frontend:
       * scripts:
