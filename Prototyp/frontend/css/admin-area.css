@@ -103,6 +103,14 @@
   }
 }
 
+@media screen and (max-width: 540px) {
+  .admin-table {
+    display: block;
+    overflow-x: auto;
+  }
+  
+}
+
 /*modal for delete confirmation*/
 .modal {
   display: none;
