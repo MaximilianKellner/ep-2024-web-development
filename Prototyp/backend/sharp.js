@@ -8,8 +8,6 @@ import OptimizationEventStatus from './OptimizationEventStatus.js';
 import { pool } from './db.js';
 // TODO: Should be inside try-catch
 
-const CONVERT = 1024
-
 sharp.cache(false);
 
 
@@ -57,7 +55,8 @@ async function processAllFiles(linkToken, fileNames) {
                     console.log('Verbleibende Credits:', remainingCredits);
                 }
             } catch (error) {
-                console.error(`Error processing ${file}:`, error);
+                console.error(`Fehler bei File: ${file};
+                    Fehlermeldung:`, error);
                 optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Error);
             }
         }
@@ -95,7 +94,7 @@ async function compressToSize(inputPath, outputPath, fileName, userId) {
                 .jpeg({ quality: 100 })
                 .rotate()
                 .toFile(outputPath);
-            console.log(`File already within size limit, copying to optimized folder`);
+            console.log(`Datei bereits unter der maximalen Größe: ${currentSizeKB.toFixed(2)} KB`);
             return outputPath;
         }
 
@@ -129,7 +128,7 @@ async function compressToSize(inputPath, outputPath, fileName, userId) {
                 
                 try {
                     const buffer = await image
-                        .jpeg({ quality: quality })
+                        .png({ quality: quality })
                         .toBuffer();
                     
                     const currentSizeKB = buffer.length / 1024;
