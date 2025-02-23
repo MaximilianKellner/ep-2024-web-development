@@ -73,7 +73,7 @@ Hier ein Auszug über den Aufbau unseres Verzeichnisses. Es werden bewusst nicht
 - SMTP-Relay Service (z.B. Mailersend)
 - .env Datei in /backend:
 ```
-#Tokens für die Authentifizierung
+# Tokens für die Authentifizierung
 ACCESS_TOKEN_SECRET=
 REFRESH_TOKEN_SECRET=
 
@@ -97,7 +97,7 @@ DB_PORT=
 DEV_PORT=
 ```
 
-# Anlegen des DB-Schemas
+## Anlegen des DB-Schemas
 <a href="https://github.com/MaximilianKellner/ep-2024-web-development/wiki/Datenstruktur#Anlegen-des-DB-Schemas">Click me</a>
  
 ## Installation
