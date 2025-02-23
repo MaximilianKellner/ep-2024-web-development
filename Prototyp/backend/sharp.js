@@ -8,6 +8,8 @@ import OptimizationEventStatus from './OptimizationEventStatus.js';
 import { pool } from './db.js';
 // TODO: Should be inside try-catch
 
+const CONVERT = 1024
+
 sharp.cache(false);
 
 
@@ -68,135 +70,105 @@ async function processAllFiles(linkToken, fileNames) {
     }
 }
 
-// 
-// Alte Version: Es wird ein Bild so lange komprimiert, bis es die gewünschte Größe erreicht hat. Allerdings passiert das ganze in einem ständigen Wechsel zwischen Client und Server
-// 
-// async function compressToSize(inputPath, outputPath, fileName) {
-//     try {
-//         let maxSizeInMB = getCustomerData('max-file-size-kb') / 1024; //Output ist eine Zahl
-//         if (!maxSizeInMB) {
-//             throw new Error('Max file size not found');
-//         }
-//         let quality = 100;
-//         let currentSize = fs.statSync(inputPath).size / (1024 * 1024); // Convert to MB
-    
-//         console.log(`Original size: ${currentSize.toFixed(3)} MB`);
-
-//         if (currentSize <= maxSizeInMB) {
-//             await sharp(inputPath)
-//                 .jpeg({ quality: 100 })
-//                 .rotate()
-//                 .toFile(outputPath);
-//             console.log(`File already within size limit, copying to optimized folder`);
-//             optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Complete, fileName);
-//             return outputPath;
-//         }
-
-//         // while (currentSize > maxSizeInMB && quality > 0) {
-//         //     await sharp(inputPath)
-//         //         .jpeg({ quality: quality })
-//         //         .rotate() // Auto-rotate based on EXIF data
-//         //         .toFile(outputPath);
-
-//         //     currentSize = fs.statSync(outputPath).size / (1024 * 1024); // Convert to MB
-//         //     console.log(`Current size: ${currentSize.toFixed(3)} MB at quality: ${quality}`);
-//         //     quality -= 5;
-//         //     // TODO: Send file name
-//         //     optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Active, fileName);
-//         // }
-//
-//         if (currentSize <= maxSizeInMB) {
-//             console.log(`Successfully compressed to ${currentSize.toFixed(3)} MB`);
-//             optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Complete, fileName);
-//             return outputPath;
-//         } else {
-//             optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Error, fileName);
-//             throw new Error('Konnte nicht zur gewünschten Größe komprimiert werden');
-//         }
-//     } catch (error) {
-//         console.error('Compression error:', error);
-//         throw error;
-//     }
-// }
-
 async function compressToSize(inputPath, outputPath, fileName, userId) {
     try {
-        let maxSizeInMB = await getCustomerData(userId) / 1024;
-        if (!maxSizeInMB) {
+        const maxSizeInKB = await getCustomerData(userId);
+        if (!maxSizeInKB) {
             throw new Error('Max file size not found');
         }
+        
         let quality = 100;
-        // TODO: Synchroner Aufruf blockiert die Event-Loop(???) -> Server antwortet langsamer auf Anfragen
-        let currentSize = fs.statSync(inputPath).size / (1024 * 1024); // Convert to MB
+        const currentSizeKB = fs.statSync(inputPath).size / 1024;
 
-        console.log(`Original size: ${currentSize.toFixed(3)} MB`);
+        console.log(`Original size: ${currentSizeKB.toFixed(2)} KB (Target: ${maxSizeInKB} KB)`);
 
         // SVG Verarbeitung
         if (inputPath.includes('.svg')) {
             console.log('SVG erkannt');
-            // Temporärer Pfad für Zwischenschritte
             const tempPngPath = outputPath.replace('.svg', '_temp.png');
-            
-            // Konvertiere SVG zu PNG
-            await xmltopng(inputPath, tempPngPath);
-            
-            // Aktualisiere Input-Pfad und Größe für weitere Verarbeitung
+            await xmlToPng(inputPath, tempPngPath);
             inputPath = tempPngPath;
-            currentSize = fs.statSync(inputPath).size / (1024 * 1024);
-            console.log(`Nach SVG zu PNG Konvertierung: ${currentSize.toFixed(3)} MB`);
         }
 
         // If file is already small enough, just copy it
-        if (currentSize <= maxSizeInMB) {
+        if (currentSizeKB <= maxSizeInKB) {
             await sharp(inputPath)
                 .jpeg({ quality: 100 })
                 .rotate()
                 .toFile(outputPath);
             console.log(`File already within size limit, copying to optimized folder`);
-            //optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Complete, fileName);
             return outputPath;
         }
 
-        // Erstellen einer Sharp-Instanz für Mehrfachzugriff
-        const image = sharp(inputPath).rotate();
-        let buffer;
-
-        // Binäre Suche für optimale Qualität
-        let minQuality = 0;
-        let maxQuality = 100;
+        // Initialisierung der Bildverarbeitung
+        const metadata = await sharp(inputPath).metadata();
+        let width = metadata.width;
+        let height = metadata.height;
+        let resizeFactor = 1;
         
-        while (minQuality <= maxQuality) {
-            quality = Math.floor((minQuality + maxQuality) / 2);
-            // TODO: Handle error "Error: Expected integer between 1 and 100 for quality but received 0 of type number"
-            // TODO: Algorithmus, der die Validität des gesetzten Wertes für maxFileSizeInKB prüft -> darf nicth unterschritten werden
-            buffer = await image
-                .jpeg({ quality: quality })
-                .toBuffer();
+        // Äußere Schleife für Größenreduktion
+        while (resizeFactor >= 0.1) { // Nicht kleiner als 10% der Originalgröße
+            console.log(`\nTesting with resize factor: ${resizeFactor.toFixed(2)}`);
             
-            currentSize = buffer.length / (1024 * 1024); 
-            console.log(`Momentane Größe: ${currentSize.toFixed(3)} MB. Momentane Qualität: ${quality}`);
+            const newWidth = Math.floor(width * resizeFactor);
+            const newHeight = Math.floor(height * resizeFactor);
             
-            optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Active, fileName);
+            // Sharp-Instanz für aktuelle Größe
+            const image = sharp(inputPath)
+                .rotate()
+                .resize(newWidth, newHeight);
 
-            if (currentSize > maxSizeInMB) {
-                maxQuality = quality - 1;
-            } else if (currentSize < maxSizeInMB * 0.95) {
-                minQuality = quality + 1;
-            } else {
-                break;
+            // Binary search für Qualität
+            let minQuality = 1;
+            let maxQuality = 100;
+            const MAX_ITERATIONS = 40;
+            let iterations = 0;
+
+            while (minQuality <= maxQuality && iterations < MAX_ITERATIONS) {
+                iterations++;
+                quality = Math.floor((minQuality + maxQuality) / 2);
+                
+                try {
+                    const buffer = await image
+                        .jpeg({ quality: quality })
+                        .toBuffer();
+                    
+                    const currentSizeKB = buffer.length / 1024;
+                    console.log(`Iteration ${iterations}: Size: ${currentSizeKB.toFixed(2)} KB, Quality: ${quality}, Dimensions: ${newWidth}x${newHeight}`);
+                    
+                    optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Active, fileName);
+
+                    // Wenn die Größe unter dem Maximum ist, nehmen wir dieses Ergebnis sofort
+                    if (currentSizeKB <= maxSizeInKB) {
+                        // Speichere das Ergebnis
+                        await fs.promises.writeFile(outputPath, buffer);
+                        console.log(`
+Komprimierung erfolgreich!
+- Finale Größe: ${currentSizeKB.toFixed(2)} KB
+- Qualität: ${quality}/100
+- Dimensionen: ${newWidth}x${newHeight}
+- Original Dimensionen: ${width}x${height}
+                        `);
+                        return outputPath;
+                    }
+                    
+                    // Wenn die Größe noch zu groß ist, reduziere die Qualität
+                    maxQuality = quality - 1;
+                    
+                } catch (error) {
+                    console.error(`Error during compression attempt at quality ${quality}:`, error);
+                    maxQuality = quality - 1;
+                }
             }
+
+            // Reduziere die Bildgröße um 20% für den nächsten Durchlauf
+            resizeFactor *= 0.8;
         }
 
-        // Speichern des finalen Ergebnisses
-        if (currentSize <= maxSizeInMB) {
-            await fs.promises.writeFile(outputPath, buffer);
-            console.log(`Erfolgreich zu folgender Größe komprimiert: ${currentSize.toFixed(3)} MB! Die Qualität beträgt: ${quality}/100!`);
-            //optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Complete, fileName);
-            return outputPath;
-        } else {
-            optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Error, fileName);
-            throw new Error(`Konnte nicht zur gewünschten Größe komprimiert werden (Letzte Größe: ${currentSize.toFixed(3)} MB)`);
-        }
+        // Wenn wir hier ankommen, haben wir keine passende Größe gefunden
+        optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Error, fileName);
+        throw new Error(`Konnte nicht zur gewünschten Größe komprimiert werden`);
+        
     } catch (error) {
         console.error('Komprimierungsfehler:', error);
         throw error;
@@ -225,7 +197,7 @@ async function svgtoxml(inputPath, outputPath){
     }
 }
 
-async function xmltopng(inputPath, outputPath){
+async function xmlToPng(inputPath, outputPath){
     try{
         await sharp(inputPath)
             .png()
