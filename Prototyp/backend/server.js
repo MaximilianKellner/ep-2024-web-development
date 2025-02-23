@@ -4,12 +4,12 @@ import multer from 'multer';
 import path from 'path';
 import {fileURLToPath} from 'url';
 import {dirname} from 'path';
-import apiErrorHandler from "./apiErrorHandler.js";
+import handleApiError from "./handleApiError.js";
 import adminRoutes from "./routes/admin/admin.js";
 import customerRoutes from "./routes/customers/customers.js";
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
-import {checkTokenExpired} from "./tokenExpiration.js";
+import {checkTokenExpired} from "./checkTokenExpired.js";
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -29,9 +29,9 @@ app.use('/customers', customerRoutes);
 app.use("/", express.static(path.join(__dirname, '../frontend')));
 app.use('/', adminRoutes);
 
-await checkTokenExpired();
+//await checkTokenExpired();
 
-app.use(apiErrorHandler);
+app.use(handleApiError);
 app.listen(process.env.DEV_PORT, () =>
     console.log(`Server listening on port ${process.env.DEV_PORT}`),
 );

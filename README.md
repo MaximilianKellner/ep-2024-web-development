@@ -16,7 +16,7 @@ Hier ein Auszug über den Aufbau unseres Verzeichnisses. Es werden bewusst nicht
            * enthält Unterordner der personalisierte Customer-ID beihaltet. Der sind die Ordner uploaded und optimized untergestellt, in die Bilddateien reingeladen bzw. rausgelesen werden
         * .env:
            * Environment-Datei, die neben Access- und Refresh-Tokens für JWT Authetifikation, auch Anmeldeinformationen für den E-Mail-Client und die Datenbank speichert
-        * optimizationEventEmitter.js:
+        * OptimizationEventEmitter.js:
            * Senden von Fortschrittsstatus-Updates (progress-Events) mit Status, Dateinamen und Credits an Clients
         * server.js:
            * Middleware für das Routing der Requests
@@ -53,7 +53,7 @@ Hier ein Auszug über den Aufbau unseres Verzeichnisses. Es werden bewusst nicht
        
 ## Naming Conventions bei Dateinamen
 - Dateien, die nur eine Funktion enthalten:
-   - Camel Case, z.B. optimizationEventEmitter.js
+   - Camel Case, z.B. OptimizationEventEmitter.js
    - Dateiname = Funktionsname
 - Dateien, die nur eine Klasse enthalten:
    - Anfangsbuchstabe groß, z.B. ApiError.js
