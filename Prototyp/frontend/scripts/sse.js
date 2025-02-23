@@ -1,5 +1,4 @@
 const linkToken = window.location.pathname.replace("/", ""); // Entfernt das "/"
-console.log("Aktueller linkToken create image:", linkToken);
 let source = new EventSource(`/${linkToken}/progress`);
 const uploadStatusList = document.querySelector('.upload-status-list');
 

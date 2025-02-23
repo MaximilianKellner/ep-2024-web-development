@@ -1,6 +1,5 @@
 function createImageRequest(image) {
     const linkToken = window.location.pathname.replace("/", ""); // Entfernt das "/"
-    console.log("Aktueller linkToken create image:", linkToken);
     return axios.get(`/${linkToken}/download/${image}`, {
         responseType: 'blob',
     });
@@ -24,10 +23,6 @@ function calculateHoursLeft(fileName) {
     const timeDifference = currentDate - creationDate;
     const hoursDifference = Math.floor(timeDifference / (1000 * 60 * 60));
     const hoursLeft = MAX_FILE_STORAGE_HOURS - hoursDifference;
-
-    console.log(`Erstellt am: ${creationDate.toLocaleString()}`);
-    console.log(`Vergangene Stunden: ${hoursDifference}`);
-
     return hoursLeft;
 }
 
@@ -110,7 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function loadOptimizedContent() {
     const linkToken = window.location.pathname.replace("/", ""); // Entfernt das "/"
-    console.log("Aktueller linkToken:", linkToken);
 
     const tbody = document.getElementById('image-table-body');
     const table = document.getElementById('image-table');
@@ -121,8 +115,6 @@ function loadOptimizedContent() {
 
         .then((response) => {
             const fileNames = response.data;
-
-            console.log("Aktueller link token credits: " + linkToken);
 
             if (fileNames.length === 0) {
                 table.classList.add('hidden');

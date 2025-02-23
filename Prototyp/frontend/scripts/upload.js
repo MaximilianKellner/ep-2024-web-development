@@ -3,7 +3,6 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
         event.preventDefault();
 
         const linkToken = window.location.pathname.replace("/", ""); // Entfernt das "/"
-        console.log("Aktueller linkToken create image:", linkToken);
 
 
         const fileInput = document.getElementById('fileInput');
@@ -115,11 +114,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function loadCredits() {
     try {
         const linkToken = window.location.pathname.replace("/", ""); // Entfernt das "/"
-        console.log("Aktueller linkToken create image:", linkToken);
 
         const response = await axios.get(`/${linkToken}/credits`);
         const credits = response.data.credits;
-        console.log('Credits on Load:', credits);
         document.getElementById('credits-current').textContent = `${credits} Credits`;
     } catch (error) {
         document.getElementById('credits-current').textContent = `-1 Credits`;
