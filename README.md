@@ -96,6 +96,9 @@ DB_PORT=
 # The port your application is running on
 DEV_PORT=
 ```
+
+# Anlegen des DB-Schemas
+<a href="https://github.com/MaximilianKellner/ep-2024-web-development/wiki/Datenstruktur#Anlegen-des-DB-Schemas">Click me</a>
  
 ## Installation
 
