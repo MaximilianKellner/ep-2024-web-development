@@ -11,6 +11,8 @@ import {dirname} from 'path';
 import handleApiError from "../../handleApiError.js";
 import ApiError from '../../ApiError.js';
 import dotenv from 'dotenv';
+import ActionType from "../../ActionType.js";
+
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -69,17 +71,45 @@ const upload = multer({
 });
 
 
+router.get("/:linkToken/renewal-link", async (req, res, next) => {
+
+    try {
+        const {linkToken} = req.params;
+
+        const result = await pool.query('SELECT link_token FROM active_customer WHERE link_token = $1', [linkToken]);
+        if (result.rows.length > 0) {
+            // Weiterleitung zur eigentlichen Zielseite
+            res.redirect(`http://localhost:5000/customers/${linkToken}`);
+        }
+    } catch (error) {
+        next(error);
+    }
+});
+
 router.get('/:linkToken', async (req, res, next) => {
     try {
-        const { linkToken } = req.params;
+        const {linkToken} = req.params;
+        const {action} = req.query;
 
         const result = await pool.query('SELECT link_token FROM active_customer WHERE link_token = $1', [linkToken]);
 
         if (result.rows.length > 0) {
-            console.log('Link token:', linkToken);
-
-            // Sende die HTML-Seite (danach lädt der Client die statischen Dateien selbst)
-            res.sendFile(path.join(__dirname, '../../../frontend/index.html'));
+            switch (action) {
+                case ActionType.RENEWAL: {
+                    await pool.query(
+                        `UPDATE active_customer
+                         SET expiration_date = expiration_date + INTERVAL '30 days'
+                         WHERE link_token = $1
+                             RETURNING *`, // Gibt alle Felder der betroffenen Zeile zurück
+                        [linkToken]
+                    );
+                    res.redirect(`http://localhost:5000/customers/${linkToken}?action=${ActionType.REDIRECT}`);
+                }
+                    break;
+                default:
+                    res.sendFile(path.join(__dirname, '../../../frontend/index.html'));
+                    break;
+            }
         } else {
             res.status(404).send("Ungültiger Token");
         }
@@ -215,6 +245,7 @@ router.get('/:linkToken/credits', async (req, res, next) => {
         next(error)
     }
 });
+
 
 async function findImage(imageName, linkToken) {
 
