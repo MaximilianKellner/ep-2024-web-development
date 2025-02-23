@@ -1,7 +1,7 @@
-const logoutButton = document.querySelector('.logoutButton');
+const logoutButtons = document.querySelectorAll('.logoutButton'); // Es gibt zwei Logout-Buttons auf der Seite; einer im sidebar Menu und einer im normalen Header
 
 
-//Abfangen des Requests um auf diese Seite zu gelangen
+// Abfangen des Requests um auf diese Seite zu gelangen
 document.addEventListener('DOMContentLoaded', () => {
     const accessToken = localStorage.getItem('accessToken');
     const refreshToken = localStorage.getItem('refreshToken');
@@ -11,15 +11,15 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-// Token-Ablaufzeit überprüfen und ggf. setzen
-if (!localStorage.getItem('tokenExpiry')) {
-    const decodedToken = parseJwt(accessToken);
-    const a = decodedToken.exp * 1000;
-    localStorage.setItem('tokenExpiry', decodedToken.exp * 1000);
-}
+    // Token-Ablaufzeit überprüfen und ggf. setzen
+    if (!localStorage.getItem('tokenExpiry')) {
+        const decodedToken = parseJwt(accessToken);
+        const a = decodedToken.exp * 1000;
+        localStorage.setItem('tokenExpiry', decodedToken.exp * 1000);
+    }
 
-// Token-Gültigkeit überprüfen und ggf. erneuern
-checkAndRefreshToken();
+    // Token-Gültigkeit überprüfen und ggf. erneuern
+    checkAndRefreshToken();
     
     // Token verifizieren
     fetch('/verify-token', {
@@ -30,7 +30,7 @@ checkAndRefreshToken();
     })
     .then(response => {
         if (response.status !== 200) {
-            // If token is invalid, try refreshing
+            // Wenn der Token nicht verifiziert werden kann, Redirect auf Login-Seite
             if (refreshToken) {
                 return fetch('/token', {
                     method: 'POST',
@@ -45,19 +45,19 @@ checkAndRefreshToken();
                         throw new Error('Failed to refresh token');
                     }
                 }).then(data => {
-                    // Store new access token
+                    // Speichern des neuen Access Tokens
                     localStorage.setItem('accessToken', data.accessToken);
-                    // Reload page to retry with new token
+                    // Redirect auf aktuelle Seite, um die Anfrage erneut zu senden
                     window.location.reload();
                 }).catch(error => {
-                    // If refresh fails, redirect to login
+                    // Falls es immer noch einen Fehler gibt, Redirect auf Login-Seite
                     console.error('Token refresh failed:', error);
                     localStorage.removeItem('accessToken');
                     localStorage.removeItem('refreshToken');
                     window.location.href = '/login.html';
                 });
             } else {
-                // No refresh token available, redirect to login
+                // Wenn kein Refresh Token vorhanden ist, Redirect auf Login-Seite
                 localStorage.removeItem('accessToken');
                 window.location.href = '/login.html';
             }
@@ -69,46 +69,48 @@ checkAndRefreshToken();
     });
 });
 
-if(logoutButton){
+if(logoutButtons){
     console.log('Logout Button gefunden');
-    logoutButton.addEventListener("click", event => {
-        console.log('Logout Button wurde geklickt');
-        event.preventDefault();
-        const accessToken = localStorage.getItem('accessToken');
-        const refreshToken = localStorage.getItem('refreshToken');
-        
-        // Nur weitermachen wenn Access Token vorhanden ist
-        if (!accessToken) {
-            alert('No active session found');
-            window.location.href = '/index.html';
-            return;
-        }
-        
-        // Logout Request an Server senden
-        fetch('/logout', {
-            method: 'DELETE', 
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken}`
-            },
-            body: JSON.stringify({ token: refreshToken })  // Refresh Token soll gelöscht werden
-        })
-        .then(response => {
-            if (response.status === 204) {
-                // Beim Logout sollen alle Tokens aus dem Local Storage gelöscht werden
-                localStorage.removeItem('accessToken');
-                localStorage.removeItem('refreshToken');
-                localStorage.removeItem('username');
-                localStorage.removeItem('password');
-                alert('Benutzer wurde abgemeldet und Access Token erfolgreich gelöscht');
-                window.location.href = '/login.html';
-            } else {
-                throw new Error('Logout failed');
+    logoutButtons.forEach(logoutButton => {
+        logoutButton.addEventListener("click", event => {
+            console.log('Logout Button wurde geklickt');
+            event.preventDefault();
+            const accessToken = localStorage.getItem('accessToken');
+            const refreshToken = localStorage.getItem('refreshToken');
+            
+            // Nur weitermachen wenn Access Token vorhanden ist
+            if (!accessToken) {
+                alert('No active session found');
+                window.location.href = '/index.html';
+                return;
             }
-        })
-        .catch(error => {
-            console.error('Error during logout:', error);
-            alert('Es gab ein Problem beim Abmelden');
+            
+            // Logout Request an Server senden
+            fetch('/logout', {
+                method: 'DELETE', 
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`
+                },
+                body: JSON.stringify({ token: refreshToken })  // Refresh Token soll gelöscht werden
+            })
+            .then(response => {
+                if (response.status === 204) {
+                    // Beim Logout sollen alle Tokens aus dem Local Storage gelöscht werden
+                    localStorage.removeItem('accessToken');
+                    localStorage.removeItem('refreshToken');
+                    localStorage.removeItem('username');
+                    localStorage.removeItem('password');
+                    alert('Benutzer wurde abgemeldet und Access Token erfolgreich gelöscht');
+                    window.location.href = '/login.html';
+                } else {
+                    throw new Error('Logout failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error during logout:', error);
+                alert('Es gab ein Problem beim Abmelden');
+            });
         });
     });
 }
@@ -135,12 +137,12 @@ function checkAndRefreshToken() {
     const currentTime = Date.now();
     const timeUntilExpiry = expiryTime - currentTime;
 
-    console.log('Aktuelle Zeit in ms:', currentTime);
-    console.log('Ablaufzeit des Tokens in ms:', expiryTime);
+    // console.log('Aktuelle Zeit in ms:', currentTime);
+    // console.log('Ablaufzeit des Tokens in ms:', expiryTime);
     console.log('Zeit bis Rauswurf in ms:', timeUntilExpiry);
 
     // Wenn weniger als 2 Sekunden übrig sind oder Token abgelaufen ist
-    if (timeUntilExpiry < 2000) {
+    if (timeUntilExpiry < 1000) {
         console.log('Token läuft ab oder ist abgelaufen');
         const refreshToken = localStorage.getItem('refreshToken');
         
