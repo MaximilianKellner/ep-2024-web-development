@@ -2,13 +2,13 @@ import express from 'express';
 import cors from 'cors';
 import multer from 'multer';
 import {processAllFiles} from '../../sharp.js';
-import optimizationEventEmitter from '../../optimizationEventEmitter.js';
+import optimizationEventEmitter from '../../OptimizationEventEmitter.js';
 import fs from 'fs';
 import path from 'path';
 import {pool} from '../../db.js';
 import {fileURLToPath} from 'url';
 import {dirname} from 'path';
-import apiErrorHandler from "../../apiErrorHandler.js";
+import handleApiError from "../../handleApiError.js";
 import ApiError from '../../ApiError.js';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -22,7 +22,7 @@ const router = express.Router();
 const storage = multer.diskStorage({
     destination: async function (req, file, cb) {
         try {
-            const customer = await pool.query('SELECT * FROM customer WHERE link_token = $1', [req.params.linkToken]);
+            const customer = await pool.query('SELECT * FROM active_customer WHERE link_token = $1', [req.params.linkToken]);
             if (customer.rows.length > 0) {
                 const customerUploadsDir = `customers/${req.params.linkToken}/uploaded`;
                 cb(null, customerUploadsDir);
@@ -73,7 +73,7 @@ router.get('/:linkToken', async (req, res, next) => {
     try {
         const { linkToken } = req.params;
 
-        const result = await pool.query('SELECT link_token FROM customer WHERE link_token = $1', [linkToken]);
+        const result = await pool.query('SELECT link_token FROM active_customer WHERE link_token = $1', [linkToken]);
 
         if (result.rows.length > 0) {
             console.log('Link token:', linkToken);
@@ -204,7 +204,7 @@ router.get('/:linkToken/credits', async (req, res, next) => {
     const linkToken = req.params.linkToken;
     console.log(`Displaying credits for user:${linkToken}-`);
     try {
-        const result = await pool.query('SELECT credits FROM customer WHERE link_token = $1', [linkToken]);
+        const result = await pool.query('SELECT credits FROM active_customer WHERE link_token = $1', [linkToken]);
         if (result.rows.length > 0) {
             const credits = result.rows[0]?.credits; // Optional-Chaining, um null/undefined zu vermeiden
             res.json({credits});
