@@ -206,8 +206,10 @@ router.put('/update-customer', async (req, res) => {
     }
 });
 
-router.delete('/customers/:id/delete', async (req, res, next) => {
+router.delete('/customers/:customerId/delete', async (req, res, next) => {
     try {
+
+        console.log("Kunden-ID zum Löschen:", req.params.id);
         const {customerId} = req.params;
         const result = await pool.query('DELETE FROM customer WHERE customer_id = $1', [customerId]);
         if (result.rowCount > 0) {
