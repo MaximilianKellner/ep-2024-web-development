@@ -1,6 +1,5 @@
 const logoutButton = document.querySelector('.logoutButton');
 
-const twentyFiveMinutes = 1000 * 60 * 25;
 
 //Abfangen des Requests um auf diese Seite zu gelangen
 document.addEventListener('DOMContentLoaded', () => {
@@ -71,7 +70,10 @@ checkAndRefreshToken();
 });
 
 if(logoutButton){
-    logoutButton.addEventListener('click', () => {
+    console.log('Logout Button gefunden');
+    logoutButton.addEventListener("click", event => {
+        console.log('Logout Button wurde geklickt');
+        event.preventDefault();
         const accessToken = localStorage.getItem('accessToken');
         const refreshToken = localStorage.getItem('refreshToken');
         
@@ -125,22 +127,54 @@ function parseJwt(token) {
 
 
 function checkAndRefreshToken() {
-    const tokenExpiry = parseInt(localStorage.getItem('tokenExpiry')); // Parse Zeit zu einem Integer
-    const refreshToken = localStorage.getItem('refreshToken');
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) return;
 
-    if (!tokenExpiry || !refreshToken) return;
-
+    const decodedToken = parseJwt(accessToken);
+    const expiryTime = decodedToken.exp * 1000; // Konvertiere zu Millisekunden
     const currentTime = Date.now();
-    const timeUntilExpiry = tokenExpiry - currentTime;
+    const timeUntilExpiry = expiryTime - currentTime;
 
-    if (timeUntilExpiry < 0) {
-        console.log('Token ist abgelaufen, lösche...');
+    console.log('Aktuelle Zeit in ms:', currentTime);
+    console.log('Ablaufzeit des Tokens in ms:', expiryTime);
+    console.log('Zeit bis Rauswurf in ms:', timeUntilExpiry);
+
+    // Wenn weniger als 2 Sekunden übrig sind oder Token abgelaufen ist
+    if (timeUntilExpiry < 2000) {
+        console.log('Token läuft ab oder ist abgelaufen');
+        const refreshToken = localStorage.getItem('refreshToken');
+        
+        if (refreshToken) {
+            // Versuche Token zu erneuern
+            fetch('/token', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token: refreshToken })
+            })
+            .then(response => {
+                if (response.ok) return response.json();
+                throw new Error('Token refresh failed');
+            })
+            .then(data => {
+                localStorage.setItem('accessToken', data.accessToken);
+                console.log('Token erfolgreich erneuert');
+            })
+            .catch(error => {
+                console.error('Token refresh failed:', error);
+                localStorage.clear();
+                window.location.href = '/login.html';
+            });
+        } else {
+            console.log('Kein Refresh Token vorhanden, leite um...');
+        }
         localStorage.clear();
         window.location.href = '/login.html';
     }
 }
 
-const intervalId = setInterval(checkAndRefreshToken, twentyFiveMinutes);
+const intervalId = setInterval(checkAndRefreshToken, 2000);
 
 // Intervall stoppen, wenn die Seite verlassen wird
 window.addEventListener('beforeunload', () => {
