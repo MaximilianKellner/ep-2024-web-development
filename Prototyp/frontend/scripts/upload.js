@@ -15,6 +15,17 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
 
         console.log("File input: " + fileInput.value)
 
+        // check credits and return if not enough
+        const response = await axios.get(`/${linkToken}/credits`);
+        const credits = response.data.credits;
+        console.log('Credits:', credits);
+
+        if (credits < files.length) {
+            messageDiv.textContent = `Für den Upload fehlen ${files.length - credits} Credits.`;
+            messageDiv.classList.add('error');
+            return;
+        }
+
         if (files.length <= 0) {
             //clear classlist
             messageDiv.textContent = 'Bitte mindestens eine Datei auswählen.';
@@ -97,6 +108,11 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
 
 //Check Credits on load
 document.addEventListener('DOMContentLoaded', async () => {
+    loadCredits() 
+});
+
+// load credits function
+async function loadCredits() {
     try {
         const linkToken = window.location.pathname.replace("/", ""); // Entfernt das "/"
         console.log("Aktueller linkToken create image:", linkToken);
@@ -110,4 +126,4 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         console.error('Error getting credits:', error);
     }
-});
+}
