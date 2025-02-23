@@ -14,6 +14,7 @@ Hier ein Auszug über den Aufbau unseres Verzeichnisses. Es werden bewusst nicht
     * backend:
         * /customers:
            * enthält Unterordner der personalisierte Customer-ID beihaltet. Der sind die Ordner uploaded und optimized untergestellt, in die Bilddateien reingeladen bzw. rausgelesen werden
+           * Bsp.: /customers/e33ffc9a-8901-4e18-951f-9e208b266244/uploaded + /optimized
         * .env:
            * Environment-Datei, die neben Access- und Refresh-Tokens für JWT Authetifikation, auch Anmeldeinformationen für den E-Mail-Client und die Datenbank speichert
         * OptimizationEventEmitter.js:
@@ -31,15 +32,15 @@ Hier ein Auszug über den Aufbau unseres Verzeichnisses. Es werden bewusst nicht
     * frontend:
       * scripts:
          * config.js:
-            * definieren von häufig genutzten Variablen
+            * Definieren von häufig genutzten Variablen
          * handle-customer.js:
-            * Erstellen& Bearbeiten von Kunden   
+            * Erstellen und Bearbeiten von Kunden   
          * load-customer.js:
-            * das labden von Kunden in die admin-table
+            * Das Laden von Kunden in die admin-table
          * menu.js:
             * Sidemenu für Mobile-Ansicht
          * modal.js:
-            * Kreiert Pop-Up, dass Löschen eines Kunden ermöglicht
+            * Kreiert Pop-Up, das Löschen eines Kunden ermöglicht
          * optimized-download.js:
             * Erstellen eines Eintrags in der Tabelle (s. index.html), wenn ein Bild erfolgreich optimiert wurde.
          * sse.js:
