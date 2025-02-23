@@ -84,7 +84,7 @@ router.get('/update-customer', (req, res) => {
 
 router.get('/load-customers', async (req, res, next) => {
     try {
-        const result = await pool.query('SELECT customer_name, customer_id, expiration_date, credits, email, img_url  FROM active_customer');
+        const result = await pool.query('SELECT customer_name, customer_id, expiration_date, credits, email, img_url  FROM customer');
 
         if (result.rows.length > 0) {
             const customers = result.rows.map(customer => ({
@@ -142,7 +142,7 @@ router.get('/get-customer', async (req, res) => {
     }
 
     try {
-        const result = await pool.query('SELECT * FROM active_customer WHERE customer_id = $1', [id]);
+        const result = await pool.query('SELECT * FROM customer WHERE customer_id = $1', [id]);
 
         if (result.rows.length === 0) {
             return res.status(404).json({error: `Kunde ${id} nicht gefunden`});
