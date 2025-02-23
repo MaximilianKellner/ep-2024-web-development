@@ -26,7 +26,7 @@ export async function checkTokenExpired() {
             if (expiresWithinThreeDays(expirationDate)) {
                 const name = customer.name;
                 const email = customer.email;
-                const renewalLink = `http://localhost:5000/customers/${customer.link_token}?action=renewal`;
+                const renewalLink = `${process.env.URL}/customers/${customer.link_token}?action=renewal`;
                 const expirationDate = customer.expiration_date;
                 sendReminderNotification(name, email, renewalLink, expirationDate);
             }

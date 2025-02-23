@@ -7,8 +7,6 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
 
         const fileInput = document.getElementById('fileInput');
         const messageDiv = document.getElementById('message');
-        const fileList = document.getElementById('file-list');
-        const uploadStatusList = document.querySelector('.upload-status-list');
         const files = fileInput.files;
         console.log("Files: " + files);
 

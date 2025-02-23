@@ -1,5 +1,4 @@
 import express from 'express';
-import cors from 'cors';
 import multer from 'multer';
 import {processAllFiles} from '../../sharp.js';
 import optimizationEventEmitter from '../../OptimizationEventEmitter.js';
@@ -8,7 +7,6 @@ import path from 'path';
 import {pool} from '../../db.js';
 import {fileURLToPath} from 'url';
 import {dirname} from 'path';
-import handleApiError from "../../handleApiError.js";
 import ApiError from '../../ApiError.js';
 import dotenv from 'dotenv';
 import ActionType from "../../ActionType.js";
@@ -79,7 +77,7 @@ router.get("/:linkToken/renewal-link", async (req, res, next) => {
         const result = await pool.query('SELECT link_token FROM active_customer WHERE link_token = $1', [linkToken]);
         if (result.rows.length > 0) {
             // Weiterleitung zur eigentlichen Zielseite
-            res.redirect(`http://localhost:5000/customers/${linkToken}`);
+            res.redirect(`${process.env.URL}/customers/${linkToken}`);
         }
     } catch (error) {
         next(error);
@@ -103,7 +101,7 @@ router.get('/:linkToken', async (req, res, next) => {
                              RETURNING *`, // Gibt alle Felder der betroffenen Zeile zurück
                         [linkToken]
                     );
-                    res.redirect(`http://localhost:5000/customers/${linkToken}?action=${ActionType.REDIRECT}`);
+                    res.redirect(`${process.env.URL}/customers/${linkToken}?action=${ActionType.REDIRECT}`);
                 }
                     break;
                 default:
