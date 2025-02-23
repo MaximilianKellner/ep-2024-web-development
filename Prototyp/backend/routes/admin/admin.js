@@ -39,13 +39,12 @@ router.post('/token', (req, res) => {
 })
 //Hier stand post
 router.delete('/logout', authenticateToken, (req, res) => {
-    // Extrahieren des refreshTokens aus dem Body (siehe Anfrage)und entfernen des Tokens aus dem Array
+    // Extrahieren des refreshTokens aus dem Body (siehe Anfrage) und entfernen des Tokens aus dem Array
     refreshTokens = refreshTokens.filter(refreshToken => refreshToken !== req.body.token);
-    console.log("refreshTokens: " + refreshTokens);
     res.sendStatus(204);
 });
 
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
     const username = req.body.username
     const password = req.body.password
     for(let i = 0; i < admins.length; i++){
@@ -54,17 +53,21 @@ router.post('/login', (req, res) => {
             const user = {username: username, password: password}
             const accessToken = generateAccessToken(user)
             const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
-            refreshTokens.push(refreshToken)
+            // Hinzufügen des refreshTokens zum Array, mit Verzögerung, um den Token zu speichern. Ohne Verzögerung wird der Token nicht schnell genug für das admin-panel gespeichert
+            await new Promise(resolve => {
+                refreshTokens.push(refreshToken)
+                resolve()
+            })
             res.json({accessToken: accessToken, refreshToken: refreshToken})
             return
         }
     }
-    res.status(403).send("Username or password incorrect")
+    res.status(403).send("Benutzername oder Passwort nicht richtig")
 })
 
 function generateAccessToken(user) {
     //Session-Wert aus Demozwecken auf 10s gesetzt. Zu empfehlen ist höherer Wert :)
-    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '25m'})
+    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '10m'})
 }
 
 router.get('/verify-token', authenticateToken, (req, res) => {
