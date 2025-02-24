@@ -24,6 +24,7 @@ source.addEventListener('message', (event) => {
     }
     
     messageDiv.innerHTML = `${fileNameNoSuffix} status: ${status}`;
+    loadOptimizedContent();
 });
 
 source.addEventListener('complete', (event) => {
