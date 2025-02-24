@@ -20,13 +20,11 @@ source.addEventListener('message', (event) => {
 
     self.console.log("Message: ", event.data);
 
-    // Set Credit Banner
-    if (credits >= 0) {
+    // Set Credit Banner if credits are not undefined and not null
+    if (credits !== undefined && credits >= 0) {    
         document.getElementById('credits-current').textContent = `${credits} Credits`;
-    } else {
-        document.getElementById('credits-current').textContent = `-1 Credits`;
     }
-
+    
     messageDiv.innerHTML = `${fileNameNoSuffix} status: ${status}`;
     loadOptimizedContent();
 });
