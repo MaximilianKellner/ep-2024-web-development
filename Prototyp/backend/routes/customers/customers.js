@@ -79,7 +79,7 @@ router.get("/:linkToken/renewal-link", async (req, res, next) => {
         const result = await pool.query('SELECT link_token FROM active_customer WHERE link_token = $1', [linkToken]);
         if (result.rows.length > 0) {
             // Weiterleitung zur eigentlichen Zielseite
-            res.redirect(`http://localhost:5000/customers/${linkToken}`);
+            res.redirect(`${process.env.URI}/customers/${linkToken}`);
         }
     } catch (error) {
         next(error);
@@ -103,7 +103,7 @@ router.get('/:linkToken', async (req, res, next) => {
                              RETURNING *`, // Gibt alle Felder der betroffenen Zeile zurück
                         [linkToken]
                     );
-                    res.redirect(`http://localhost:5000/customers/${linkToken}?action=${ActionType.REDIRECT}`);
+                    res.redirect(`${process.env.URI}/customers/${linkToken}?action=${ActionType.REDIRECT}`);
                 }
                     break;
                 default:
