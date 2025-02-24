@@ -25,13 +25,15 @@ export function sendDownloadNotification(customerNe, customerEmail, downloadLink
 <p>Your optimised files are now ready for download!</p>
 <p><a href="${downloadLink}">Go to the downloads page</a></p>
 `
-        const mailOptions = {
-            from: process.env.SMTP_USER,
-            to: customerEmail,
-            subject: 'Your images are optimized & ready to download',
-            text: 'That was easy!',
-            html: message
-        };
+        const mailOptions = nodemailer.createTransport({
+           host: process.env.SMTP_HOST,
+           port: process.env.SMTP_PORT,
+            secure: false,
+           auth: {
+               user: process.env.SMTP_USER,
+               pass: process.env.SMTP_PASSWORD
+           }
+        });
 
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
