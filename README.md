@@ -88,9 +88,6 @@ SMTP_PORT=
 SMTP_USER=
 SMTP_PASSWORD=
 
-# E-mail recipient
-RECIPIENT=
-
 # PostreSQL credentials
 DB_USER=
 DB_HOST=
