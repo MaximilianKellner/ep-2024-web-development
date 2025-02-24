@@ -38,9 +38,12 @@ router.post('/token', (req, res) => {
     })
 })
 //Hier stand post
-router.delete('/logout', authenticateToken, (req, res) => {
+router.delete('/logout', authenticateToken, async (req, res) => {
+    await new Promise(resolve => {
     // Extrahieren des refreshTokens aus dem Body (siehe Anfrage) und entfernen des Tokens aus dem Array
-    refreshTokens = refreshTokens.filter(refreshToken => refreshToken !== req.body.token);
+        refreshTokens = refreshTokens.filter(refreshToken => refreshToken !== req.body.token);
+        resolve()
+    })
     res.sendStatus(204);
 });
 
