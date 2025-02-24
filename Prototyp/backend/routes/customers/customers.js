@@ -98,7 +98,9 @@ router.get('/:linkToken', async (req, res, next) => {
                     await pool.query(
                         `UPDATE active_customer
                          SET expiration_date = expiration_date + INTERVAL '30 days'
-                         WHERE link_token = $1
+                         WHERE link_token = $1 
+                        AND expiration_date > NOW() 
+                        AND expiration_date <= NOW() + INTERVAL '3 days'
                              RETURNING *`, // Gibt alle Felder der betroffenen Zeile zurück
                         [linkToken]
                     );
