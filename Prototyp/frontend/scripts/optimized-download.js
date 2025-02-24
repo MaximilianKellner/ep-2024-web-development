@@ -1,3 +1,5 @@
+ONE_HOUR_MS = 1000 * 60 * 60;
+
 function createImageRequest(image) {
     const linkToken = window.location.pathname.replace("/", ""); // Entfernt das "/"
     console.log("Aktueller linkToken create image:", linkToken);
@@ -22,7 +24,7 @@ function calculateHoursLeft(fileName) {
     // Berechne die Differenz in Tagen
     const currentDate = new Date();
     const timeDifference = currentDate - creationDate;
-    const hoursDifference = Math.floor(timeDifference / (1000 * 60 * 60));
+    const hoursDifference = Math.floor(timeDifference / (ONE_HOUR_MS));
     const hoursLeft = MAX_FILE_STORAGE_HOURS - hoursDifference;
 
     return hoursLeft;
