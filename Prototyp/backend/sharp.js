@@ -87,10 +87,7 @@ async function compressToSize(inputPath, outputPath, fileName, userId) {
         }
 
         if (currentSizeKB <= maxSizeInKB) {
-            await sharp(inputPath)
-                .jpeg({ quality: 100 })
-                .rotate()
-                .toFile(outputPath);
+            fs.copyFileSync(inputPath, outputPath);
             console.log(`Datei bereits unter der maximalen Größe: ${currentSizeKB.toFixed(2)} KB`);
             return outputPath;
         }
