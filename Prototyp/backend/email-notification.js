@@ -40,8 +40,7 @@ export function sendDownloadNotification(customerName, customerEmail, downloadLi
             }
         });
     } catch (error) {
-        // TODO: Replace with error handling
-        console.error(error);
+        throw error
     }
 }
 
