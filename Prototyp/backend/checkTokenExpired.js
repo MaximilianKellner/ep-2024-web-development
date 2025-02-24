@@ -1,6 +1,9 @@
 import {pool} from './db.js';
 import {sendReminderNotification} from "./email-notification.js";
 
+import dotenv from 'dotenv';
+dotenv.config();
+
 const ONE_DAY_IN_MS = 1000 * 60 * 60 * 24;
 const THREE_DAYS = 3;
 const ZERO_DAYS = 0;
