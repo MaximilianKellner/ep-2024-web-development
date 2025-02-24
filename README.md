@@ -78,7 +78,7 @@ Hier ein Auszug über den Aufbau unseres Verzeichnisses. Es werden bewusst nicht
 - SMTP-Relay Service (z.B. Mailersend)
 - .env Datei in /backend:
 ```
-# Tokens für die Authentifizierung
+# Auth tokens
 ACCESS_TOKEN_SECRET=
 REFRESH_TOKEN_SECRET=
 
@@ -94,6 +94,9 @@ DB_HOST=
 DB_NAME=
 DB_PASSWORD=
 DB_PORT=
+
+# Host (f.e. localhost:[PORT])
+URI=
 
 # The port your application is running on
 DEV_PORT=
