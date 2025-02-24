@@ -20,7 +20,6 @@ const __dirname = dirname(__filename);
 
 const router = express.Router();
 
-// TODO: Regeln, was passiert, wenn durch Abbruch des Uploads/ Downloads ein Fehler auftritt.
 const storage = multer.diskStorage({
     destination: async function (req, file, cb) {
         try {
@@ -79,7 +78,7 @@ router.get("/:linkToken/renewal-link", async (req, res, next) => {
         const result = await pool.query('SELECT link_token FROM active_customer WHERE link_token = $1', [linkToken]);
         if (result.rows.length > 0) {
             // Weiterleitung zur eigentlichen Zielseite
-            res.redirect(`http://localhost:5000/customers/${linkToken}`);
+            res.redirect(`${process.env.URI}/customers/${linkToken}`);
         }
     } catch (error) {
         next(error);
@@ -103,7 +102,7 @@ router.get('/:linkToken', async (req, res, next) => {
                              RETURNING *`, // Gibt alle Felder der betroffenen Zeile zurück
                         [linkToken]
                     );
-                    res.redirect(`http://localhost:5000/customers/${linkToken}?action=${ActionType.REDIRECT}`);
+                    res.redirect(`${process.env.URI}/customers/${linkToken}?action=${ActionType.REDIRECT}`);
                 }
                     break;
                 default:
@@ -118,7 +117,6 @@ router.get('/:linkToken', async (req, res, next) => {
     }
 });
 
-// TODO: Fehlerbehandlung von Multer Errors in /uploaded
 router.post('/:linkToken/upload', upload.array('images'), async (req, res, next) => {
 
     let fileNames;
@@ -143,7 +141,6 @@ router.post('/:linkToken/upload', upload.array('images'), async (req, res, next)
         await processAllFiles(linkToken, fileNames)
         await deleteFiles(linkToken, fileNames);
 
-        // console.log("In uploadedFilesToDelete: " + uploadedFilesToDelete.entries().toArray());
         res.status(204).send('File uploaded successfully.');
     } catch (error) {
         console.error(error);
@@ -170,7 +167,6 @@ router.get('/:linkToken/progress', async (req, res, next) => {
         res.setHeader('Cache-Control', 'no-cache');
         res.setHeader('Connection', 'keep-alive');
         res.flushHeaders();
-        // TODO: Add error handling with callback
         res.write('');
 
         const linkToken = req.params.linkToken;
@@ -201,7 +197,6 @@ router.get('/:linkToken/download/:imageName', async (req, res, next) => {
     try {
         const contentDispositionType = req.query.cdtype ? 'inline' : 'attachment';
 
-        // TODO: Mehrere Dateien könnten den gleichen Namen haben und sollten unterschieden werden.
         const linkToken = req.params.linkToken;
         const imageName = req.params.imageName;
 
@@ -216,7 +211,6 @@ router.get('/:linkToken/optimized-images', async (req, res, next) => {
 
     try {
         // TODO: Update datatypes -> Create separate util file to manage allowed datatypes/ mime-types
-        // TODO: Update optimized path -> user specific
         const files = (await fs.promises.readdir(`customers/${linkToken}/optimized`)).filter(file =>
             /\.(jpg|jpeg|png)/i.test(file)
         );
@@ -261,7 +255,6 @@ async function findImage(imageName, linkToken) {
     }
 }
 
-// TODO: Suffix sollte wieder entfernt werden.
 async function sendImage(imageName, linkToken, res, contentDispositionType) {
     try {
         const filePath = `customers/${linkToken}/optimized/${imageName}`;

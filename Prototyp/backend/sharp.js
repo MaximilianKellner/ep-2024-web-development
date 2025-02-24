@@ -6,7 +6,6 @@ import sharp from 'sharp';
 import optimizationEventEmitter from './OptimizationEventEmitter.js';
 import OptimizationEventStatus from './OptimizationEventStatus.js';
 import { pool } from './db.js';
-// TODO: Should be inside try-catch
 
 sharp.cache(false);
 
@@ -23,7 +22,6 @@ async function getCustomerData(linkToken, optimizationParameter = 'max_file_size
 }
 
 
-// TODO: Originale der bereits optimierten Dateien entfernen.
 async function processAllFiles(linkToken, fileNames) {
 
     try {
@@ -40,7 +38,6 @@ async function processAllFiles(linkToken, fileNames) {
             /\.(jpg|jpeg|png|svg)/i.test(file)
         );
 
-        // TODO: Check all naming -> for example file should be fileName
         for (const file of fileNames) {
             const inputPath = path.join(uploadDir, file);
             const outputPath = path.join(optimizedDir, file);
