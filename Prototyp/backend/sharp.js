@@ -1,11 +1,11 @@
 import fs from 'fs';
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import {dirname} from 'path';
+import {fileURLToPath} from 'url';
 import path from 'path';
 import sharp from 'sharp';
 import optimizationEventEmitter from './OptimizationEventEmitter.js';
 import OptimizationEventStatus from './OptimizationEventStatus.js';
-import { pool } from './db.js';
+import {pool} from './db.js';
 
 sharp.cache(false);
 
@@ -13,8 +13,9 @@ sharp.cache(false);
 async function getCustomerData(linkToken, optimizationParameter = 'max_file_size_kb') {
 
     try {
-        const data = await pool.query(`SELECT ${[optimizationParameter]} FROM active_customer WHERE link_token = $1`, [linkToken]);
-        console.log('Customer Data: ', data.rows[0]?.[optimizationParameter]);
+        const data = await pool.query(`SELECT ${[optimizationParameter]}
+                                       FROM active_customer
+                                       WHERE link_token = $1`, [linkToken]);
         return data.rows[0]?.[optimizationParameter];
     } catch (error) {
         throw error;
@@ -31,34 +32,27 @@ async function processAllFiles(linkToken, fileNames) {
 
         // Ensure optimized directory exists
         if (!fs.existsSync(optimizedDir)) {
-            fs.mkdirSync(optimizedDir, { recursive: true });
+            fs.mkdirSync(optimizedDir, {recursive: true});
         }
         const files = fs.readdirSync(uploadDir);
-        const imageFiles = files.filter(file =>
-            /\.(jpg|jpeg|png|svg)/i.test(file)
-        );
 
         for (const file of fileNames) {
             const inputPath = path.join(uploadDir, file);
             const outputPath = path.join(optimizedDir, file);
 
-           try {
+            try {
                 const done = await compressToSize(inputPath, outputPath, file, linkToken);
                 if (done) {
-                    console.log(`Successfully processed: ${file}`);
                     const result = await pool.query('UPDATE customer SET credits = credits - 1 WHERE link_token = $1 RETURNING credits', [linkToken]);
                     const remainingCredits = result.rows[0]?.credits;
                     optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Complete, file, remainingCredits);
-                    console.log('Verbleibende Credits:', remainingCredits);
                 }
             } catch (error) {
-                console.error(`Fehler bei File: ${file};
-                    Fehlermeldung:`, error);
+                throw ApiError.internal("Something went wrong when optimizing image");
                 optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Error);
-            }
+            }
         }
     } catch (error) {
-        console.error('Error reading directory:', error);
         optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Error)
         throw error;
     } finally {
@@ -72,7 +66,7 @@ async function compressToSize(inputPath, outputPath, fileName, userId) {
         if (!maxSizeInKB) {
             throw new Error('Max file size not found');
         }
-        
+
         let quality = 100;
         const currentSizeKB = fs.statSync(inputPath).size / 1024;
 
@@ -97,14 +91,14 @@ async function compressToSize(inputPath, outputPath, fileName, userId) {
         let width = metadata.width;
         let height = metadata.height;
         let resizeFactor = 1;
-        
+
         // Äußere Schleife für Größenreduktion
         while (resizeFactor >= 0.1) { // Nicht kleiner als 10% der Originalgröße
             console.log(`\nTesting with resize factor: ${resizeFactor.toFixed(2)}`);
-            
+
             const newWidth = Math.floor(width * resizeFactor);
             const newHeight = Math.floor(height * resizeFactor);
-            
+
             // Sharp-Instanz für aktuelle Größe
             const image = sharp(inputPath)
                 .rotate()
@@ -119,15 +113,15 @@ async function compressToSize(inputPath, outputPath, fileName, userId) {
             while (minQuality <= maxQuality && iterations < maxIterations) {
                 iterations++;
                 quality = Math.floor((minQuality + maxQuality) / 2);
-                
+
                 try {
                     const buffer = await image
-                        .png({ quality: quality })
+                        .png({quality: quality})
                         .toBuffer();
-                    
+
                     const currentSizeKB = buffer.length / 1024;
                     console.log(`Iteration ${iterations}: Size: ${currentSizeKB.toFixed(2)} KB, Quality: ${quality}, Dimensions: ${newWidth}x${newHeight}`);
-                    
+
                     optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Active, fileName);
 
                     // Wenn die Größe unter dem Maximum ist, nehmen wir dieses Ergebnis sofort
@@ -143,10 +137,10 @@ async function compressToSize(inputPath, outputPath, fileName, userId) {
                         `);
                         return outputPath;
                     }
-                    
+
                     // Wenn die Größe noch zu groß ist, reduziere die Qualität
                     maxQuality = quality - 1;
-                    
+
                 } catch (error) {
                     console.error(`Error during compression attempt at quality ${quality}:`, error);
                     maxQuality = quality - 1;
@@ -160,21 +154,20 @@ async function compressToSize(inputPath, outputPath, fileName, userId) {
         // Wenn wir hier ankommen, haben wir keine passende Größe gefunden
         optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Error, fileName);
         throw new Error(`Konnte nicht zur gewünschten Größe komprimiert werden`);
-        
+
     } catch (error) {
-        console.error('Komprimierungsfehler:', error);
         throw error;
     }
 }
 
-async function xmlToPng(inputPath, outputPath){
-    try{
+async function xmlToPng(inputPath, outputPath) {
+    try {
         await sharp(inputPath)
             .png()
             .toFile(outputPath)
-    } catch (error){
-        console.log('Fehler bei XML nach PNG:' + error)
+    } catch (error) {
         throw error
     }
 }
-export { getCustomerData, compressToSize, processAllFiles };
+
+export {getCustomerData, compressToSize, processAllFiles};

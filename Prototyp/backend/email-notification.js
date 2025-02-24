@@ -16,7 +16,7 @@ const transporter = nodemailer.createTransport({
 // Configure the mailoptions object
 
 
-export function sendDownloadNotification(customerName, customerEmail, downloadLink) {
+export function sendDownloadNotification(customerNe, customerEmail, downloadLink) {
 
     try {
         const message = `
@@ -34,10 +34,10 @@ export function sendDownloadNotification(customerName, customerEmail, downloadLi
 
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
-                console.log('Error:', error);
+                throw ApiError.internal("Something went wrong when sending email");
             } else {
                 console.log('Email sent:', info.response);
-            }
+            }am
         });
     } catch (error) {
         throw error
@@ -61,7 +61,7 @@ export function sendReminderNotification(customerName, customerEmail, renewalLin
 
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
-                console.log('Error:', error);
+                throw ApiError.internal("Something went wrong when sending email");
             } else {
                 console.log('Email sent:', info.response);
             }
