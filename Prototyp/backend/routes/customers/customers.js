@@ -96,9 +96,10 @@ router.get('/:linkToken', async (req, res, next) => {
                     await pool.query(
                         `UPDATE active_customer
                          SET expiration_date = expiration_date + INTERVAL '30 days'
-                         WHERE link_token = $1 
-                        AND expiration_date > NOW() 
-                        AND expiration_date <= NOW() + INTERVAL '3 days'
+                         WHERE link_token = $1
+                           AND expiration_date
+                             > NOW()
+                           AND expiration_date <= NOW() + INTERVAL '3 days'
                              RETURNING *`, // Gibt alle Felder der betroffenen Zeile zurück
                         [linkToken]
                     );
@@ -128,18 +129,33 @@ router.post('/:linkToken/upload', upload.array('images'), async (req, res, next)
         }
 
         linkToken = req.params.linkToken;
-
         fileNames = req.files.map(file => file.filename);
+
+        const creditsResult = await pool.query(
+            'SELECT credits FROM active_customer WHERE link_token = $1',
+            [linkToken]
+        );
+
+        if (creditsResult.rows.length === 0) {
+            return next(ApiError.internal("Customer not found"));
+        }
+
+        const currentCredits = creditsResult.rows[0].credits;
+
+        if (currentCredits < req.files.length) {
+            return next(ApiError.badRequest("Not enough credits"));
+        }
 
         // TODO: XMLs löschen.
         // TODO: Error handling inside Functions with new Error handling class (after server.js is done), also test for async Errors!
         await processAllFiles(linkToken, fileNames)
-        await deleteFiles(linkToken, fileNames);
-
         res.status(204).send('File uploaded successfully.');
+
     } catch (error) {
         console.error(error);
         next(error);
+    } finally {
+        await deleteFiles(linkToken, fileNames);
     }
 });
 
