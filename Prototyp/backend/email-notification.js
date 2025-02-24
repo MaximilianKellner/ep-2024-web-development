@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import nodemailer from 'nodemailer';
+import ApiError from "./ApiError.js";
 
 // Create a transporter object
 const transporter = nodemailer.createTransport({
@@ -48,9 +49,14 @@ export function sendReminderNotification(customerName, customerEmail, renewalLin
 
     try {
         const message = `
-        <h1>Your personal link will expire on the ${expirationDate}</h1>
-        <p><a href="${renewalLink}">Renew your personal link</a></p>
-        `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f4f4f4; text-align: center;">
+            <h1 style="color: #333;">Your personal link will expire soon!</h1>
+            <p style="color: #555; font-size: 16px;">Hello ${customerName},</p>
+            <p style="color: #555; font-size: 16px;">Your personal download link will expire on <strong>${expirationDate}</strong>. Make sure to renew it before it's too late!</p>
+            <a href="${renewalLink}" style="display: inline-block; padding: 12px 20px; margin-top: 15px; font-size: 18px; color: #fff; background-color: #007bff; text-decoration: none; border-radius: 5px;">Renew Your Link</a>
+            <p style="color: #999; font-size: 14px; margin-top: 20px;">If you have any questions, feel free to contact us.</p>
+        </div>
+        `;
         const mailOptions = {
             from: process.env.SMTP_USER,
             to: customerEmail,
