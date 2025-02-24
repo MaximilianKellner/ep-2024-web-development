@@ -169,8 +169,7 @@ router.get('/get-customer', async (req, res) => {
             res.json(customer);
         }
     } catch (error) {
-        console.error('Fehler beim Laden des Kunden:', error);
-        res.status(500).json({error: 'Interner Serverfehler'});
+        throw ApiError.internal('Fehler beim Laden des Kunden');
     }
 });
 
@@ -206,8 +205,7 @@ router.put('/update-customer', async (req, res) => {
         );
         res.status(200).send('Kunde erfolgreich aktualisiert');
     } catch (error) {
-        console.error('Fehler beim Aktualisieren des Kunden:', error);
-        res.status(500).send('Fehler beim Aktualisieren des Kunden');
+        throw ApiError.internal("Fehler beim Aktualisieren des Kunden");
     }
 });
 

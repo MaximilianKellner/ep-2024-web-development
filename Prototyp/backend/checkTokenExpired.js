@@ -33,6 +33,6 @@ export async function checkTokenExpired() {
         })
         setTimeout(checkTokenExpired, ONE_DAY_IN_MS);
     } catch (error) {
-        console.error(error);
+        throw ApiError.internal('An error occurred while checking the expiration date of the token');
     }
 }
