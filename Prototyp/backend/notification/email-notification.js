@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import nodemailer from 'nodemailer';
+import ApiError from "../errors/ApiError.js";
 
 // Create a transporter object
 const transporter = nodemailer.createTransport({
@@ -16,7 +17,7 @@ const transporter = nodemailer.createTransport({
 // Configure the mailoptions object
 
 
-export function sendDownloadNotification(customerNe, customerEmail, downloadLink) {
+export function sendDownloadNotification(customerName, customerEmail, downloadLink) {
 
     try {
         const message = `
@@ -34,13 +35,13 @@ export function sendDownloadNotification(customerNe, customerEmail, downloadLink
 
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
-                throw ApiError.internal("Something went wrong when sending email");
+                console.log('Error:', error);
             } else {
                 console.log('Email sent:', info.response);
-            }am
+            }
         });
     } catch (error) {
-        throw error
+        throw Error;
     }
 }
 
@@ -61,12 +62,11 @@ export function sendReminderNotification(customerName, customerEmail, renewalLin
 
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
-                throw ApiError.internal("Something went wrong when sending email");
-            } else {
-                console.log('Email sent:', info.response);
+                console.log('Error:', error);
+                throw ApiError.internal("Something went wrong when sending email")
             }
         });
     } catch (error) {
-
+        throw Error;
     }
 }
