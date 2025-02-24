@@ -54,7 +54,7 @@ function urlBase64ToUint8Array(base64String) {
 document.getElementById('subscribeButton').addEventListener('click', () => {
 
     if (!("serviceWorker" in navigator)) {
-        alert("Make sure to set permissions and/ or contact the content manager.");
+        alert("Make sure to set permissions and/or contact the content manager.");
     } else {
         send();
     }

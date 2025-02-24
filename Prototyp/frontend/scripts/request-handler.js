@@ -1,6 +1,12 @@
 const loginButton = document.getElementById("login-button");
 const messageObject = document.querySelector("#message");
 
+if(messageObject){
+    messageObject.innerHTML = localStorage.getItem('errorMessage');
+    messageObject.style="color: var(--c-red)"; 
+    localStorage.removeItem('errorMessage');
+}
+
 if(loginButton){
     loginButton.addEventListener("click", event => {
         event.preventDefault(); // Ohne diese Zeile wird die Seite neu geladen, obwohl die Credentials richtig sein könnten, da es sich um ein form-Element handelt
@@ -27,13 +33,13 @@ if(loginButton){
                 window.location.href = "/admin-panel.html";
             } else {
                 messageObject.innerHTML = "Login fehlgeschlagen, auf Grund von internem Fehler. Bitte melden Sie sich bei einem Administrator!";
-                messageObject.style="color:red";
+                messageObject.style="color: var(--c-red)";
             }
         })
         .catch(error => {
             ('Error:', error);
             messageObject.innerHTML = "Login fehlgeschlagen, auf Grund von fehlerhaftem Benutzernamen/Passwort!";
-            messageObject.style="color:red";
+            messageObject.style="color: var(--c-red)";
         });
     });
 }

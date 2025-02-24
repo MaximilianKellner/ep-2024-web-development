@@ -1,4 +1,5 @@
 const logoutButtons = document.querySelectorAll('.logoutButton'); // Es gibt zwei Logout-Buttons auf der Seite; einer im sidebar Menu und einer im normalen Header
+const message = document.querySelector('.messagediv'); // Nachrichtenfeld für den Benutzer
 
 
 // Abfangen des Requests um auf diese Seite zu gelangen
@@ -7,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const refreshToken = localStorage.getItem('refreshToken');
     
     if (!accessToken) {
+        localStorage.setItem('errorMessage', 'Unauthorisierter Zugriff! Bitte melden Sie sich an, um auf diese Seite zuzugreifen!');
         window.location.href = '/login.html';
         return;
     }
@@ -80,8 +82,7 @@ if(logoutButtons){
             
             // Nur weitermachen wenn Access Token vorhanden ist
             if (!accessToken) {
-                alert('No active session found');
-                window.location.href = '/index.html';
+                window.location.href = '/login.html';
                 return;
             }
             
@@ -101,7 +102,6 @@ if(logoutButtons){
                     localStorage.removeItem('refreshToken');
                     localStorage.removeItem('username');
                     localStorage.removeItem('password');
-                    alert('Benutzer wurde abgemeldet und Access Token erfolgreich gelöscht');
                     window.location.href = '/login.html';
                 } else {
                     throw new Error('Logout failed');
