@@ -1,8 +1,5 @@
-import {pool} from './db.js';
-import {sendReminderNotification} from "./email-notification.js";
-
-import dotenv from 'dotenv';
-dotenv.config();
+import {pool} from '../db.js';
+import {sendReminderNotification} from "../notification/email-notification.js";
 
 const ONE_DAY_IN_MS = 1000 * 60 * 60 * 24;
 const THREE_DAYS = 3;
@@ -29,13 +26,13 @@ export async function checkTokenExpired() {
             if (expiresWithinThreeDays(expirationDate)) {
                 const name = customer.name;
                 const email = customer.email;
-                const renewalLink = `${process.env.URI}/customers/${customer.link_token}?action=renewal`;
+                const renewalLink = `http://localhost:5000/customers/${customer.link_token}?action=renewal`;
                 const expirationDate = customer.expiration_date;
                 sendReminderNotification(name, email, renewalLink, expirationDate);
             }
         })
         setTimeout(checkTokenExpired, ONE_DAY_IN_MS);
     } catch (error) {
-        throw ApiError.internal('An error occurred while checking the expiration date of the token');
+        throw Error;
     }
 }
