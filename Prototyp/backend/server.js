@@ -8,8 +8,6 @@ import handleApiError from "./handleApiError.js";
 import adminRoutes from "./routes/admin/admin.js";
 import customerRoutes from "./routes/customers/customers.js";
 import dotenv from 'dotenv';
-import jwt from 'jsonwebtoken';
-import {checkTokenExpired} from "./checkTokenExpired.js";
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
