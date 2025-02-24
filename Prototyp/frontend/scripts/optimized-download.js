@@ -2,7 +2,6 @@ ONE_HOUR_MS = 1000 * 60 * 60;
 
 function createImageRequest(image) {
     const linkToken = window.location.pathname.replace("/", ""); // Entfernt das "/"
-    console.log("Aktueller linkToken create image:", linkToken);
     return axios.get(`/${linkToken}/download/${image}`, {
         responseType: 'blob',
     });
@@ -70,7 +69,7 @@ function createMobileCard(fileData){
                         <p>${fileNameWithoutSuffix}</p>
                         <label class="sublabel">${hoursLeft}h verbleibend - ${(blob.size / 1024).toFixed(0)} KB</label>
                     </div>
-                    <button class="download-btn" data-url="${url}" data-filename="${fileNameWithoutSuffix}" onclick=console.log("click")">
+                    <button class="download-btn" data-url="${url}" data-filename="${fileNameWithoutSuffix}">
                         <img src="./img/icon/download.svg" alt="download" onclick="this.parentElement.click()">
                     </button>
                 </div>
@@ -109,7 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function loadOptimizedContent() {
     const linkToken = window.location.pathname.replace("/", ""); // Entfernt das "/"
-    console.log("Aktueller linkToken:", linkToken);
 
     const tbody = document.getElementById('image-table-body');
     const table = document.getElementById('image-table');
@@ -120,8 +118,6 @@ function loadOptimizedContent() {
 
         .then((response) => {
             const fileNames = response.data;
-
-            console.log("Aktueller link token credits: " + linkToken);
 
             if (fileNames.length === 0) {
                 table.classList.add('hidden');

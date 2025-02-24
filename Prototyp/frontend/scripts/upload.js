@@ -3,22 +3,16 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
         event.preventDefault();
 
         const linkToken = window.location.pathname.replace("/", ""); // Entfernt das "/"
-        console.log("Aktueller linkToken create image:", linkToken);
-
 
         const fileInput = document.getElementById('fileInput');
         const messageDiv = document.getElementById('message');
         const fileList = document.getElementById('file-list');
         const uploadStatusList = document.querySelector('.upload-status-list');
         const files = fileInput.files;
-        console.log("Files: " + files);
-
-        console.log("File input: " + fileInput.value)
 
         // check credits and return if not enough
         const response = await axios.get(`/${linkToken}/credits`);
         const credits = response.data.credits;
-        console.log('Credits:', credits);
 
         if (credits < files.length) {
             messageDiv.textContent = `Für den Upload fehlen ${files.length - credits} Credits.`;
@@ -58,8 +52,6 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
             fileBatches.push(filesArr.slice(i, i + MAX_BATCH_SIZE));
         }
 
-        console.log("Dateien in Batches aufgeteilt:", fileBatches);
-
         // Upload-Request
 
         for (let batchIndex = 0; batchIndex < fileBatches.length; batchIndex++) {
@@ -90,8 +82,6 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
                 },
             });
 
-            console.log("Status: " + response.status);
-
             if (response.status === 204) {
                 messageDiv.textContent = 'Upload erfolgreich!';
                 messageDiv.classList.remove('error');
@@ -115,11 +105,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function loadCredits() {
     try {
         const linkToken = window.location.pathname.replace("/", ""); // Entfernt das "/"
-        console.log("Aktueller linkToken create image:", linkToken);
 
         const response = await axios.get(`/${linkToken}/credits`);
         const credits = response.data.credits;
-        console.log('Credits on Load:', credits);
         document.getElementById('credits-current').textContent = `${credits} Credits`;
     } catch (error) {
         document.getElementById('credits-current').textContent = `-1 Credits`;

@@ -72,10 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 if(logoutButtons){
-    console.log('Logout Button gefunden');
     logoutButtons.forEach(logoutButton => {
         logoutButton.addEventListener("click", event => {
-            console.log('Logout Button wurde geklickt');
             event.preventDefault();
             const accessToken = localStorage.getItem('accessToken');
             const refreshToken = localStorage.getItem('refreshToken');
@@ -138,10 +136,6 @@ function checkAndRefreshToken() {
     const expiryTime = decodedToken.exp * 1000; // Konvertiere zu Millisekunden
     const currentTime = Date.now();
     const timeUntilExpiry = expiryTime - currentTime;
-
-    // console.log('Aktuelle Zeit in ms:', currentTime);
-    // console.log('Ablaufzeit des Tokens in ms:', expiryTime);
-    console.log('Zeit bis Rauswurf in ms:', timeUntilExpiry);
 
     // Wenn weniger als 2 Sekunden übrig sind oder Token abgelaufen ist
     if (timeUntilExpiry < 1000) {

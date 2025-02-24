@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
   };
 
   confirmDelete.onclick = function () {
-    console.log('Kunden-ID zum Löschen:', window.customerIdToDelete);
     if (window.customerIdToDelete) {
       fetch(`/customers/${window.customerIdToDelete}/delete`, {
         method: 'DELETE'

@@ -40,7 +40,6 @@ const storage = multer.diskStorage({
             const timestamp = Date.now();
             const randomSuffix = Math.round(Math.random() * 1E9);
             const uniqueSuffix = `${timestamp}_${randomSuffix}`;
-            console.log("Unique suffix: ", uniqueSuffix);
             cb(null, `${file.originalname}-${uniqueSuffix}`);
         } catch (error) {
             cb(ApiError.internal());
@@ -51,7 +50,6 @@ const storage = multer.diskStorage({
 const fileFilter = (req, file, cb) => {
     try {
         const acceptedMimeTypes = ["image/png", "image/jpeg", "image/jpg", "image/svg+xml"];
-        console.log("Mime type: " + file.mimetype);
         if (acceptedMimeTypes.includes(file.mimetype)) {
             cb(null, true);
         } else {
@@ -129,14 +127,9 @@ router.post('/:linkToken/upload', upload.array('images'), async (req, res, next)
             next(ApiError.badRequest("No files sent"));
         }
 
-        console.log(req.files);
-
         linkToken = req.params.linkToken;
-        console.log('Link token:', linkToken);
 
         fileNames = req.files.map(file => file.filename);
-
-        console.log('File names:', fileNames);
 
         // TODO: XMLs löschen.
         // TODO: Error handling inside Functions with new Error handling class (after server.js is done), also test for async Errors!
@@ -155,7 +148,6 @@ async function deleteFiles(linkToken, fileNames) {
     try {
         for (const fileName of fileNames) {
             await fs.promises.unlink(`customers/${linkToken}/uploaded/${fileName}`);
-            console.log(`customers/${linkToken}/uploaded/${fileName}`);
         }
     } catch (error) {
         throw error;
@@ -176,14 +168,12 @@ router.get('/:linkToken/progress', async (req, res, next) => {
         // TODO: Der Listener sollte mit einer Nutzer-ID verknüpft sein.
         const sendProgress = (status, fileName, credits) => {
             const data = JSON.stringify({status, fileName, credits});
-            console.log("Send progress data: " + data);
             res.write(`data: ${data}\n\n`);
         };
 
         optimizationEventEmitter.on('progress', sendProgress);
 
         const handleClosingConnection = async () => {
-            console.log('Connection closed');
             optimizationEventEmitter.removeListener('progress', sendProgress);
         };
 
@@ -228,7 +218,6 @@ router.get('/:linkToken/optimized-images', async (req, res, next) => {
 
 router.get('/:linkToken/credits', async (req, res, next) => {
     const linkToken = req.params.linkToken;
-    console.log(`Displaying credits for user:${linkToken}-`);
     try {
         const result = await pool.query('SELECT credits FROM active_customer WHERE link_token = $1', [linkToken]);
         if (result.rows.length > 0) {

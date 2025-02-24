@@ -109,7 +109,6 @@ function checkFileType(files) {
         } else {
             messageDiv.textContent = `Mindestens eine Datei hat ein unerlaubtes Format und wurde entfernt. Bitte nur .jpg, .jpeg oder .png Dateien hochladen.`;
             messageDiv.classList.add('error');
-            console.log(files[i]);
         }
     }
     return validFiles;
