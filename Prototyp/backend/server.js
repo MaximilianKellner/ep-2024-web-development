@@ -9,6 +9,7 @@ import adminRoutes from "./routes/admin/admin.js";
 import customerRoutes from "./routes/customers/customers.js";
 import dotenv from 'dotenv';
 import {checkTokenExpired} from "./checkTokenExpired.js";
+import deleteExpiredFiles from "./deleteExpiredFiles.js";
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use("/", express.static(path.join(__dirname, '../frontend')));
 app.use('/', adminRoutes);
 
 //await checkTokenExpired();
+await deleteExpiredFiles();
 
 app.use(handleApiError);
 app.listen(process.env.DEV_PORT, () =>
