@@ -22,25 +22,29 @@ Hier ein Auszug über den Aufbau unseres Verzeichnisses. Es werden bewusst nicht
         * server.js:
            * Middleware für das Routing der Requests
         * /routes/customers/customers.js:
-           * Kunden-Endpoints (Zugang mittels Link-Token, Upload, Download, Datei-Optimierung, Informationen zum Fortschritt mittels Server-Sent Events)
+           * Kunden-Endpoints (Zugang mittels Link-Token, Upload, Download, Datei-Optimierung, Informationen zum Fortschritt mittels Server-Sent Events).
         * /routes/admin/admin.js:
-           * Admin-Entpoints (Login, Logout, Authentifizierung, Kunden-Verwaltung) 
+           * Admin-Entpoints (Login, Logout, Authentifizierung, Kunden-Verwaltung).
         * sharp.js:
-           * Anwendungslogik für Bildverarbeitung inkl. Komprimierung und Konvertierung
+           * Anwendungslogik für Bildverarbeitung inkl. Komprimierung und Konvertierung.
         * checkTokenExpired.js:
-           * Wenn der Link eines Kunden innerhalb der nächsten drei Tage abläuft, sorgt dies Datei dafür, dass eine E-Mail versendet wird
+           * Wenn der Link eines Kunden innerhalb der nächsten drei Tage abläuft, sorgt dies Datei dafür, dass eine E-Mail versendet wird.
+        * email-notification.js:
+           * Versenden von E-Mails, um den Kunden über die Fertigstellung der Optimierung oder den baldigen Ablauf des Links zu informieren.
+         * ApiError.js + handleApiError.js:
+            * Globales Error Handling. 
     * frontend:
       * scripts:
          * config.js:
-            * Definieren von häufig genutzten Variablen
+            * Definieren von häufig genutzten Variablen.
          * handle-customer.js:
-            * Erstellen und Bearbeiten von Kunden   
+            * Erstellen und Bearbeiten von Kunden.
          * load-customer.js:
-            * Das Laden von Kunden in die admin-table
+            * Das Laden von Kunden in die admin-table.
          * menu.js:
-            * Sidemenu für Mobile-Ansicht
+            * Sidemenu für Mobile-Ansicht.
          * modal.js:
-            * Kreiert Pop-Up, das Löschen eines Kunden ermöglicht
+            * Kreiert Pop-Up, das Löschen eines Kunden ermöglicht.
          * optimized-download.js:
             * Erstellen eines Eintrags in der Tabelle (s. index.html), wenn ein Bild erfolgreich optimiert wurde.
          * sse.js:
@@ -48,7 +52,7 @@ Hier ein Auszug über den Aufbau unseres Verzeichnisses. Es werden bewusst nicht
          * sort-table.js:
             * Sortieren der Tabelle, wenn eine Spalte angeklickt wird. Hinzufügen von Indikatoren.
          * timeManagement.js:
-            * Handeln der Ablaufzeit, bis Admin wieder aus Sitzung geworfen wird. Zeit wird in server.js festgelegt
+            * Handeln der Ablaufzeit, bis Admin wieder aus Sitzung geworfen wird. Zeit wird in server.js festgelegt.
          * upload.js:
             * Code ermöglicht Hochladen von Dateien (u.a. Dateibeschränkungen, Upload-Fortschritt, Abrufen von Credits von Server)
        
