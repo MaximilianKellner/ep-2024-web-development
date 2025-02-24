@@ -18,15 +18,12 @@ source.addEventListener('message', (event) => {
     const fileNameNoSuffix = getFileNameWithoutSuffix(fileName);
     const status = JSON.parse(event.data).status;
 
-    self.console.log("Message: ", event.data);
-
     // Set Credit Banner if credits are not undefined and not null
     if (credits !== undefined && credits >= 0) {    
         document.getElementById('credits-current').textContent = `${credits} Credits`;
     }
     
     messageDiv.innerHTML = `${fileNameNoSuffix} status: ${status}`;
-    loadOptimizedContent();
 });
 
 source.addEventListener('complete', (event) => {

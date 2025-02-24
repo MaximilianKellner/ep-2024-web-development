@@ -14,11 +14,13 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
         const response = await axios.get(`/${linkToken}/credits`);
         const credits = response.data.credits;
 
+        /*
         if (credits < files.length) {
             messageDiv.textContent = `Für den Upload fehlen ${files.length - credits} Credits.`;
             messageDiv.classList.add('error');
             return;
         }
+            */
 
         if (files.length <= 0) {
             //clear classlist
