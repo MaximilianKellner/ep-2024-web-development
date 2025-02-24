@@ -25,9 +25,6 @@ function calculateHoursLeft(fileName) {
     const hoursDifference = Math.floor(timeDifference / (1000 * 60 * 60));
     const hoursLeft = MAX_FILE_STORAGE_HOURS - hoursDifference;
 
-    console.log(`Erstellt am: ${creationDate.toLocaleString()}`);
-    console.log(`Vergangene Stunden: ${hoursDifference}`);
-
     return hoursLeft;
 }
 
