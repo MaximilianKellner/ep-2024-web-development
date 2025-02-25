@@ -8,7 +8,7 @@ import handleApiError from "./handleApiError.js";
 import adminRoutes from "./routes/admin/admin.js";
 import customerRoutes from "./routes/customers/customers.js";
 import dotenv from 'dotenv';
-import {checkTokenExpired} from "./checkTokenExpired.js";
+import {checkTokenExpired} from "./link-renewal/checkTokenExpired.js";
 import deleteExpiredFiles from "./deleteExpiredFiles.js";
 
 dotenv.config();
