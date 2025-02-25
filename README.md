@@ -81,6 +81,11 @@ Hier ein Auszug über den Aufbau unseres Verzeichnisses. Es werden bewusst nicht
     - JPG/JPEG
     - PNG
     - SVG
+
+## Wichtiger Hinweis
+- Die Lauffähigkeit der Anwendung variiert stark, je nach Browser und Betriebssystem
+- Bitte auf verschiedenen Browsern testen
+
 ## Voraussetzungen
 - Node.js (Version 20.12.2 zum Zeitpunkt der Entwicklung)
 - NPM
