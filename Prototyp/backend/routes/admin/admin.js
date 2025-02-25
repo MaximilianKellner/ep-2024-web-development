@@ -12,6 +12,8 @@ import handleApiError from "../../handleApiError.js";
 import ApiError from '../../ApiError.js';
 import dotenv from 'dotenv';
 import jwt from "jsonwebtoken";
+import EmailNotificationManager from "../../EmailNotificationManager.js";
+import NotificationMessageType from "./../../NotificationMessageType.js";
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -127,6 +129,11 @@ router.post('/create-customer', async (req, res, next) => {
         );
 
         const linkToken = result.rows[0].link_token;
+        const customerName = req.body.customerName
+        const email = req.body.email
+        const newAccessLink = `${process.env.URI}/customers/${linkToken}`
+
+        EmailNotificationManager.sendMail(NotificationMessageType.NEW_ACCESS_LINK, customerName, email, newAccessLink, req.body.expirationDate);
 
         const customerUploadsDir = `customers/${linkToken}/uploaded`;
         const customerOptimizedDir = `customers/${linkToken}/optimized`;
