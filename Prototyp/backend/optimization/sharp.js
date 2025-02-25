@@ -5,7 +5,7 @@ import path from 'path';
 import sharp from 'sharp';
 import optimizationEventEmitter from './../events/OptimizationEventEmitter.js';
 import OptimizationEventStatus from './../events/OptimizationEventStatus.js';
-import {pool} from '../persistance/db.js';
+import {pool} from '../persistence/db.js';
 import ApiError from "../errors/ApiError.js";
 
 sharp.cache(false);

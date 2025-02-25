@@ -4,7 +4,7 @@ import {processAllFiles} from '../../optimization/sharp.js';
 import optimizationEventEmitter from './../../events/OptimizationEventEmitter.js';
 import fs from 'fs';
 import path from 'path';
-import {pool} from '../../persistance/db.js';
+import {pool} from '../../persistence/db.js';
 import {fileURLToPath} from 'url';
 import {dirname} from 'path';
 import ApiError from '../../errors/ApiError.js';
