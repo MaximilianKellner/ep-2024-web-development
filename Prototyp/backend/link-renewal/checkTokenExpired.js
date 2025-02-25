@@ -1,4 +1,4 @@
-import {pool} from '../persistance/db.js';
+import {pool} from '../persistence/db.js';
 import EmailNotificationManager from "../notification/EmailNotificationManager.js";
 import NotificationMessageType from "../notification/NotificationMessageType.js";
 import dotenv from 'dotenv';
