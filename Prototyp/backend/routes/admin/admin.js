@@ -1,26 +1,21 @@
 import express from 'express';
-import cors from 'cors';
-import multer from 'multer';
-import {processAllFiles} from '../../sharp.js';
-import optimizationEventEmitter from '../../OptimizationEventEmitter.js';
 import fs from 'fs';
 import path from 'path';
-import {pool} from '../../db.js';
+import {pool} from '../../persistance/db.js';
 import {fileURLToPath} from 'url';
 import {dirname} from 'path';
-import handleApiError from "../../handleApiError.js";
-import ApiError from '../../ApiError.js';
+import ApiError from '../../errors/ApiError.js';
 import dotenv from 'dotenv';
 import jwt from "jsonwebtoken";
-import EmailNotificationManager from "../../EmailNotificationManager.js";
-import NotificationMessageType from "./../../NotificationMessageType.js";
+import EmailNotificationManager from "../../notification/EmailNotificationManager.js";
+import NotificationMessageType from "../../notification/NotificationMessageType.js";
+
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const router = express.Router();
-
 
 
 let refreshTokens = [];
@@ -42,7 +37,7 @@ router.post('/token', (req, res) => {
 //Hier stand post
 router.delete('/logout', authenticateToken, async (req, res) => {
     await new Promise(resolve => {
-    // Extrahieren des refreshTokens aus dem Body (siehe Anfrage) und entfernen des Tokens aus dem Array
+        // Extrahieren des refreshTokens aus dem Body (siehe Anfrage) und entfernen des Tokens aus dem Array
         refreshTokens = refreshTokens.filter(refreshToken => refreshToken !== req.body.token);
         resolve()
     })
@@ -52,8 +47,8 @@ router.delete('/logout', authenticateToken, async (req, res) => {
 router.post('/login', async (req, res) => {
     const username = req.body.username
     const password = req.body.password
-    for(let i = 0; i < admins.length; i++){
-        if(username === admins[i].username && password === admins[i].password){
+    for (let i = 0; i < admins.length; i++) {
+        if (username === admins[i].username && password === admins[i].password) {
             // Erstellen eines Nutzerobjekts, das in den Token eingebettet wird
             const user = {username: username, password: password}
             const accessToken = generateAccessToken(user)
@@ -149,7 +144,6 @@ router.post('/create-customer', async (req, res, next) => {
 router.get('/get-customer', async (req, res) => {
     const {id} = req.query;
 
-    // Überprüfen ob die ID vorhanden und eine Zahl ist
     if (!id || isNaN(id)) {
         return res.status(400).json({error: "Ungültige Kunden-ID"});
     }
@@ -185,7 +179,6 @@ router.get('/get-customer', async (req, res) => {
 router.put('/update-customer', async (req, res) => {
     const id = req.body.customerId;
 
-    // Überprüfen ob die ID vorhanden und eine Zahl ist
     if (!id || isNaN(id)) {
         return res.status(400).json({error: "Ungültige Kunden-ID"});
     }
@@ -193,12 +186,12 @@ router.put('/update-customer', async (req, res) => {
     try {
         const result = await pool.query(
             `UPDATE customer
-             SET customer_name = $1,
-                 email = $2,
-                 expiration_date = $3,
-                 credits = $4,
-                 img_url = $5,
-                 max_file_size_kb = $6,
+             SET customer_name     = $1,
+                 email             = $2,
+                 expiration_date   = $3,
+                 credits           = $4,
+                 img_url           = $5,
+                 max_file_size_kb  = $6,
                  max_file_width_px = $7
              WHERE customer_id = $8 RETURNING customer_id`,
             [

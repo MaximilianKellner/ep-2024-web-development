@@ -8,7 +8,8 @@ const TWELVE_HOURS = 12 * 60 * 60 * 1000;
 async function deleteExpiredFiles() {
     try {
         const __thisFilePath = fileURLToPath(import.meta.url);
-        const uploadDir = path.resolve(__thisFilePath, '../customers'); // Passe die Anzahl der "../" an
+        const uploadDir = path.resolve(__thisFilePath, '../../customers');
+        console.log("Verzeichnis: " + uploadDir);
 
         const customers = await fs.promises.readdir(uploadDir);
 

@@ -1,8 +1,9 @@
-import {pool} from '../db.js';
-import EmailNotificationManager from "./../EmailNotificationManager.js";
-import NotificationMessageType from "./../NotificationMessageType.js";
+import {pool} from '../persistance/db.js';
+import EmailNotificationManager from "../notification/EmailNotificationManager.js";
+import NotificationMessageType from "../notification/NotificationMessageType.js";
 import dotenv from 'dotenv';
-import ApiError from "../ApiError.js";
+import ApiError from "../errors/ApiError.js";
+
 dotenv.config();
 
 const ONE_DAY_IN_MS = 1000 * 60 * 60 * 24;

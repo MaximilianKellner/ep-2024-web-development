@@ -1,7 +1,6 @@
-
 import NotificationMessageBuilder from "./NotificationMessageBuilder.js";
 import nodemailer from 'nodemailer';
-import ApiError from "./ApiError.js";
+import ApiError from "../errors/ApiError.js";
 
 // Create a transporter object
 const transporter = nodemailer.createTransport({
@@ -17,7 +16,7 @@ const transporter = nodemailer.createTransport({
 class EmailNotificationManager {
 
 
-    static sendMail(messageType,  customerName, customerEmail, customerLink, expirationDate) {
+    static sendMail(messageType, customerName, customerEmail, customerLink, expirationDate) {
 
         try {
             const message = NotificationMessageBuilder.build(messageType, customerName, customerLink, expirationDate);

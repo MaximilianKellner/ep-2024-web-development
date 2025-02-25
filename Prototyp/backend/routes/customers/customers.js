@@ -1,17 +1,15 @@
 import express from 'express';
-import cors from 'cors';
 import multer from 'multer';
-import {processAllFiles} from '../../sharp.js';
-import optimizationEventEmitter from '../../OptimizationEventEmitter.js';
+import {processAllFiles} from '../../optimization/sharp.js';
+import optimizationEventEmitter from './../../events/OptimizationEventEmitter.js';
 import fs from 'fs';
 import path from 'path';
-import {pool} from '../../db.js';
+import {pool} from '../../persistance/db.js';
 import {fileURLToPath} from 'url';
 import {dirname} from 'path';
-import handleApiError from "../../handleApiError.js";
-import ApiError from '../../ApiError.js';
+import ApiError from '../../errors/ApiError.js';
 import dotenv from 'dotenv';
-import ActionType from "../../ActionType.js";
+import ActionType from "./../../link-renewal/ActionType.js";
 
 dotenv.config();
 
@@ -152,7 +150,6 @@ router.post('/:linkToken/upload', upload.array('images'), async (req, res, next)
         res.status(204).send('File uploaded successfully.');
 
     } catch (error) {
-        console.error(error);
         next(error);
     } finally {
         await deleteFiles(linkToken, fileNames);
@@ -281,7 +278,6 @@ async function sendImage(imageName, linkToken, res, contentDispositionType) {
         });
 
         fileStream.on('error', error => {
-            console.log(error);
             throw ApiError.internal("Fehler beim Übertragen der Datei")
         });
     } catch (error) {

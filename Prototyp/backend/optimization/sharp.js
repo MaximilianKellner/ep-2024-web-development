@@ -3,9 +3,10 @@ import {dirname} from 'path';
 import {fileURLToPath} from 'url';
 import path from 'path';
 import sharp from 'sharp';
-import optimizationEventEmitter from './OptimizationEventEmitter.js';
-import OptimizationEventStatus from './OptimizationEventStatus.js';
-import {pool} from './db.js';
+import optimizationEventEmitter from './../events/OptimizationEventEmitter.js';
+import OptimizationEventStatus from './../events/OptimizationEventStatus.js';
+import {pool} from '../persistance/db.js';
+import ApiError from "../errors/ApiError.js";
 
 sharp.cache(false);
 
@@ -27,14 +28,17 @@ async function processAllFiles(linkToken, fileNames) {
 
     try {
         const __dirname = dirname(fileURLToPath(import.meta.url));
-        const uploadDir = path.join(__dirname, 'customers', linkToken, 'uploaded');
-        const optimizedDir = path.join(__dirname, 'customers', linkToken, 'optimized');
+        const uploadDir = path.join(__dirname, '..', 'customers', linkToken, 'uploaded');
+        const optimizedDir = path.join(__dirname, '..', 'customers', linkToken, 'optimized');
+
+        console.log("uploadDir: " + uploadDir);
+        console.log("optimizedDir: " + optimizedDir);
 
         // Ensure optimized directory exists
         if (!fs.existsSync(optimizedDir)) {
             fs.mkdirSync(optimizedDir, {recursive: true});
         }
-        const files = fs.readdirSync(uploadDir);
+        //const files = fs.readdirSync(uploadDir);
 
         for (const file of fileNames) {
             const inputPath = path.join(uploadDir, file);
@@ -48,8 +52,8 @@ async function processAllFiles(linkToken, fileNames) {
                     optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Complete, file, remainingCredits);
                 }
             } catch (error) {
-                throw ApiError.internal("Something went wrong when optimizing image");
                 optimizationEventEmitter.sendProgressStatus(OptimizationEventStatus.Error);
+                throw ApiError.internal("Something went wrong when optimizing image");
             }
         }
     } catch (error) {
