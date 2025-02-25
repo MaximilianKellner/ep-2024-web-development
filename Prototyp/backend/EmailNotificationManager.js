@@ -15,24 +15,31 @@ const transporter = nodemailer.createTransport({
 });
 
 class EmailNotificationManager {
+
+
     static sendMail(messageType,  customerName, customerEmail, customerLink, expirationDate) {
-        const message = NotificationMessageBuilder.build(messageType, customerName, customerLink, expirationDate);
 
-        const mailOptions = {
-            from: process.env.SMTP_USER,
-            to: customerEmail,
-            subject: messageType.subject,
-            text: messageType.text,
-            html: message
-        };
+        try {
+            const message = NotificationMessageBuilder.build(messageType, customerName, customerLink, expirationDate);
 
-        transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-                throw ApiError.internal("Something went wrong when sending email");
-            } else {
-                console.log('Email sent:', info.response);
-            }
-        });
+            const mailOptions = {
+                from: process.env.SMTP_USER,
+                to: customerEmail,
+                subject: messageType.subject,
+                text: messageType.text,
+                html: message
+            };
+
+            transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                    throw ApiError.internal("Something went wrong when sending email");
+                } else {
+                    console.log('Email sent:', info.response);
+                }
+            });
+        } catch (error) {
+            throw error;
+        }
     }
 }
 
