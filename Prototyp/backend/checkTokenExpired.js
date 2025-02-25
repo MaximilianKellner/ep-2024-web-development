@@ -1,7 +1,8 @@
 import {pool} from './db.js';
-import {sendReminderNotification} from "./email-notification.js";
-
+import EmailNotificationManager from "./EmailNotificationManager.js";
+import NotificationMessageType from "./NotificationMessageType.js";
 import dotenv from 'dotenv';
+import ApiError from "./ApiError.js";
 dotenv.config();
 
 const ONE_DAY_IN_MS = 1000 * 60 * 60 * 24;
@@ -31,7 +32,8 @@ export async function checkTokenExpired() {
                 const email = customer.email;
                 const renewalLink = `${process.env.URI}/customers/${customer.link_token}?action=renewal`;
                 const expirationDate = customer.expiration_date;
-                sendReminderNotification(name, email, renewalLink, expirationDate);
+                console.log("sdd")
+                EmailNotificationManager.sendMail(NotificationMessageType.REMINDER, name, email, renewalLink, expirationDate);
             }
         })
         setTimeout(checkTokenExpired, ONE_DAY_IN_MS);
