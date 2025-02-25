@@ -12,48 +12,58 @@ Hier ein Auszug über den Aufbau unseres Verzeichnisses. Es werden bewusst nicht
 * POCs: Die einzelnen Umsetzungen der POCs, die nicht miteinander zusammenhängen
 * Prototyp: Enthält laufende Anwendung
     * backend:
-        * /customers:
+        * <b>/errors</b>:
+          * Globales Error Handling.
+        * <b>/events</b>:
+           * OptimizationEventEmitter.js:
+             * Senden von Fortschrittsstatus-Updates (progress-Events) mit Status, Dateinamen und Credits an Clients.
+           * OptimizationEventStatus.js:
+             * Status des Optimierungsvorgangs, der an den Client geschickt wird.
+         * <b>/link-renewal</b>:
+           * ActionType:
+             * Query-Parameter -> Client u. Server kommunizieren (Weiterleitung) über diese Query-Parameter bei der Aktualisierung des Links.
+           * checkTokenExpired.js:
+             * Wenn der Link eines Kunden innerhalb der nächsten drei Tage abläuft, sorgt dies Datei dafür, dass eine E-Mail versendet wird.
+         * <b>/notification</b>:
+           * Versenden von E-Mails bei Erstellung des Kunden, oder um den Kunden über den baldigen Ablauf des Links zu informieren oder. 
+        * <b>/customers</b>:
            * enthält Unterordner der personalisierte Customer-ID beihaltet. Der sind die Ordner uploaded und optimized untergestellt, in die Bilddateien reingeladen bzw. rausgelesen werden
            * Bsp.: /customers/e33ffc9a-8901-4e18-951f-9e208b266244/uploaded + /optimized
-        * .env:
-           * Environment-Datei, die neben Access- und Refresh-Tokens für JWT Authetifikation, auch Anmeldeinformationen für den E-Mail-Client und die Datenbank speichert
-        * OptimizationEventEmitter.js:
-           * Senden von Fortschrittsstatus-Updates (progress-Events) mit Status, Dateinamen und Credits an Clients
-        * server.js:
-           * Middleware für das Routing der Requests
-        * /routes/customers/customers.js:
+        * <b>/optimization</b>:
+          * Anwendungslogik für Bildverarbeitung inkl. Komprimierung und Konvertierung.
+        * <b>/persistence</b>:
+          * Datenbank-Anbindung.
+        * <b>/routes/customers/customers.js</b>:
            * Kunden-Endpoints (Zugang mittels Link-Token, Upload, Download, Datei-Optimierung, Informationen zum Fortschritt mittels Server-Sent Events).
-        * /routes/admin/admin.js:
+        * <b>/routes/admin/admin.js</b>:
            * Admin-Entpoints (Login, Logout, Authentifizierung, Kunden-Verwaltung).
-        * sharp.js:
-           * Anwendungslogik für Bildverarbeitung inkl. Komprimierung und Konvertierung.
-        * checkTokenExpired.js:
-           * Wenn der Link eines Kunden innerhalb der nächsten drei Tage abläuft, sorgt dies Datei dafür, dass eine E-Mail versendet wird.
-        * email-notification.js:
-           * Versenden von E-Mails, um den Kunden über die Fertigstellung der Optimierung oder den baldigen Ablauf des Links zu informieren.
-         * ApiError.js + handleApiError.js:
-            * Globales Error Handling. 
+        * <b>/util</b>:
+          * Hilfsfunktionen. 
+        * <b>.env</b>:
+           * Environment-Datei, die neben Access- und Refresh-Tokens für JWT Authetifikation, auch Anmeldeinformationen für den E-Mail-Client und die Datenbank speichert
+        * <b>server.js</b>:
+           * Middleware für das Routing der Requests.
     * frontend:
       * scripts:
-         * config.js:
+         * <b>config.js</b>:
             * Definieren von häufig genutzten Variablen.
-         * handle-customer.js:
+         * <b>handle-customer.js</b>:
             * Erstellen und Bearbeiten von Kunden.
-         * load-customer.js:
+         * <b>load-customer.js</b>:
             * Das Laden von Kunden in die admin-table.
-         * menu.js:
+         * <b>menu.js</b>:
             * Sidemenu für Mobile-Ansicht.
-         * modal.js:
+         * <b>modal.js</b>:
             * Kreiert Pop-Up, das Löschen eines Kunden ermöglicht.
-         * optimized-download.js:
+         * <b>optimized-download.js</b>:
             * Erstellen eines Eintrags in der Tabelle (s. index.html), wenn ein Bild erfolgreich optimiert wurde.
-         * sse.js:
+         * <b>sse.js</b>:
             * Handeln von Server-Sent-Events, aslo Senden von Echtzeit-Updates an den Client, die server-seitig passieren (z.B. momentane Credits, welche Datei komrpimiert wurde, ...)
-         * sort-table.js:
+         * <b>sort-table.js</b>:
             * Sortieren der Tabelle, wenn eine Spalte angeklickt wird. Hinzufügen von Indikatoren.
-         * timeManagement.js:
+         * <b>timeManagement.js</b>:
             * Handeln der Ablaufzeit, bis Admin wieder aus Sitzung geworfen wird. Zeit wird in server.js festgelegt.
-         * upload.js:
+         * <b>upload.js</b>:
             * Code ermöglicht Hochladen von Dateien (u.a. Dateibeschränkungen, Upload-Fortschritt, Abrufen von Credits von Server)
        
 ## Naming Conventions bei Dateinamen
