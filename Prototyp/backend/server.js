@@ -1,15 +1,14 @@
 import express from 'express';
 import cors from 'cors';
-import multer from 'multer';
 import path from 'path';
 import {fileURLToPath} from 'url';
 import {dirname} from 'path';
-import handleApiError from "./handleApiError.js";
+import handleApiError from "./errors/handleApiError.js";
 import adminRoutes from "./routes/admin/admin.js";
 import customerRoutes from "./routes/customers/customers.js";
 import dotenv from 'dotenv';
+import deleteExpiredFiles from "./util/deleteExpiredFiles.js";
 import {checkTokenExpired} from "./link-renewal/checkTokenExpired.js";
-import deleteExpiredFiles from "./deleteExpiredFiles.js";
 
 dotenv.config();
 
@@ -29,7 +28,7 @@ app.use('/customers', customerRoutes);
 app.use("/", express.static(path.join(__dirname, '../frontend')));
 app.use('/', adminRoutes);
 
-//await checkTokenExpired();
+await checkTokenExpired();
 await deleteExpiredFiles();
 
 app.use(handleApiError);
