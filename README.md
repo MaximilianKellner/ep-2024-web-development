@@ -68,13 +68,13 @@ Hier ein Auszug über den Aufbau unseres Verzeichnisses. Es werden bewusst nicht
        
 ## Naming Conventions bei Dateinamen
 - Dateien, die nur eine Funktion enthalten:
-   - Camel Case, z.B. OptimizationEventEmitter.js
+   - Camel Case, kleiner Anfangsbuchstabe z.B. checkTokenExpired.js
    - Dateiname = Funktionsname
 - Dateien, die nur eine Klasse enthalten:
-   - Anfangsbuchstabe groß, z.B. ApiError.js
+   - Camel Case, großer Anfangsbuchstabe, z.B. ApiError.js
    - Dateiname = Klassenname
 - Dateien, die diverse Funktionen/ Klassen/ Definitionen enthalten:
-   - Bindestrich-Trennung, z.B. email-notification.js 
+   - Bindestrich-Trennung, alles klein geschrieben, z.B. email-notification.js 
 
 ## Was kann unsere Applikation?
 - Unterstützte Formate:
