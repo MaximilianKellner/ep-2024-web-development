@@ -118,7 +118,7 @@ cd [Pfad bis zum Projektverzeichnis]/ep-2024-web-development/Prototyp/backend
 ```
 3)
 ```
-npm install
+npm install (auch im Frontend)
 ```
 4)
 ```
