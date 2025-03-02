@@ -137,7 +137,6 @@ input[type="checkbox"]:checked::after {
   margin: var(--l) 0;
   background-color: var(--c-background-dark);
   border-radius: var(--border-radius-base);
-  width: fit-content;
 
   display: flex;
   flex-direction: column;
@@ -147,11 +146,11 @@ input[type="checkbox"]:checked::after {
 
   img {
     height: auto;
-    width: auto;
+    width: 100%;
     max-height: 300px;
-    max-width: 100%;
     border-radius: var(--border-radius-small);
     box-shadow: var(--shadow);
+    object-fit: cover;
   }
 
   .text-group {
