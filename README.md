@@ -50,21 +50,21 @@ Hier ein Auszug über den Aufbau unseres Verzeichnisses. Es werden bewusst nicht
          * <b>handle-customer.js</b>:
             * Erstellen und Bearbeiten von Kunden.
          * <b>load-customer.js</b>:
-            * Das Laden von Kunden in die admin-table.
+            * Das Laden von Kunden in die Admin-Tabelle.
          * <b>menu.js</b>:
             * Sidemenu für Mobile-Ansicht.
          * <b>modal.js</b>:
-            * Kreiert Pop-Up, das Löschen eines Kunden ermöglicht.
+            * Erstellt Pop-Up, das Löschen eines Kunden ermöglicht.
          * <b>optimized-download.js</b>:
             * Erstellen eines Eintrags in der Tabelle (s. index.html), wenn ein Bild erfolgreich optimiert wurde.
          * <b>sse.js</b>:
-            * Handeln von Server-Sent-Events, aslo Senden von Echtzeit-Updates an den Client, die server-seitig passieren (z.B. momentane Credits, welche Datei komrpimiert wurde, ...)
+            * Verarbeiten von Server-Sent-Events, also Senden von Echtzeit-Updates an den Client, die server-seitig passieren (z.B. momentane Credits, welche Datei komprimiert wurde, ...)
          * <b>sort-table.js</b>:
             * Sortieren der Tabelle, wenn eine Spalte angeklickt wird. Hinzufügen von Indikatoren.
          * <b>timeManagement.js</b>:
-            * Handeln der Ablaufzeit, bis Admin wieder aus Sitzung geworfen wird. Zeit wird in server.js festgelegt.
+            * Verwaltung der Ablaufzeit, bis Admin wieder aus Sitzung geworfen wird. Zeit wird in server.js festgelegt.
          * <b>upload.js</b>:
-            * Code ermöglicht Hochladen von Dateien (u.a. Dateibeschränkungen, Upload-Fortschritt, Abrufen von Credits von Server)
+            * Ermöglicht das Hochladen von Dateien (u.a. Dateibeschränkungen, Upload-Fortschritt, Abrufen von Credits von Server)
        
 ## Naming Conventions bei Dateinamen
 - Dateien, die nur eine Funktion enthalten:
