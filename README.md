@@ -131,9 +131,9 @@ Zum Backend im Projektverzeichnis wechseln:
 ```
 cd [Pfad bis zum Projektverzeichnis]/ep-2024-web-development/Prototyp/backend
 ```
-3)
+3) Module installieren (jeweils in /backend, als auch in /frontend):
 ```
-npm install (auch im Frontend)
+npm install
 ```
 4)
 ```
