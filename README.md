@@ -140,7 +140,8 @@ npm install
 node server.js
 ```
 5)
-Die Anwendung läuft auf localhost:[Ausgewählter Port]
+
+Die Anwendung läuft auf `localhost:[Ausgewählter Port]` und die Kundensicht kann über `http://localhost:[Ausgewählter Port]/customers/[customer_link_token]` geöffnet werden. Die Kunden Tokens sind unter `/admin-panel.html` zu finden und zu verwalten.
 
 ## Verwendete Technologien
 - Frontend:
